@@ -1,2 +1,2 @@
-# diss
+# Disseration 
 Repo for 3rd year dissertation 
