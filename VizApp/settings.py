@@ -88,8 +88,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'VizApp',
-        'USER': 'vizapp',
-        'HOST': 'mongodb+srv://vizapp:{}@vizapp-svfta.gcp.mongodb.net/test?retryWrites=true'.format((os.environ['dbpasswd']))
+        'HOST': 'mongodb+srv://vizapp:XypWofo1JMJo0kVo@vizcluster-svfta.mongodb.net/test?retryWrites=true'.format((os.environ['dbpasswd']))
     }
 
 }

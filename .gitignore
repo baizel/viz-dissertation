@@ -66,3 +66,4 @@ build/
 # polymer 
 node_modules/
 
+.idea/

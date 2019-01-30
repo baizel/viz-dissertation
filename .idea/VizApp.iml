@@ -17,10 +17,13 @@
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/vizappenv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.7 (dissertation)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6 (dissertation)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="materialize" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
+  </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="$MODULE_DIR$/requirements.txt" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
