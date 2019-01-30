@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
+#jYeqXx0TUoK7U2vc
 
 import os
 
@@ -80,10 +81,17 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
+    # 'default': {
+    #     'ENGINE': 'djongo',
+    #     'NAME': "vizdb",
+    # }
     'default': {
         'ENGINE': 'djongo',
-        'NAME': "vizdb",
+        'NAME': 'VizApp',
+        'USER': 'vizapp',
+        'HOST': 'mongodb+srv://vizapp:{}@vizapp-svfta.gcp.mongodb.net/test?retryWrites=true'.format((os.environ['dbpasswd']))
     }
+
 }
 
 
