@@ -1,3 +1,4 @@
+from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 
@@ -7,11 +8,11 @@ from Viz.models import Book
 context: dict = dict()
 
 
-def index(request) -> HttpResponse:
+def index(request: WSGIRequest) -> HttpResponse:
     cntx = Context()
 
-    p = Book.objects.createBook("namehello")
-    p.save()
-    # print(p);
-    return render_to_response("base.html", cntx.getContext())
+    # p = Book.objects.createBook("namehello")
+    # p.save()
+    print(request)
+    return render_to_response("home.html", cntx.getContext())
     # return HttpResponse("Hello, world. You're at the polls index.")

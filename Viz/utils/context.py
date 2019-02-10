@@ -20,6 +20,7 @@ class Context(metaclass=Singleton):
         self.__context["primaryColour"] = "#e57373 red lighten-2"
         self.__context["secondaryColour"] = "#7986cb indigo lighten-2"
         self.__context["primaryText"] = "#black-text"
+        self.__context["pageTitle"] = "A Title"
 
     def getContext(self) -> dict:
         """
