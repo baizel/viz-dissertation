@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{# Remove Nav bar for this page #}
+{#{% block fixed_nav_bar_css %}#}
+{#{% endblock %}#}
+{##}
+{#{% block fixed_nav_bar_html %}#}
+{#{% endblock %}#}
+{#<script src=https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.4.0/cytoscape.min.js></script>#}
+
+{% block js %}
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js
+            xmlns="http://www.w3.org/1999/html"></script>
+    <script>
+        var d = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
+    </script>
+    <script src="{% static 'js/test.js' %}"></script>
+
+{% endblock %}
+{% block css %}
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"/>
+    <style type="text/css">
+        #dijkstraNodes {
+            width: 100%;
+            height: 530px;
+            border: 0px solid lightgray;
+        }
+
+        .full {
+            min-height: 100vh;
+        }
+    </style>
+
+{% endblock %}
+{% block content %}
+    <div class="row" style=" margin-bottom: 0">
+        <div class=" col s12 m7 l7">
+            <div id="dijkstraNodes"></div>
+        </div>
+        <div class="col s12 m5 l5">
+<pre>
+<code id="generatedCode">
+</code>
+</pre>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col s12 m7 l7">
+            <h4>Output</h4>
+            <p>
+                a table probably
+        </div>
+        <div class="col s12 m5 l5">
+            <h4>Explanation </h4>
+            <p>
+                This Line is doing something
+            </p>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

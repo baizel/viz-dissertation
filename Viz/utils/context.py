@@ -1,3 +1,8 @@
+import json
+
+from Viz.pesudo_algorithms import algorithmExporter
+
+
 class Singleton(type):
     """
     Meta class to create a singleton type

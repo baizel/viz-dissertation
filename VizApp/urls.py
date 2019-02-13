@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import RedirectView
 
-from Viz.views import homeView
+from Viz.views import homeView, dijkstra
 
 favicon_view = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
 
 urlpatterns = [
     re_path(r'^favicon\.ico$', favicon_view),
     path('', homeView.index, name='index'),
+    path('dijkstra/', dijkstra.index, name='index'),
     path('admin/', admin.site.urls),
 ]

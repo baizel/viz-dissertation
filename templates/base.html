@@ -10,7 +10,12 @@
 
         <!-- CSS  -->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link href="{% static 'css/fixed-nav-bar.css' %}" rel="stylesheet"/>
+        {% block fixed_nav_bar_css %}
+            <link href="{% static 'css/fixed-nav-bar.css' %}" rel="stylesheet"/>
+        {% endblock %}
+
+        {% block css %}
+        {% endblock %}
 
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -27,33 +32,35 @@
 
 <body>
 <main>
-    <nav class="{{ primaryColour }}" role="navigation">
-        <a href="/" class="brand-logo" id="viz-app-branding">Viz App</a>
-        <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-        <ul id="slide-out" class="sidenav sidenav-fixed">
+    {% block fixed_nav_bar_html %}
+        <nav class="{{ primaryColour }}" role="navigation">
+            <a href="/" class="brand-logo" id="viz-app-branding">Viz App</a>
+            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul id="slide-out" class="sidenav sidenav-fixed">
+                {% include 'nav_content.html' %}
+            </ul>
+        </nav>
+
+        <ul class="sidenav" id="mobile-nav">
             {% include 'nav_content.html' %}
         </ul>
-    </nav>
-
-    <ul class="sidenav" id="mobile-nav">
-        {% include 'nav_content.html' %}
-    </ul>
+    {% endblock %}
 
 
-    <div class="section no-pad-bot" id="index-banner">
-        <div class="container">
-            {% block content %}
-                <h1 class="header center {{ primaryText }}">Starter Template</h1>
-            {% endblock %}
+    {% block content %}
+        <div class="section no-pad-bot" id="index-banner">
+            <div class="container">
+                <h1 class="header center {{ primaryText }}">Base</h1>
+            </div>
         </div>
-    </div>
-
+    {% endblock %}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src={% static 'js/init.js' %}></script>
-
+    {% block js %}
+    {% endblock %}
 </main>
 </body>
 {% block footer %}
