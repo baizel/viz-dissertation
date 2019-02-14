@@ -1,5 +1,5 @@
 var nodes = new vis.DataSet([
-    {id: 1, label: '1'},
+    {id: 1, label: '1', shape: "circle", color: "red"},
     {id: 2, label: '2'},
     {id: 3, label: '3'},
     {id: 4, label: '4'},
@@ -8,10 +8,10 @@ var nodes = new vis.DataSet([
 
 // create an array with edges
 var edges = new vis.DataSet([
-    {from: 1, to: 3},
-    {from: 1, to: 2},
-    {from: 2, to: 4},
-    {from: 2, to: 5}
+    {from: 1, to: 3, id: 1,label:"5",color: {color:"blue"}},
+    {from: 1, to: 2, id: 2,label:"12",chosen: true},
+    {from: 2, to: 4, id: 3,label:"25",chosen: true},
+    {from: 2, to: 5, id: 4,label:"10",chosen: true}
 ]);
 
 // create a network
@@ -27,13 +27,13 @@ var options = {
     height: '100%',
     width: '100%',
     nodes: {
-        shape: "circle",
+        shape: "circle"
     },
     edges: {
         arrows: {
-            to: {enabled: false, scaleFactor: 1, type: 'arrow'},
+            to: {enabled: true, scaleFactor: 1, type: 'arrow'},
             middle: {enabled: false, scaleFactor: 1, type: 'arrow'},
-            from: {enabled: true, scaleFactor: 1, type: 'arrow'}
+            from: {enabled: false, scaleFactor: 1, type: 'arrow'}
         }
     }
 };

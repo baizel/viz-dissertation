@@ -3,6 +3,8 @@ import json
 from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
+
+from Viz.Graph.Graph import Graph
 from Viz.pesudo_algorithms.algorithmExporter import Algorithm
 
 from Viz.utils.context import Context
@@ -15,5 +17,10 @@ def index(request: WSGIRequest) -> HttpResponse:
     algo = Algorithm("Dijkstra.txt")
     res = cntx.getContext()
     res["jsonAlgo"] = json.dumps(algo.getJsonAlgo())
-    print(json.dumps(algo.getJsonAlgo()))
+    Graph(None).dijkstra(1)
+
     return render_to_response("dijkstra.html", res)
+
+
+def __getSteps():
+    print("hi")
