@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['viz-learn.herokuapp.com', 'vizapp.baizelmathew.com', '127.0.0.
 # Application definition
 
 INSTALLED_APPS = [
+    'scout_apm.django',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +49,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+#scout stuff
+SCOUT_NAME = "VizAppScout"
 
 ROOT_URLCONF = 'VizApp.urls'
 

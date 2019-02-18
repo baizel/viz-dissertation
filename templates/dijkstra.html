@@ -12,7 +12,7 @@
     <script src=https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js
             xmlns="http://www.w3.org/1999/html"></script>
     <script>
-        var d = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
+        var algo = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
     </script>
     <script src="{% static 'js/test.js' %}"></script>
 

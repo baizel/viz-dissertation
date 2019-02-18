@@ -8,10 +8,10 @@ var nodes = new vis.DataSet([
 
 // create an array with edges
 var edges = new vis.DataSet([
-    {from: 1, to: 3, id: 1,label:"5",color: {color:"blue"}},
-    {from: 1, to: 2, id: 2,label:"12",chosen: true},
-    {from: 2, to: 4, id: 3,label:"25",chosen: true},
-    {from: 2, to: 5, id: 4,label:"10",chosen: true}
+    {from: 1, to: 3, id: 1, label: "5", color: {color: "blue"}},
+    {from: 1, to: 2, id: 2, label: "12", chosen: true},
+    {from: 2, to: 4, id: 3, label: "25", chosen: true},
+    {from: 2, to: 5, id: 4, label: "10", chosen: true}
 ]);
 
 // create a network
@@ -45,8 +45,8 @@ var network = new vis.Network(container, data, options);
 $(document).ready(function () {
     network.setOptions(options);
 
-// d set in html
-    for (i = 0; i < d["lines"].length; i++) {
-        $("#generatedCode").append(i + d["lines"][i]["line"])
+// algo set in html
+    for (i = 0; i < algo["lines"].length; i++) {
+        $("#generatedCode").append("<code id=codeline-"+i+">"+ i + algo["lines"][i]["line"]+"</code>")
     }
 });

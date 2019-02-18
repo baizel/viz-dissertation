@@ -1,13 +1,33 @@
 import json
 from collections import namedtuple, deque
+from typing import List
 
 Edge = namedtuple('Edge', 'startNodeId, endNodeId, distance')
 inf = float('inf')
 
 
+class updateStructure:
+    """Should write a class to represent the state of each update function and that
+     {
+         updates:[
+            {
+                mapping:int,
+                explanation:string,
+                options:{},
+                data:{},
+                edges:{}
+            },
+            {}
+         ]
+     }
+
+     """
+    pass
+
+
 class PesudoCode:
-    def __int__(self):
-        self.mapping = {}
+    def __init__(self):
+        self.mapping: List[updateStructure] = []
 
     def createVertex(self, Q: list):
         print(Q)
@@ -22,7 +42,7 @@ class PesudoCode:
         print("Min: ", minVertex)
 
     def findAltAndCmp(self, alt, distance, vertex):
-        print("if {} < {} ".format(alt,distance[vertex]))
+        print("if {} < {} ".format(alt, distance[vertex]))
 
     def setDistAndPrevToAlt(self, distance, prev, currentVertex, alt, u):
         print("dist[{}] = {}, prev[{}]= {}".format(currentVertex, alt, currentVertex, u))
@@ -39,7 +59,7 @@ class Graph:
         """
         :param data: Dictionary containing the representation of the node. Uses same structure as http://visjs.org/docs/data/dataset.html
         """
-        # Temp data until
+        # Temp data until i get api working
         data = json.loads(
             '{"_options":{},'
             '"_data":{"1":{"from":1,"to":3,"id":1,"label":"5","color":{"color":"blue"}},"2":{"from":1,"to":2,"id":2,'
@@ -66,31 +86,31 @@ class Graph:
 
     def dijkstra(self, source):
         assert source in self.nodes, 'Such source node doesn\'t exist'
-        pesudo = PesudoCode()
+        code = PesudoCode()
         # 1. Mark all nodes unvisited and store them.
         # 2. Set the distance to zero for our initial node
         # and to infinity for other nodes.
         distances = {}
         previousVertices = {}
 
-        pesudo.createVertex([])
+        code.createVertex([])
 
         for vertex in self.nodes:
             n = []
             distances[vertex] = inf
             previousVertices[vertex] = None
             n.append(vertex)
-            pesudo.setDistPrevToInf(n, distances, previousVertices)
+            code.setDistPrevToInf(n, distances, previousVertices)
 
         distances[source] = 0
-        pesudo.updateDist(distances, source)
+        code.updateDist(distances, source)
 
         nodes = self.nodes.copy()
         while nodes:
             # 3. Select the unvisited node with the smallest distance,
             # it's current node now.
             currentVertex = min(nodes, key=lambda vertex: distances[vertex])
-            pesudo.setMinU(currentVertex)
+            code.setMinU(currentVertex)
 
             # 6. Stop, if the smallest distance
             # among the unvisited nodes is infinity.
@@ -103,16 +123,16 @@ class Graph:
                 alternativeRoute = distances[currentVertex] + cost
                 # Compare the newly calculated distance to the assigned
                 # and save the smaller one.
-                pesudo.findAltAndCmp(alternativeRoute, distances, neighbour)
+                code.findAltAndCmp(alternativeRoute, distances, neighbour)
                 if alternativeRoute < distances[neighbour]:
                     distances[neighbour] = alternativeRoute
                     previousVertices[neighbour] = currentVertex
-                    pesudo.setDistAndPrevToAlt(distances, previousVertices, neighbour, alternativeRoute, currentVertex)
+                    code.setDistAndPrevToAlt(distances, previousVertices, neighbour, alternativeRoute, currentVertex)
 
             # 5. Mark the current node as visited
             # and remove it from the unvisited set.
-            pesudo.removeU(currentVertex)
+            code.removeU(currentVertex)
             nodes.remove(currentVertex)
 
-        pesudo.ret(distances, previousVertices)
+        code.ret(distances, previousVertices)
         return distances, previousVertices
