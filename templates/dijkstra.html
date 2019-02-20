@@ -13,6 +13,7 @@
             xmlns="http://www.w3.org/1999/html"></script>
     <script>
         var algo = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
+        var updates = JSON.parse('{{ updates|safe|escapejs }}');
     </script>
     <script src="{% static 'js/test.js' %}"></script>
 
@@ -33,6 +34,20 @@
 
 {% endblock %}
 {% block content %}
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Distance</h4>
+            <div class="input-field col s6">
+                <input placeholder="Distance" id="dist" type="text" class="validate">
+                <label for="dist">Distance of the edge</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Save</a>
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+        </div>
+    </div>
+
     <div class="row" style=" margin-bottom: 0">
         <div class=" col s12 m7 l7">
             <div id="dijkstraNodes"></div>
@@ -47,14 +62,15 @@
 
     <div class="row">
         <div class="col s12 m7 l7">
-            <h4>Output</h4>
-            <p>
-                a table probably
+            <h4>Explanation </h4>
+            <p id="exp">
+                This Line is doing something
+            </p>
         </div>
         <div class="col s12 m5 l5">
-            <h4>Explanation </h4>
+            <h4>Current Values</h4>
             <p>
-                This Line is doing something
+                a table probably
             </p>
         </div>
     </div>

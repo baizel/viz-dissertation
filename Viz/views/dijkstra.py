@@ -17,7 +17,8 @@ def index(request: WSGIRequest) -> HttpResponse:
     algo = Algorithm("Dijkstra.txt")
     res = cntx.getContext()
     res["jsonAlgo"] = json.dumps(algo.getJsonAlgo())
-    Graph(None).dijkstra(1)
+    # _, _, updates = Graph(None).dijkstra(1)
+    # res["updates"]=json.dumps(updates)
 
     return render_to_response("dijkstra.html", res)
 
