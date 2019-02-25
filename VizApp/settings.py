@@ -25,7 +25,7 @@ SECRET_KEY = 'mvc#+uu8c-bj5=y3g8x=6p7h)1l6w0#jd$&2mknq*sbjd811ga'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['viz-learn.herokuapp.com', 'vizapp.baizelmathew.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['viz-learn.herokuapp.com', 'vizapp.baizelmathew.com','viz.baizelmathew.com', '127.0.0.1', 'localhost']
 
 # Application definition
 
