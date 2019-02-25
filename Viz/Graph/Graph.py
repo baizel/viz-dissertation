@@ -3,6 +3,8 @@ import string
 from collections import namedtuple, deque
 from typing import List
 
+from Viz.pesudo_algorithms.algorithmExporter import Algorithm
+
 Edge = namedtuple('Edge', 'startNodeId, endNodeId, distance')
 inf = float('inf')
 
@@ -27,13 +29,15 @@ class UpdateStructure:
     def __init__(self):
         self.updateStruct = dict()
         self.updateStruct["updates"] = []
+        self.lines = Algorithm("Dijkstra.txt").getJsonAlgo()['lines']
 
-    def addToUpdateQueue(self, codeToLineNumber: int, explanation: string = None, options: dict = None,
+    def addToUpdateQueue(self, codeToLineNumber: int,
+                         options: dict = None,
                          edges: dict = None,
                          data: dict = None):
         update = {
             "mapping": codeToLineNumber,
-            "explanation": explanation,
+            "explanation": self.lines[codeToLineNumber].get("exp", ""),
             "options": options,
             "data": data,
             "edges": edges
@@ -47,44 +51,49 @@ class UpdateStructure:
 class PesudoCode:
     def __init__(self):
         self.mapping = UpdateStructure()
+        self.distanceId = "distID"
+        self.prevId = "prevID"
+        self.QId = "qID"
+        self.minUID = "minUID"
+        self.neighbourID = "neighbourID"
+        self.altAdditionID = "altAdditionID"
+        self.cmpCostID = "cmpCostID"
+        self.returnDataID = "returnDataID"
 
-    def createVertex(self, Q: list):
-        self.mapping.addToUpdateQueue(2, "Create an empty set of vertex Q")
-        print(Q)
-
-    def setDistPrevToInf(self, Q: list, distance: dict, prev: dict):
-        self.mapping.addToUpdateQueue(5, "Set distance of v to be infinity")
-        self.mapping.addToUpdateQueue(6, "Set prev distance of v to be infinity")
-        self.mapping.addToUpdateQueue(7, "Add v to the set Q")
-
-        print("Nodes:", Q, "Distance: ", distance, "prev: ", prev)
+    def InitDistAndPrev(self, dist, prev):
+        self.mapping.addToUpdateQueue(6)
+        # {lineData:{id:data,id:data }
+        self.mapping.addToUpdateQueue(7, data={"lineData": [self.distanceId, "distance: {}".format(dist)]})
+        self.mapping.addToUpdateQueue(8, data={"lineData": [self.prevId, "previous: {}".format(prev)]})
 
     def updateDist(self, dist: dict, source: int):
-        self.mapping.addToUpdateQueue(9, "Set distance of source to be 0")
-        print("Distances: ", dist, "Source:", source)
+        self.mapping.addToUpdateQueue(11, data={"lineData": [self.distanceId, "distance: {}".format(dist)]})
+
+    def initQ(self, q):
+        self.mapping.addToUpdateQueue(12, data={"lineData": [self.QId, "Q: {}".format(q)]})
 
     def setMinU(self, minVertex):
-        self.mapping.addToUpdateQueue(12, "Find the lowest distance and set it to u")
-        print("Min: ", minVertex)
+        self.mapping.addToUpdateQueue(15, data={"lineData": [self.minUID, "Min U: {}".format(minVertex)]})
 
-    def findAltAndCmp(self, alt, distance, vertex):
-        self.mapping.addToUpdateQueue(14, "loop for each neighbor of u")
-        self.mapping.addToUpdateQueue(15, "Set alternative dist to the length")
-        self.mapping.addToUpdateQueue(16, "check if alt is less than dist")
-        print("if {} < {} ".format(alt, distance[vertex]))
+    def removeU(self, q):
+        self.mapping.addToUpdateQueue(16, data={"lineData": [self.QId, "Q: {}".format(q)]})
 
-    def setDistAndPrevToAlt(self, distance, prev, currentVertex, alt, u):
-        self.mapping.addToUpdateQueue(17)
-        self.mapping.addToUpdateQueue(18)
-        print("dist[{}] = {}, prev[{}]= {}".format(currentVertex, alt, currentVertex, u))
+    def findAltAndCmp(self, uDistance, vDistance, cost, neighbour):
+        self.mapping.addToUpdateQueue(17, data={"lineData": [self.neighbourID, "neighbour: {}".format(neighbour)]})
+        self.mapping.addToUpdateQueue(18, data={"lineData": [self.altAdditionID, "{} + {}".format(uDistance, cost)]})
+        self.mapping.addToUpdateQueue(19, data={
+            "lineData": [self.cmpCostID, "{} < {}".format(uDistance + cost, vDistance)]})  # Alt = uDist+cost
 
-    def removeU(self, currentVertex):
-        self.mapping.addToUpdateQueue(20)
-        print("remove: ", currentVertex)
+    def setDistAndPrevToAlt(self, distance, prev):
+        self.mapping.addToUpdateQueue(20, data={"lineData": [self.distanceId, "distance: {}".format(distance)]})
+        self.mapping.addToUpdateQueue(21, data={"lineData": [self.prevId, "previous: {}".format(prev)]})
+        self.mapping.addToUpdateQueue(22)
 
     def ret(self, dist, prev):
-        self.mapping.addToUpdateQueue(22)
-        print(dist, prev)
+        self.mapping.addToUpdateQueue(23)
+        self.mapping.addToUpdateQueue(24)
+        self.mapping.addToUpdateQueue(25, data={
+            "lineData": [self.returnDataID, "Distance: {}, Previous: {}".format(dist, prev)]})
 
     def getUpdates(self):
         return dict(**self.mapping.getUpdates())
@@ -129,27 +138,24 @@ class Graph:
         distances = {}
         previousVertices = {}
 
-        code.createVertex([])
-
         for vertex in self.nodes:
-            n = []
             distances[vertex] = inf
             previousVertices[vertex] = None
-            n.append(vertex)
-            code.setDistPrevToInf(n, distances, previousVertices)
+            code.InitDistAndPrev(distances, previousVertices)
 
         distances[source] = 0
         code.updateDist(distances, source)
 
         nodes = self.nodes.copy()
+        code.initQ(nodes)
         while nodes:
             # 3. Select the unvisited node with the smallest distance,
             # it's current node now.
             currentVertex = min(nodes, key=lambda vertex: distances[vertex])
             code.setMinU(currentVertex)
+            nodes.remove(currentVertex)
+            code.removeU(nodes)
 
-            # 6. Stop, if the smallest distance
-            # among the unvisited nodes is infinity.
             if distances[currentVertex] == inf:
                 break
 
@@ -159,16 +165,12 @@ class Graph:
                 alternativeRoute = distances[currentVertex] + cost
                 # Compare the newly calculated distance to the assigned
                 # and save the smaller one.
-                code.findAltAndCmp(alternativeRoute, distances, neighbour)
+                code.findAltAndCmp(distances[currentVertex], distances[neighbour], cost,
+                                   [n for n, _ in self.neighbours[currentVertex]]) # only get neighbour not the cost
                 if alternativeRoute < distances[neighbour]:
                     distances[neighbour] = alternativeRoute
                     previousVertices[neighbour] = currentVertex
-                    code.setDistAndPrevToAlt(distances, previousVertices, neighbour, alternativeRoute, currentVertex)
-
-            # 5. Mark the current node as visited
-            # and remove it from the unvisited set.
-            code.removeU(currentVertex)
-            nodes.remove(currentVertex)
+                    code.setDistAndPrevToAlt(distances, previousVertices)
 
         code.ret(distances, previousVertices)
         code.getUpdates()

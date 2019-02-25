@@ -14,7 +14,7 @@ context: dict = dict()
 
 def index(request: WSGIRequest) -> HttpResponse:
     network = json.loads(request.GET['network'])
-    print(network)
+    source = json.loads(request.GET['source'])
     g = Graph(network)
-    print(g.dijkstra(1))
-    return JsonResponse({"big Reee":"lol"})
+    distances, _, updates = g.dijkstra(source)
+    return JsonResponse({"updates": updates})

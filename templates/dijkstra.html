@@ -13,7 +13,6 @@
             xmlns="http://www.w3.org/1999/html"></script>
     <script>
         var algo = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
-        var updates = JSON.parse('{{ updates|safe|escapejs }}');
     </script>
     <script src="{% static 'js/test.js' %}"></script>
 
@@ -49,15 +48,16 @@
     </div>
 
     <div class="row" style=" margin-bottom: 0">
-        <div class=" col s12 m7 l7">
-            <div id="dijkstraNodes"></div>
-        </div>
         <div class="col s12 m5 l5">
 <pre>
 <code id="generatedCode">
 </code>
 </pre>
         </div>
+        <div class=" col s12 m7 l7">
+            <div id="dijkstraNodes"></div>
+        </div>
+
     </div>
 
     <div class="row">
@@ -68,12 +68,14 @@
             </p>
         </div>
         <div class="col s12 m5 l5">
+            <a class="waves-effect waves-light btn" onclick="animateAlgo()">Animate</a>
             <h4>Current Values</h4>
             <p>
                 a table probably
             </p>
         </div>
     </div>
+
 
 {% endblock %}
 

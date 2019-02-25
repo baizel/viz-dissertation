@@ -21,3 +21,9 @@ main {
 #viz-app-branding {
     padding-left: 10px;
 }
+
+.data{
+    font-style: italic;
+    font-weight: bold;
+    color: #5173ff;
+}

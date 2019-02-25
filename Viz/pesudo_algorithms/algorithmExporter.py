@@ -18,11 +18,21 @@ class Algorithm:
         o = open(os.path.join(baseDir + "/txt/", fileName))
         for line in o:
             res = line.split("//")
-            data = {"line": res[0].strip("\n") + "\n"}
+            data = {"line": self.remWhiteSpaceAtEnd(res[0].strip("\n")) + " <span class=data></span>" + "\n"}
             if len(res) > 1:
                 data["exp"] = res[1]
             d['lines'].append(data)
         return d
+
+    def remWhiteSpaceAtEnd(self, txt):
+        if len(txt) != 0:
+            split = 0
+            for i in range(len(txt)-1,0,-1):
+                split = i
+                if txt[i] != " ":
+                    break
+            return txt[0:split+1]
+        return txt
 
     def getJsonAlgo(self):
         return self.__jsonAlgo
