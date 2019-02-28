@@ -1,5 +1,16 @@
 $(document).ready(function () {
     $('.sidenav').sidenav();
     $('.modal').modal();
-    $('.fixed-action-btn').floatingActionButton();
+    pushPinInit();
 });
+
+function pushPinInit() {
+    $('.pushpin').pushpin({
+        offset: $(this).height() - $(".pushpin").height()
+    });
+    $("main").css("padding-bottom", $(".pushpin").height());
+}
+
+$(window).resize(function () {
+    pushPinInit()
+})

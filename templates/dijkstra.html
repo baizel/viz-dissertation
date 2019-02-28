@@ -49,35 +49,53 @@
 
     <div class="row" style=" margin-bottom: 0">
         <div class="col s12 m5 l5">
-<pre>
+
+        <pre>
 <code id="generatedCode">
+    <!-- Code injected by JS -->
 </code>
 </pre>
         </div>
         <div class=" col s12 m7 l7">
             <div id="dijkstraNodes"></div>
         </div>
-
     </div>
 
     <div class="row">
-        <div class="col s12 m7 l7">
+        <div class="col s12 m7 l6">
             <h4>Explanation </h4>
             <p id="exp">
                 This Line is doing something
             </p>
         </div>
+
         <div class="col s12 m5 l5">
-            <a class="waves-effect waves-light btn" onclick="animateAlgo()">Animate</a>
             <h4>Current Values</h4>
-            <p>
-                a table probably
-            </p>
+            <p>a table probably</p>
         </div>
     </div>
-
-
 {% endblock %}
 
 {% block footer %}
+    <div class="row pushpin {{ primaryColour }}" onresize="pushPinInit()">
+        <div class="col l11 s12">
+            <div class="container">
+
+                <a class="waves-effect waves-light btn-small {{ secondaryColour }}" onclick="previousFrame()">
+                    <i class="small material-icons"> navigate_before</i></a>
+
+                <a class="waves-effect waves-light btn-small {{ secondaryColour }}" onclick="playAnimation()"
+                   id="play-btn"> <i class="small material-icons">play_arrow</i></a>
+
+                <a class="waves-effect waves-light btn-small {{ secondaryColour }} hidden" onclick="pauseAnimation()"
+                   id="pause-btn"><i class="small material-icons">pause</i></a>
+
+                <a class="waves-effect waves-light btn-small {{ secondaryColour }}" onclick="nextFrame()">
+                    <i class="small material-icons">navigate_next</i></a>
+
+                <a class="waves-effect waves-light btn-small {{ secondaryColour }}" onclick="reset()">
+                    <i class="small material-icons">replay</i></a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

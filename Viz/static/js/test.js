@@ -1,8 +1,9 @@
 var numberOfNodes = 1;
 var numberOfEdges = 1;
+var dataChanged = false;
 
 var nodes = new vis.DataSet([
-    {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++, color:"red"}, // Dummy option to increment numberOfNodes
+    {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++, color: "red"}, // Dummy option to increment numberOfNodes
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
@@ -38,16 +39,17 @@ var options = {
             middle: {enabled: false, scaleFactor: 1, type: 'arrow'},
             from: {enabled: false, scaleFactor: 1, type: 'arrow'}
         },
-        color:{
+        color: {
             color: "blue",
-            inherit:false,
-            opacity:0.8
+            inherit: false,
+            opacity: 0.8
         }
     },
     interaction: {hover: true},
     manipulation: {
         enabled: true,
         addNode: function (nodeData, callback) {
+            dataChanged = true;
             numberOfNodes++;
             nodeData.label = numberOfNodes.toString();
             nodeData.id = numberOfNodes;
@@ -56,6 +58,7 @@ var options = {
             callback(nodeData);
         },
         addEdge: function (edgeData, callback) {
+            dataChanged = true;
             $('.modal').modal({
                 'onCloseEnd': function () {
                     edgeData.label = document.getElementById("dist").value;
@@ -70,67 +73,102 @@ var options = {
 
 // initialize your network!
 var network = new vis.Network(container, data, options);
-
-var i = 0;
+var currentLine = -1; // -1 to offset the first increment
+var animationSpeed = 1000; //In ms
 
 function updateData(className, data) {
     $("." + className).html(data);
 }
 
-function codeLoop(updates) {
-    setTimeout(function () {
-        console.log(updates.updates[i]);
-        line = updates.updates[i].mapping;
-        if (i > 0) {
-            prevLine = updates.updates[i - 1].mapping;
-            $("#codeline-" + prevLine).css('background-color', 'white');
-        }
-        codeLine = $("#codeline-" + line);
-        codeLine.css('background-color', '#FFFF00');
-        $("#exp").text(updates.updates[i].explanation);
-        if (updates.updates[i].data != null) {
-            updateDataFromEvent = updates.updates[i].data;
-            spanTag = codeLine.children("span");
-            spanTag.addClass(updateDataFromEvent.lineData[0]);
-            updateData(updateDataFromEvent.lineData[0], updateDataFromEvent.lineData[1])
-        }
-        i++;
-        if (i < updates.updates.length) {
-            codeLoop(updates);
-        }
-    }, 2000)
+function animate(updates, lineNumber) {
+    line = updates.updates[lineNumber].mapping;
+    if (lineNumber > 0) {
+        prevLine = updates.updates[lineNumber - 1].mapping;
+        $("#codeline-" + prevLine).css('background-color', 'white');
+    }
+    nextLine = updates.updates[lineNumber + 1].mapping;
+    $("#codeline-" + nextLine).css('background-color', 'white');
+
+    codeLine = $("#codeline-" + line);
+    codeLine.css('background-color', '#FFFF00');
+    $("#exp").text(updates.updates[lineNumber].explanation);
+    if (updates.updates[lineNumber].data != null) {
+        updateDataFromEvent = updates.updates[lineNumber].data;
+        spanTag = codeLine.children("span");
+        spanTag.addClass(updateDataFromEvent.lineData[0]);
+        updateData(updateDataFromEvent.lineData[0], updateDataFromEvent.lineData[1])
+    }
 }
 
+var animationInterval = null;
+
+function playAnimation() {
+    $("#play-btn").hide();
+    $("#pause-btn").show();
+    animationInterval = setInterval(nextFrame, animationSpeed);
+}
+
+function nextFrame() {
+    getUpdateFrames(function (updates) {
+        currentLine++;
+        animate(updates, currentLine);
+    });
+}
+
+function previousFrame() {
+    getUpdateFrames(function (updates) {
+        currentLine--;
+        if (currentLine < 0) {
+            currentLine = 0;
+        }
+        animate(updates, currentLine)
+    });
+}
+
+function pauseAnimation() {
+    $("#play-btn").show();
+    $("#pause-btn").hide();
+    clearInterval(animationInterval)
+}
+
+function reset() {
+    currentLine = 0;
+    $(".data").html("");
+    $("code").css('background-color', 'white');
+}
+
+var responseFrames = null;
+
+function getUpdateFrames(callback) {
+    if (responseFrames == null || dataChanged) {
+        $.ajax({
+            url: "/api/",
+            type: "get", //send it through get method
+            data: {
+                "network": JSON.stringify(data), source: 1
+            },
+            success: function (response) {
+                responseFrames = response.updates;
+                callback(response.updates);
+                dataChanged = false;
+            },
+            error: function (xhr) {
+                //Do Something to handle error
+            }
+        });
+    } else {
+        callback(responseFrames)
+    }
+}
+
+////////////////////////////////////////////////////// Init ////////////////////////////////////////////////////
 $(document).ready(function () {
+    $("#pause-btn").hide();
     network.setOptions(options);
 
-// algo set in html
     for (i = 0; i < algo["lines"].length; i++) {
         $("#generatedCode").append("<code id=codeline-" + i + ">" + i + algo["lines"][i]["line"] + "</code>")
     }
     var i = 0;
 
 });
-
-function reset() {
-    i = 0;
-    $(".data").html("");
-    $("code").css('background-color', 'white');
-}
-
-function animateAlgo() {
-    reset();
-    $.ajax({
-        url: "/api/",
-        type: "get", //send it through get method
-        data: {
-            "network": JSON.stringify(data), source: 1
-        },
-        success: function (response) {
-            codeLoop(response.updates);
-        },
-        error: function (xhr) {
-            //Do Something to handle error
-        }
-    });
-}
