@@ -1,9 +1,10 @@
 header, main, footer, .pushpin {
     padding-left: 300px;
 }
- html, body {
+
+html, body {
     height: 100%;
-  }
+}
 
 @media only screen and (max-width: 992px) {
     header, main, footer, .pushpin {
@@ -20,23 +21,30 @@ body {
 main {
     flex: 1 0 auto;
 }
+
 pre {
     overflow: auto;
 }
+
 #viz-app-branding {
     padding-left: 10px;
 }
 
-.data{
+.data {
     font-style: italic;
     font-weight: bold;
     color: #5173ff;
 }
 
 .pin-bottom {
-  position: relative;
+    position: relative;
 }
+
 .pushpin {
     width: 100%;
     padding-bottom: 5px;
+}
+
+#animationSpeed {
+    direction: rtl
 }

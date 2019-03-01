@@ -86,8 +86,10 @@ function animate(updates, lineNumber) {
         prevLine = updates.updates[lineNumber - 1].mapping;
         $("#codeline-" + prevLine).css('background-color', 'white');
     }
-    nextLine = updates.updates[lineNumber + 1].mapping;
-    $("#codeline-" + nextLine).css('background-color', 'white');
+    if (lineNumber < updates.updates.length - 1) {
+        nextLine = updates.updates[lineNumber + 1].mapping;
+        $("#codeline-" + nextLine).css('background-color', 'white');
+    }
 
     codeLine = $("#codeline-" + line);
     codeLine.css('background-color', '#FFFF00');
@@ -110,8 +112,12 @@ function playAnimation() {
 
 function nextFrame() {
     getUpdateFrames(function (updates) {
-        currentLine++;
-        animate(updates, currentLine);
+        if (currentLine > updates.updates.length - 2) {
+            pauseAnimation();
+        } else {
+            currentLine++;
+            animate(updates, currentLine);
+        }
     });
 }
 
@@ -159,6 +165,13 @@ function getUpdateFrames(callback) {
     } else {
         callback(responseFrames)
     }
+}
+
+function updateAnimationTime(val) {
+    pauseAnimation();
+    animationSpeed = val;
+    $("#animationSpeedLabel").text("Animation Speed = "+animationSpeed.toString()+"ms");
+    playAnimation()
 }
 
 ////////////////////////////////////////////////////// Init ////////////////////////////////////////////////////
