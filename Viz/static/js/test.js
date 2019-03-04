@@ -75,8 +75,10 @@ var options = {
 var network = new vis.Network(container, data, options);
 var currentLine = -1; // -1 to offset the first increment
 var animationSpeed = 1000; //In ms
+var listOfDataClasses = [];
 
 function updateData(className, data) {
+    listOfDataClasses.push(className);
     $("." + className).html(data);
 }
 
@@ -139,8 +141,15 @@ function pauseAnimation() {
 
 function reset() {
     currentLine = 0;
+    for (var i = 0; i < listOfDataClasses.length; i++) {
+        var element = document.getElementsByClassName(listOfDataClasses[i]);
+        for (var ele of element) {
+            ele.classList.remove(listOfDataClasses[i]);
+        }
+    }
     $(".data").html("");
     $("code").css('background-color', 'white');
+    listOfDataClasses = [];
 }
 
 var responseFrames = null;
@@ -170,7 +179,7 @@ function getUpdateFrames(callback) {
 function updateAnimationTime(val) {
     pauseAnimation();
     animationSpeed = val;
-    $("#animationSpeedLabel").text("Animation Speed = "+animationSpeed.toString()+"ms");
+    $("#animationSpeedLabel").text("Animation Speed = " + animationSpeed.toString() + "ms");
     playAnimation()
 }
 
