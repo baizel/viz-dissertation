@@ -1,9 +1,15 @@
+var NODE_COLOUR = "lightblue";
+var NODE_SELECTED_COLOUR = "red";
+var NODE_SHAPE = "circle";
+var EDGE_COLOUR = "blue";
+var EDGE_TYPE = "arrow";
+
 var numberOfNodes = 1;
 var numberOfEdges = 1;
 var dataChanged = false;
 
 var nodes = new vis.DataSet([
-    {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++, color: "red"}, // Dummy option to increment numberOfNodes
+    {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++}, // Dummy option to increment numberOfNodes
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
@@ -31,16 +37,18 @@ var options = {
     height: '100%',
     width: '100%',
     nodes: {
-        shape: "circle"
+        shape: NODE_SHAPE,
+        color: NODE_COLOUR
+
     },
     edges: {
         arrows: {
-            to: {enabled: true, scaleFactor: 1, type: 'arrow'},
-            middle: {enabled: false, scaleFactor: 1, type: 'arrow'},
-            from: {enabled: false, scaleFactor: 1, type: 'arrow'}
+            to: {enabled: true, scaleFactor: 1, type: EDGE_TYPE},
+            middle: {enabled: false, scaleFactor: 1, type: EDGE_TYPE},
+            from: {enabled: false, scaleFactor: 1, type: EDGE_TYPE}
         },
         color: {
-            color: "blue",
+            color: EDGE_COLOUR,
             inherit: false,
             opacity: 0.8
         }
@@ -53,7 +61,7 @@ var options = {
             numberOfNodes++;
             nodeData.label = numberOfNodes.toString();
             nodeData.id = numberOfNodes;
-            nodeData.shape = "circle";
+            nodeData.shape = NODE_SHAPE;
             //TODO: error Checking
             callback(nodeData);
         },
@@ -76,6 +84,25 @@ var network = new vis.Network(container, data, options);
 var currentLine = -1; // -1 to offset the first increment
 var animationSpeed = 1000; //In ms
 var listOfDataClasses = [];
+var previousNodeId = null;
+var selectedNode = null;
+
+network.on("selectNode", function (data) {
+    var previousNode = null;
+    var update = [];
+    if (previousNodeId != null) {
+        previousNode = nodes.get(previousNodeId);
+        previousNode.color = NODE_COLOUR;
+        update.push(previousNode);
+    }
+    var sNode = nodes.get(data.nodes[0]);
+    previousNodeId = sNode.id;
+    sNode.color = NODE_SELECTED_COLOUR;
+    selectedNode = sNode;
+    update.push(sNode);
+    nodes.update(update);
+    updateAnimationControls();
+});
 
 function updateData(className, data) {
     listOfDataClasses.push(className);
@@ -160,7 +187,7 @@ function getUpdateFrames(callback) {
             url: "/api/",
             type: "get", //send it through get method
             data: {
-                "network": JSON.stringify(data), source: 1
+                "network": JSON.stringify(data), source: selectedNode.id
             },
             success: function (response) {
                 responseFrames = response.updates;
@@ -183,6 +210,18 @@ function updateAnimationTime(val) {
     playAnimation()
 }
 
+function updateAnimationControls() {
+    if (selectedNode == null) {
+        $("a.animation-controls").attr("disabled", true);
+        $("#animation-msg").attr("hidden", false);
+    } else {
+        $("a.animation-controls").attr("disabled", false);
+        $("#animation-msg").attr("hidden", true);
+
+    }
+}
+
+
 ////////////////////////////////////////////////////// Init ////////////////////////////////////////////////////
 $(document).ready(function () {
     $("#pause-btn").hide();
@@ -191,6 +230,5 @@ $(document).ready(function () {
     for (i = 0; i < algo["lines"].length; i++) {
         $("#generatedCode").append("<code id=codeline-" + i + ">" + i + algo["lines"][i]["line"] + "</code>")
     }
-    var i = 0;
-
+    updateAnimationControls();
 });
