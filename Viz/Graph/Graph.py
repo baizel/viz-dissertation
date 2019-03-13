@@ -1,7 +1,4 @@
-import json
-import string
-from collections import namedtuple, deque
-from typing import List
+from collections import namedtuple
 
 from Viz.pesudo_algorithms.algorithmExporter import Algorithm
 
@@ -75,11 +72,11 @@ class PesudoCode:
     def setMinU(self, minVertex):
         self.mapping.addToUpdateQueue(15, data={"lineData": [self.minUID, "Min U: {}".format(minVertex)]})
 
-    def removeU(self, q):
+    def removeU(self, q, neighbour):
         self.mapping.addToUpdateQueue(16, data={"lineData": [self.QId, "Q: {}".format(q)]})
-
-    def findAltAndCmp(self, uDistance, vDistance, cost, neighbour):
         self.mapping.addToUpdateQueue(17, data={"lineData": [self.neighbourID, "neighbour: {}".format(neighbour)]})
+
+    def findAltAndCmp(self, uDistance, vDistance, cost):
         self.mapping.addToUpdateQueue(18, data={"lineData": [self.altAdditionID, "{} + {}".format(uDistance, cost)]})
         self.mapping.addToUpdateQueue(19, data={
             "lineData": [self.cmpCostID, "{} < {}".format(uDistance + cost, vDistance)]})  # Alt = uDist+cost
@@ -154,19 +151,19 @@ class Graph:
             currentVertex = min(nodes, key=lambda vertex: distances[vertex])
             code.setMinU(currentVertex)
             nodes.remove(currentVertex)
-            code.removeU(nodes)
+            code.removeU(nodes, [n for n, _ in self.neighbours[currentVertex]])  # only get neighbour not the cost)
 
             if distances[currentVertex] == inf:
                 break
 
             # 4. Find unvisited neighbors for the current node
             # and calculate their distances through the current node.
+
             for neighbour, cost in self.neighbours[currentVertex]:
                 alternativeRoute = distances[currentVertex] + cost
                 # Compare the newly calculated distance to the assigned
                 # and save the smaller one.
-                code.findAltAndCmp(distances[currentVertex], distances[neighbour], cost,
-                                   [n for n, _ in self.neighbours[currentVertex]]) # only get neighbour not the cost
+                code.findAltAndCmp(distances[currentVertex], distances[neighbour], cost)
                 if alternativeRoute < distances[neighbour]:
                     distances[neighbour] = alternativeRoute
                     previousVertices[neighbour] = currentVertex
