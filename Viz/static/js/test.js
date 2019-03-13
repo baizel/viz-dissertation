@@ -88,6 +88,7 @@ var previousNodeId = null;
 var selectedNode = null;
 
 network.on("selectNode", function (data) {
+    dataChanged = true;
     var previousNode = null;
     var update = [];
     if (previousNodeId != null) {

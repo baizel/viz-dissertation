@@ -25,6 +25,7 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="cytoscape" level="application" />
     <orderEntry type="library" name="vis" level="application" />
+    <orderEntry type="library" name="nouislider" level="application" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="requirementsPath" value="$MODULE_DIR$/requirements.txt" />
