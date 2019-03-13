@@ -49,12 +49,15 @@
 
     <div class="row" style=" margin-bottom: 0">
         <div class="col s12 m5 l5">
-
-        <pre>
+            <!-- Pesudo Code injected by JS -->
+            <pre>
 <code id="generatedCode">
-    <!-- Code injected by JS -->
 </code>
-</pre>
+            </pre>
+            <label>
+                <input type="checkbox" checked="checked" class="overflowCheck" onclick="toggleOverflow()"/>
+                <span>Allow Overflow</span>
+            </label>
         </div>
         <div class=" col s12 m7 l7">
             <div id="dijkstraNodes"></div>
@@ -84,28 +87,33 @@
         <div class="container valign-wrapper">
 
             <div class="col l5">
-                <label id= "animationSpeedLabel" class="black-text" for="animationSpeed">Animation Speed = 1000ms</label>
+                <label id="animationSpeedLabel" class="black-text" for="animationSpeed">Animation Speed = 1000ms</label>
                 <p class="range-field">
-                    <input type="range" class="animation-controls" id="animationSpeed" min="100" max="3000" value="1000" onchange="updateAnimationTime(this.value)" oninput="updateAnimationTime(this.value)"/>
+                    <input type="range" class="animation-controls" id="animationSpeed" min="100" max="3000" value="1000"
+                           onchange="updateAnimationTime(this.value)" oninput="updateAnimationTime(this.value)"/>
                 </p>
             </div>
             <div class="col l6 center ">
-                <a class="animation-controls waves-effect waves-light btn-small {{ secondaryColour }}" onclick="previousFrame()">
+                <a class="animation-controls waves-effect waves-light btn-small {{ secondaryColour }}"
+                   onclick="previousFrame()">
                     <i class="small material-icons"> navigate_before</i></a>
 
-                <a class="animation-controls waves-effect waves-light btn-small {{ secondaryColour }}" onclick="playAnimation()"
+                <a class="animation-controls waves-effect waves-light btn-small {{ secondaryColour }}"
+                   onclick="playAnimation()"
                    id="play-btn"> <i class="small material-icons">play_arrow</i></a>
 
                 <a class="animation-controls waves-effect waves-light btn-small {{ secondaryColour }} hidden"
                    onclick="pauseAnimation()"
                    id="pause-btn"><i class="small material-icons">pause</i></a>
 
-                <a class="animation-controls waves-effect waves-light btn-small {{ secondaryColour }}" onclick="nextFrame()">
+                <a class="animation-controls waves-effect waves-light btn-small {{ secondaryColour }}"
+                   onclick="nextFrame()">
                     <i class="small material-icons">navigate_next</i></a>
 
-                <a class="animation-controls waves-effect waves-light btn-small {{ secondaryColour }}" onclick="reset()">
+                <a class="animation-controls waves-effect waves-light btn-small {{ secondaryColour }}"
+                   onclick="reset()">
                     <i class="small material-icons">replay</i></a>
-                 <div id ="animation-msg">Select a source node to start an animation</div>
+                <div id="animation-msg">Select a source node to start an animation</div>
             </div>
 
         </div>

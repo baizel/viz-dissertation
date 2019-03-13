@@ -182,6 +182,11 @@ function reset() {
 
 var responseFrames = null;
 
+function toggleOverflow() {
+    var chk = document.querySelector('.overflowCheck').checked;
+    $("pre").css("overflow", chk ? 'auto' : '')
+}
+
 function getUpdateFrames(callback) {
     if (responseFrames == null || dataChanged) {
         $.ajax({
@@ -231,5 +236,7 @@ $(document).ready(function () {
     for (i = 0; i < algo["lines"].length; i++) {
         $("#generatedCode").append("<code id=codeline-" + i + ">" + i + algo["lines"][i]["line"] + "</code>")
     }
+
     updateAnimationControls();
+    toggleOverflow();
 });
