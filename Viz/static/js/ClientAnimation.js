@@ -167,7 +167,7 @@ function pauseAnimation() {
     clearInterval(animationInterval)
 }
 
-function reset() {
+function resetLines() {
     currentLine = 0;
     for (var i = 0; i < listOfDataClasses.length; i++) {
         var element = document.getElementsByClassName(listOfDataClasses[i]);
@@ -181,11 +181,6 @@ function reset() {
 }
 
 var responseFrames = null;
-
-function toggleOverflow() {
-    var chk = document.querySelector('.overflowCheck').checked;
-    $("pre").css("overflow", chk ? 'auto' : '')
-}
 
 function getUpdateFrames(callback) {
     if (responseFrames == null || dataChanged) {
@@ -238,5 +233,4 @@ $(document).ready(function () {
     }
 
     updateAnimationControls();
-    toggleOverflow();
 });

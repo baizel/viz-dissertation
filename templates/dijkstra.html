@@ -14,7 +14,8 @@
     <script>
         var algo = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
     </script>
-    <script src="{% static 'js/test.js' %}"></script>
+    <script src="{% static 'js/ClientAnimation.js' %}"></script>
+    <script src="{% static 'js/Utils.js' %}"></script>
 
 {% endblock %}
 {% block css %}
@@ -111,7 +112,7 @@
                     <i class="small material-icons">navigate_next</i></a>
 
                 <a class="animation-controls waves-effect waves-light btn-small {{ secondaryColour }}"
-                   onclick="reset()">
+                   onclick="resetLines()">
                     <i class="small material-icons">replay</i></a>
                 <div id="animation-msg">Select a source node to start an animation</div>
             </div>

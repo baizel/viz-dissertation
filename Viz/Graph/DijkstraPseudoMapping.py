@@ -15,7 +15,6 @@ class DijkstraPseudoMapping:
 
     def initDistAndPrev(self, dist, prev):
         self.mapping.addToUpdateQueue(6)
-        # {lineData:{id:data,id:data }
         self.mapping.addToUpdateQueue(7, data={"lineData": [self.distanceId, "distance: {}".format(dist)]})
         self.mapping.addToUpdateQueue(8, data={"lineData": [self.prevId, "previous: {}".format(prev)]})
 
@@ -34,8 +33,7 @@ class DijkstraPseudoMapping:
 
     def findAltAndCmp(self, uDistance, vDistance, cost):
         self.mapping.addToUpdateQueue(18, data={"lineData": [self.altAdditionID, "{} + {}".format(uDistance, cost)]})
-        self.mapping.addToUpdateQueue(19, data={
-            "lineData": [self.cmpCostID, "{} < {}".format(uDistance + cost, vDistance)]})  # Alt = uDist+cost
+        self.mapping.addToUpdateQueue(19, data={"lineData": [self.cmpCostID, "{} < {}".format(uDistance + cost, vDistance)]})  # Alt = uDist+cost
 
     def setDistAndPrevToAlt(self, distance, prev):
         self.mapping.addToUpdateQueue(20, data={"lineData": [self.distanceId, "distance: {}".format(distance)]})
@@ -45,8 +43,7 @@ class DijkstraPseudoMapping:
     def ret(self, dist, prev):
         self.mapping.addToUpdateQueue(23)
         self.mapping.addToUpdateQueue(24)
-        self.mapping.addToUpdateQueue(25, data={
-            "lineData": [self.returnDataID, "Distance: {}, Previous: {}".format(dist, prev)]})
+        self.mapping.addToUpdateQueue(25, data={"lineData": [self.returnDataID, "Distance: {}, Previous: {}".format(dist, prev)]})
 
     def getUpdates(self):
         return dict(**self.mapping.getUpdates())
