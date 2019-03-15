@@ -25,7 +25,7 @@ class AnimationUpdate:
 
     def addToUpdateQueue(self, codeToLineNumber: int,
                          options: dict = None,
-                         edges: dict = None,
+                         edges: list = None,
                          nodes: list = None,
                          data: dict = None):
         update = {
@@ -33,8 +33,8 @@ class AnimationUpdate:
             "explanation": self.lines[codeToLineNumber].get("exp", ""),
             "options": options,
             "data": data,
-            "edges": edges,
-            "nodes":nodes
+            "edges": edges if edges is not None else [],
+            "nodes": nodes if nodes is not None else []
         }
         self.updateStruct["updates"].append(update)
 

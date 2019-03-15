@@ -12,6 +12,7 @@ class DijkstraPseudoMapping:
         self.altAdditionID = "altAdditionID"
         self.cmpCostID = "cmpCostID"
         self.returnDataID = "returnDataID"
+        self.animationEdgeIDCounter = 0
 
     def initDistAndPrev(self, dist, prev):
         self.mapping.addToUpdateQueue(6)
@@ -22,17 +23,24 @@ class DijkstraPseudoMapping:
         self.mapping.addToUpdateQueue(11, data={"lineData": [self.distanceId, "distance: {}".format(dist)]})
 
     def initQ(self, q):
-        self.mapping.addToUpdateQueue(12, data={"lineData": [self.QId, "Q: {}".format(q)]})
+        self.mapping.addToUpdateQueue(12, data={"lineData": [self.QId, "Q: {}".format(self.__sanitise(q))]})
 
     def setMinU(self, minVertex):
-        self.mapping.addToUpdateQueue(15, data={"lineData": [self.minUID, "Min U: {}".format(minVertex)]})
+        self.mapping.addToUpdateQueue(15, data={"lineData": [self.minUID, "Smallest Node: {}".format(minVertex)]})
 
     def removeU(self, q, neighbour):
-        self.mapping.addToUpdateQueue(16, data={"lineData": [self.QId, "Q: {}".format(q)]})
-        self.mapping.addToUpdateQueue(17, data={"lineData": [self.neighbourID, "neighbour: {}".format(neighbour)]})
+        self.mapping.addToUpdateQueue(16, data={"lineData": [self.QId, "Q: {}".format(self.__sanitise(q))]})
+        nodes = None
+        if len(neighbour) > 0:
+            nodes = [{"id": i, "color": "purple", "label": str(i)} for i in neighbour]
 
-    def findAltAndCmp(self, uDistance, vDistance, cost):
-        self.mapping.addToUpdateQueue(18, data={"lineData": [self.altAdditionID, "{} + {}".format(uDistance, cost)]})
+        self.mapping.addToUpdateQueue(17, data={"lineData": [self.neighbourID, "neighbour node(s): {}".format(neighbour)]}, nodes=nodes)
+
+    def findAltAndCmp(self, uDistance, vDistance, cost, sourceNode, destNode):
+        self.animationEdgeIDCounter += 1
+        edge = [{"id": "animation" + str(self.animationEdgeIDCounter), "from": sourceNode, "to": destNode, "label": "{} + {}".format(uDistance, cost)}]
+        self.mapping.addToUpdateQueue(18, data={"lineData": [self.altAdditionID, "{} + {}".format(uDistance, cost)]}, edges=edge)
+
         self.mapping.addToUpdateQueue(19, data={"lineData": [self.cmpCostID, "{} < {}".format(uDistance + cost, vDistance)]})  # Alt = uDist+cost
 
     def setDistAndPrevToAlt(self, distance, prev):
@@ -47,3 +55,9 @@ class DijkstraPseudoMapping:
 
     def getUpdates(self):
         return dict(**self.mapping.getUpdates())
+
+    @staticmethod
+    def __sanitise(data):
+        if type(data) is type(set()):
+            return "{}" if len(data) == 0 else data
+        return data

@@ -38,7 +38,7 @@ class Dijkstra:
                 alternativeRoute = distances[currentVertex] + cost
                 # Compare the newly calculated distance to the assigned
                 # and save the smaller one.
-                mapping.findAltAndCmp(distances[currentVertex], distances[neighbour], cost)
+                mapping.findAltAndCmp(distances[currentVertex], distances[neighbour], cost,currentVertex,neighbour)
                 if alternativeRoute < distances[neighbour]:
                     distances[neighbour] = alternativeRoute
                     previousVertices[neighbour] = currentVertex

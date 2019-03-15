@@ -4,6 +4,7 @@ var NODE_SHAPE = "circle";
 var EDGE_COLOUR = "blue";
 var EDGE_TYPE = "arrow";
 
+
 var numberOfNodes = 1;
 var numberOfEdges = 1;
 var dataChanged = false;
@@ -34,6 +35,9 @@ var data = {
 };
 // http://visjs.org/docs/network/#options
 var options = {
+    physics: {
+        enabled: true
+    },
     height: '100%',
     width: '100%',
     nodes: {
@@ -74,7 +78,23 @@ var options = {
                 }
             });
             $('.modal').modal('open');
-        }
+        },
+        editNode: function (nodeData, callback) {
+            dataChanged = true;
+            callback(nodeData)
+        },
+        editEdge: function (edgeData, callback) {
+            dataChanged = true;
+            callback(edgeData);
+        },
+        deleteNode: function (object, callback) {
+            dataChanged = true;
+            callback(object)
+        },
+        deleteEdge: function (object, callback) {
+            dataChanged = true;
+            callback(object)
+        },
 
     }
 };
@@ -110,7 +130,20 @@ function updateData(className, data) {
     $("." + className).html(data);
 }
 
+var previousAnimatedNodes = [];
+var previousAddedEdges = [];
+
 function animate(updates, lineNumber) {
+    edges.remove(previousAddedEdges);
+    previousAddedEdges = updates.updates[lineNumber].edges;
+    for (var n = 0; n < previousAnimatedNodes.length; n++) {
+        previousAnimatedNodes[n].color = NODE_COLOUR
+    }
+    nodes.update(previousAnimatedNodes);
+    previousAnimatedNodes = updates.updates[lineNumber].nodes;
+    nodes.update(updates.updates[lineNumber].nodes);
+    edges.update(updates.updates[lineNumber].edges);
+
     line = updates.updates[lineNumber].mapping;
     if (lineNumber > 0) {
         prevLine = updates.updates[lineNumber - 1].mapping;
