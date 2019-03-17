@@ -19,3 +19,7 @@ class Graph:
     def getNode(self, nodeId):
         rt = [i for i in self.nodes if str(i.id) == str(nodeId)]
         return rt[0] if len(rt) > 0 else None
+
+    def getEdge(self, fromNodeId, toNodeId):
+        rt = [i for i in self.edges if str(i.toNode) == str(toNodeId) and str(fromNodeId) == str(i.fromNode)]
+        return rt[0] if len(rt) > 0 else None

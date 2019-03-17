@@ -14,6 +14,8 @@ var nodes = new vis.DataSet([
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
+    {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
+    {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++}
 ]);
 
@@ -22,7 +24,9 @@ var edges = new vis.DataSet([
     {from: 1, to: 3, label: "5", distance: 5,},
     {from: 1, to: 2, label: "12", distance: 12,},
     {from: 2, to: 4, label: "25", distance: 25,},
-    {from: 2, to: 5, label: "10", distance: 10,}
+    {from: 2, to: 5, label: "10", distance: 10,},
+    {from: 5, to: 6, label: "10", distance: 11,},
+    {from: 6, to: 7, label: "10", distance: 12,}
 ]);
 
 // create a network
@@ -62,6 +66,7 @@ var options = {
         enabled: true,
         addNode: function (nodeData, callback) {
             dataChanged = true;
+            resetLines();
             numberOfNodes++;
             nodeData.label = numberOfNodes.toString();
             nodeData.id = numberOfNodes;
@@ -71,6 +76,7 @@ var options = {
         },
         addEdge: function (edgeData, callback) {
             dataChanged = true;
+            resetLines();
             //TODO: fix modal
             $('.modal').modal({
                 'onCloseEnd': function () {
@@ -83,18 +89,22 @@ var options = {
         },
         editNode: function (nodeData, callback) {
             dataChanged = true;
+            resetLines();
             callback(nodeData)
         },
         editEdge: function (edgeData, callback) {
             dataChanged = true;
+            resetLines();
             callback(edgeData);
         },
         deleteNode: function (object, callback) {
             dataChanged = true;
+            resetLines();
             callback(object)
         },
         deleteEdge: function (object, callback) {
             dataChanged = true;
+            resetLines();
             callback(object)
         },
 
@@ -111,19 +121,20 @@ var selectedNode = null;
 
 network.on("selectNode", function (data) {
     dataChanged = true;
-    var previousNode = null;
-    var update = [];
+    let previousNode = null;
+    let update = [];
     if (previousNodeId != null) {
         previousNode = nodes.get(previousNodeId);
         previousNode.color = NODE_COLOUR;
         update.push(previousNode);
     }
-    var sNode = nodes.get(data.nodes[0]);
+    let sNode = nodes.get(data.nodes[0]);
     previousNodeId = sNode.id;
     sNode.color = NODE_SELECTED_COLOUR;
     selectedNode = sNode;
     update.push(sNode);
     nodes.update(update);
+    network.unselectAll(); // To show edge colors instead of highlighted colors
     updateAnimationControls();
 });
 
@@ -134,17 +145,34 @@ function updateData(className, data) {
 
 var previousAnimatedNodes = [];
 var previousAddedEdges = [];
+var previousColoredEdges = [];
 
 function animate(updates, lineNumber) {
-    edges.remove(previousAddedEdges);
-    previousAddedEdges = updates.updates[lineNumber].edges;
-    for (var n = 0; n < previousAnimatedNodes.length; n++) {
-        previousAnimatedNodes[n].color = NODE_COLOUR
+    if(selectedNode !== null && nodes.get(selectedNode.id).color===NODE_COLOUR){
+        nodes.update({id:selectedNode.id,color:"red"});
     }
-    nodes.update(previousAnimatedNodes);
-    previousAnimatedNodes = updates.updates[lineNumber].nodes;
-    nodes.update(updates.updates[lineNumber].nodes);
+    edges.remove(previousAddedEdges);
+    previousAddedEdges = $.extend(true, [], updates.updates[lineNumber].edges);
+
     edges.update(updates.updates[lineNumber].edges);
+    edges.update(previousColoredEdges);
+    previousColoredEdges = [];
+    for (let i of previousAddedEdges.slice()) {
+        if (i.hasOwnProperty("isNew")) {
+            previousAddedEdges.pop(i);
+            i.color.color = EDGE_COLOUR;
+            previousColoredEdges.push(i);
+        }
+    }
+    if (updates.updates[lineNumber].nodes.length !== 0) {
+
+        for (let n = 0; n < previousAnimatedNodes.length; n++) {
+            previousAnimatedNodes[n].color = NODE_COLOUR
+        }
+        nodes.update(previousAnimatedNodes);
+        previousAnimatedNodes = $.extend(true, [], updates.updates[lineNumber].nodes);
+        nodes.update(updates.updates[lineNumber].nodes);
+    }
 
     line = updates.updates[lineNumber].mapping;
     if (lineNumber > 0) {
@@ -203,10 +231,20 @@ function pauseAnimation() {
 }
 
 function resetLines() {
+    edges.remove(previousAddedEdges);
+    previousAddedEdges = [];
+    previousAnimatedNodes = [];
+    var n = [];
+    Object.keys(nodes._data).forEach(function (key) {
+        let v = $.extend(true, {}, nodes._data[key]);
+        v.color = NODE_COLOUR;
+        n.push(v);
+    });
+    nodes.update(n);
     currentLine = 0;
-    for (var i = 0; i < listOfDataClasses.length; i++) {
-        var element = document.getElementsByClassName(listOfDataClasses[i]);
-        for (var ele of element) {
+    for (let i = 0; i < listOfDataClasses.length; i++) {
+        let element = document.getElementsByClassName(listOfDataClasses[i]);
+        for (let ele of element) {
             ele.classList.remove(listOfDataClasses[i]);
         }
     }

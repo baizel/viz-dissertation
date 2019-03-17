@@ -23,5 +23,4 @@ def index(request: WSGIRequest) -> HttpResponse:
     source = json.loads(request.GET['source'])
     g = Graph(network)
     algo = Dijkstra(g, source)
-    print(json.dumps(algo.animationUpdates,indent=2,default=ser))
     return JsonResponse({"updates": json.dumps(algo.animationUpdates, default=ser)})

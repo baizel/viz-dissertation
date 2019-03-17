@@ -32,7 +32,7 @@ class Dijkstra:
             currentVertex = min(nodes, key=lambda vertex: distances[vertex])
             mapping.setMinU(currentVertex)
             nodes.remove(currentVertex)
-            mapping.removeU(nodes, [i.toNode for i in currentVertex.neighbourEdge])  # only get neighbour not the cost)
+            mapping.removeU(nodes, currentVertex)  # only get neighbour not the cost)
 
             # 4. Find unvisited neighbors for the current node
             # and calculate their distances through the current node.
@@ -44,7 +44,7 @@ class Dijkstra:
                 alternativeRoute = distances[currentVertex] + cost
                 # Compare the newly calculated distance to the assigned
                 # and save the smaller one.
-                mapping.findAltAndCmp(distances[currentVertex], distances[neighbour], cost, currentVertex, neighbour)
+                mapping.findAltAndCmp(distances[currentVertex], distances[neighbour], cost, currentVertex, neighbour,previousVertices,source,graph)
                 if alternativeRoute < distances[neighbour]:
                     distances[neighbour] = alternativeRoute
                     previousVertices[neighbour] = currentVertex

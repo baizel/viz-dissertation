@@ -13,6 +13,5 @@ def index(request: WSGIRequest) -> HttpResponse:
 
     # p = Book.objects.createBook("namehello")
     # p.save()
-    print(request)
     return render_to_response("home.html", cntx.getContext())
     # return HttpResponse("Hello, world. You're at the polls index.")
