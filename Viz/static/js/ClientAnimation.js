@@ -10,7 +10,7 @@ var numberOfEdges = 1;
 var dataChanged = false;
 
 var nodes = new vis.DataSet([
-    {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++}, // Dummy option to increment numberOfNodes
+    {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++}, // Dummy option 'inc' to increment numberOfNodes
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
     {id: numberOfNodes, label: numberOfNodes.toString(), inc: numberOfNodes++},
@@ -19,10 +19,10 @@ var nodes = new vis.DataSet([
 
 // create an array with edges
 var edges = new vis.DataSet([
-    {from: 1, to: 3, label: "5"},
-    {from: 1, to: 2, label: "12",},
-    {from: 2, to: 4, label: "25",},
-    {from: 2, to: 5, label: "10",}
+    {from: 1, to: 3, label: "5", distance: 5,},
+    {from: 1, to: 2, label: "12", distance: 12,},
+    {from: 2, to: 4, label: "25", distance: 25,},
+    {from: 2, to: 5, label: "10", distance: 10,}
 ]);
 
 // create a network
@@ -71,9 +71,11 @@ var options = {
         },
         addEdge: function (edgeData, callback) {
             dataChanged = true;
+            //TODO: fix modal
             $('.modal').modal({
                 'onCloseEnd': function () {
                     edgeData.label = document.getElementById("dist").value;
+                    edgeData.distance = parseInt(document.getElementById("dist").value);
                     callback(edgeData)
                 }
             });
@@ -224,8 +226,8 @@ function getUpdateFrames(callback) {
                 "network": JSON.stringify(data), source: selectedNode.id
             },
             success: function (response) {
-                responseFrames = response.updates;
-                callback(response.updates);
+                responseFrames = JSON.parse(response.updates);
+                callback(responseFrames);
                 dataChanged = false;
             },
             error: function (xhr) {

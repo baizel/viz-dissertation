@@ -1,11 +1,15 @@
+import string
+
 from .DijkstraPseudoMapping import DijkstraPseudoMapping
 from .Graph import INF, Graph
 
 
 class Dijkstra:
-    def __init__(self, graph: Graph, source: int):
-        assert source in graph.nodes, 'Such source node doesn\'t exist'
+    def __init__(self, graph: Graph, source: string):
+        source = graph.getNode(source)
+        assert source is not None, 'Such source node doesn\'t exist'
         mapping = DijkstraPseudoMapping()
+
         # 1. Mark all nodes unvisited and store them.
         # 2. Set the distance to zero for our initial node
         # and to infinity for other nodes.
@@ -28,17 +32,19 @@ class Dijkstra:
             currentVertex = min(nodes, key=lambda vertex: distances[vertex])
             mapping.setMinU(currentVertex)
             nodes.remove(currentVertex)
-            mapping.removeU(nodes,
-                            [n for n, _ in graph.neighbours[currentVertex]])  # only get neighbour not the cost)
+            mapping.removeU(nodes, [i.toNode for i in currentVertex.neighbourEdge])  # only get neighbour not the cost)
 
             # 4. Find unvisited neighbors for the current node
             # and calculate their distances through the current node.
 
-            for neighbour, cost in graph.neighbours[currentVertex]:
+            for edge in currentVertex.neighbourEdge:
+                neighbour = graph.getNode(edge.toNode)
+                cost = edge.distance
+
                 alternativeRoute = distances[currentVertex] + cost
                 # Compare the newly calculated distance to the assigned
                 # and save the smaller one.
-                mapping.findAltAndCmp(distances[currentVertex], distances[neighbour], cost,currentVertex,neighbour)
+                mapping.findAltAndCmp(distances[currentVertex], distances[neighbour], cost, currentVertex, neighbour)
                 if alternativeRoute < distances[neighbour]:
                     distances[neighbour] = alternativeRoute
                     previousVertices[neighbour] = currentVertex
@@ -50,3 +56,6 @@ class Dijkstra:
         self.distances = distances
         self.previousVertices = previousVertices
         self.animationUpdates = mapping.getUpdates()
+
+        # Deafult ans from source 1
+        # Distance: {1: 0, 2: 12, 3: 5, 4: 37, 5: 22}, Previous: {1: None, 2: 1, 3: 1, 4: 2, 5: 2}
