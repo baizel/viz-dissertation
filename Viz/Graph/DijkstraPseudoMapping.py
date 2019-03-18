@@ -1,5 +1,3 @@
-import json
-
 from Viz.Graph.DataSet import Node, Edge
 from Viz.utils.AnimationUpdate import AnimationUpdate
 
@@ -10,11 +8,6 @@ def ser(obj):
     if isinstance(obj, Edge):
         return obj.toNode
     return obj.__dict__
-
-
-class NodeOptions:
-    def __init__(self, ids: []):
-        self.ids = []
 
 
 class DijkstraPseudoMapping:
@@ -35,7 +28,7 @@ class DijkstraPseudoMapping:
         self.animation.addToUpdateQueue(7, data={"lineData": [self.distanceId, "distance: {}".format(self.__sanitise(dist))]})
         self.animation.addToUpdateQueue(8, data={"lineData": [self.prevId, "previous: {}".format(self.__sanitise(prev))]})
 
-    def updateDist(self, dist: dict, source: int):
+    def updateDist(self, dist: dict):
         self.animation.addToUpdateQueue(11, data={"lineData": [self.distanceId, "distance: {}".format(self.__sanitise(dist))]})
 
     def initQ(self, q):
@@ -56,7 +49,6 @@ class DijkstraPseudoMapping:
     def findAltAndCmp(self, uDistance, vDistance, cost, sourceNode, destNode, previous, dijkSource, graph):
         self.animationEdgeIDCounter += 1
 
-        # print(sourceNode,destNode,previous)
         edge = [{"id": "animation" + str(self.animationEdgeIDCounter), "from": sourceNode, "to": destNode, "label": "{} + {}".format(uDistance, cost), "color": {"color": "red"}}]
         base = sourceNode
         pathNodes = [] if base is None else [sourceNode]
@@ -68,12 +60,11 @@ class DijkstraPseudoMapping:
         pathEdges = []
         if len(pathNodes) > 1:
             for i in range(0, len(pathNodes) - 1):
-                id = graph.getEdge(pathNodes[i + 1], pathNodes[i]).id
-                e = {"id": id, "color": {"color": "red"}, "isNew": False}
+                edgeId = graph.getEdge(pathNodes[i + 1], pathNodes[i]).id
+                e = {"id": edgeId, "color": {"color": "red"}, "isNew": False}
                 pathEdges.append(e)
 
         edge += pathEdges
-        print(edge)
         self.animation.addToUpdateQueue(18, data={"lineData": [self.altAdditionID, "{} + {}".format(uDistance, cost)]}, edges=edge)
         self.animation.addToUpdateQueue(19, data={"lineData": [self.cmpCostID, "{} < {}".format(uDistance + cost, vDistance)]})
 

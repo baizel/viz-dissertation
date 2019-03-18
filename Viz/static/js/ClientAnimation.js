@@ -107,7 +107,6 @@ var options = {
             resetLines();
             callback(object)
         },
-
     }
 };
 
@@ -120,6 +119,7 @@ var previousNodeId = null;
 var selectedNode = null;
 
 network.on("selectNode", function (data) {
+    resetLines();
     dataChanged = true;
     let previousNode = null;
     let update = [];
@@ -134,7 +134,6 @@ network.on("selectNode", function (data) {
     selectedNode = sNode;
     update.push(sNode);
     nodes.update(update);
-    network.unselectAll(); // To show edge colors instead of highlighted colors
     updateAnimationControls();
 });
 
@@ -148,8 +147,10 @@ var previousAddedEdges = [];
 var previousColoredEdges = [];
 
 function animate(updates, lineNumber) {
-    if(selectedNode !== null && nodes.get(selectedNode.id).color===NODE_COLOUR){
-        nodes.update({id:selectedNode.id,color:"red"});
+    network.unselectAll(); // To show edge colors instead of highlighted colors
+
+    if (selectedNode !== null && nodes.get(selectedNode.id).color === NODE_COLOUR) {
+        nodes.update({id: selectedNode.id, color: "red"});
     }
     edges.remove(previousAddedEdges);
     previousAddedEdges = $.extend(true, [], updates.updates[lineNumber].edges);
@@ -158,7 +159,7 @@ function animate(updates, lineNumber) {
     edges.update(previousColoredEdges);
     previousColoredEdges = [];
     for (let i of previousAddedEdges.slice()) {
-        if (i.hasOwnProperty("isNew")) {
+        if (i.hasOwnProperty("isNew") && !i.isNew) {
             previousAddedEdges.pop(i);
             i.color.color = EDGE_COLOUR;
             previousColoredEdges.push(i);

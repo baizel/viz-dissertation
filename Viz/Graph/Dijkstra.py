@@ -22,14 +22,14 @@ class Dijkstra:
             mapping.initDistAndPrev(distances, previousVertices)
 
         distances[source] = 0
-        mapping.updateDist(distances, source)
+        mapping.updateDist(distances)
 
         nodes = graph.nodes.copy()
         mapping.initQ(nodes)
         while nodes:
             # 3. Select the unvisited node with the smallest distance,
             # it's current node now.
-            currentVertex = min(nodes, key=lambda vertex: distances[vertex])
+            currentVertex = min(nodes, key=lambda v: distances[v])
             mapping.setMinU(currentVertex)
             nodes.remove(currentVertex)
             mapping.removeU(nodes, currentVertex)  # only get neighbour not the cost)
@@ -44,7 +44,7 @@ class Dijkstra:
                 alternativeRoute = distances[currentVertex] + cost
                 # Compare the newly calculated distance to the assigned
                 # and save the smaller one.
-                mapping.findAltAndCmp(distances[currentVertex], distances[neighbour], cost, currentVertex, neighbour,previousVertices,source,graph)
+                mapping.findAltAndCmp(distances[currentVertex], distances[neighbour], cost, currentVertex, neighbour, previousVertices, source, graph)
                 if alternativeRoute < distances[neighbour]:
                     distances[neighbour] = alternativeRoute
                     previousVertices[neighbour] = currentVertex
