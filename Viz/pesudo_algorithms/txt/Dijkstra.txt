@@ -16,7 +16,7 @@
          u = node <b>in</b> Q <b>with</b> smallest distance     // Find the node with smallest distance from current node
          <b>remove</b> u <b>from</b> Q                          // Remove u from the list of nodes so it will not be used again
          <b>for each</b> neighbour v <b>of</b> u <b>do</b>:     // Run the loop for each neighbour of u
-              alternative = distance[u] + distanceBetween(u,v)  // for each neighbour calculate alternative distance which is the distance of u + the distanceBetween u and v
+              alternative = distance[u] + distanceBetween(u,v)  // For each neighbour calculate alternative distance which is the distance of u + the distanceBetween u and v
               <b>if</b> alternative < distance[v]:              // If alternative is less than distance that is previously stores then we have found a new shortest distance
                   distance[v] = alternative                     // Update the new shorter distance
                   previous[v] = u                               // Set previous optimal node to be u

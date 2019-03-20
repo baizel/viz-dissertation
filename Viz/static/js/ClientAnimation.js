@@ -98,6 +98,8 @@ var options = {
             callback(edgeData);
         },
         deleteNode: function (object, callback) {
+            previousNodeId = null;
+            selectedNode = null;
             dataChanged = true;
             resetLines();
             callback(object)
@@ -110,23 +112,28 @@ var options = {
     }
 };
 
-// initialize your network!
 var network = new vis.Network(container, data, options);
 var currentLine = -1; // -1 to offset the first increment
 var animationSpeed = 1000; //In ms
 var listOfDataClasses = [];
 var previousNodeId = null;
 var selectedNode = null;
+var previousAnimatedNodes = [];
+var previousAddedEdges = [];
+var previousColoredEdges = [];
 
 network.on("selectNode", function (data) {
-    resetLines();
+    edges.remove(previousAddedEdges);
+    previousAddedEdges = [];
     dataChanged = true;
     let previousNode = null;
     let update = [];
     if (previousNodeId != null) {
         previousNode = nodes.get(previousNodeId);
-        previousNode.color = NODE_COLOUR;
-        update.push(previousNode);
+        if (previousNode != null) {
+            previousNode.color = NODE_COLOUR;
+            update.push(previousNode);
+        }
     }
     let sNode = nodes.get(data.nodes[0]);
     previousNodeId = sNode.id;
@@ -141,10 +148,6 @@ function updateData(className, data) {
     listOfDataClasses.push(className);
     $("." + className).html(data);
 }
-
-var previousAnimatedNodes = [];
-var previousAddedEdges = [];
-var previousColoredEdges = [];
 
 function animate(updates, lineNumber) {
     network.unselectAll(); // To show edge colors instead of highlighted colors
@@ -190,9 +193,15 @@ function animate(updates, lineNumber) {
     $("#exp").text(updates.updates[lineNumber].explanation);
     if (updates.updates[lineNumber].data != null) {
         updateDataFromEvent = updates.updates[lineNumber].data;
+        console.log(updateDataFromEvent);
         spanTag = codeLine.children("span");
-        spanTag.addClass(updateDataFromEvent.lineData[0]);
-        updateData(updateDataFromEvent.lineData[0], updateDataFromEvent.lineData[1])
+        spanTag.addClass(updateDataFromEvent.classID);
+        if (updateDataFromEvent.tableExp != null) {
+            addToTable(updateDataFromEvent.classID + "raw", updateDataFromEvent.rawData, updateDataFromEvent.tableExp);
+            updateData(updateDataFromEvent.classID + "raw", updateDataFromEvent.rawData)
+        }
+        let inlineExp = updateDataFromEvent.inlineExp != null ? updateDataFromEvent.inlineExp + ":" + updateDataFromEvent.rawData : "";
+        updateData(updateDataFromEvent.classID, inlineExp)
     }
 }
 
@@ -252,6 +261,7 @@ function resetLines() {
     $(".data").html("");
     $("code").css('background-color', 'white');
     listOfDataClasses = [];
+    $('table tr.tableValueRow').remove();
 }
 
 var responseFrames = null;
@@ -293,6 +303,12 @@ function updateAnimationControls() {
         $("a.animation-controls").attr("disabled", false);
         $("#animation-msg").attr("hidden", true);
 
+    }
+}
+
+function addToTable(dataClass, value, displayName) {
+    if (!$("." + dataClass).length) {
+        $('#tableValues').append('<tr class ="tableValueRow"><td>' + displayName + '</td> <td><span class="data ' + dataClass + '" >' + value + '</span></td> </tr>');
     }
 }
 

@@ -21,30 +21,39 @@ class DijkstraPseudoMapping:
         self.altAdditionID = "altAdditionID"
         self.cmpCostID = "cmpCostID"
         self.returnDataID = "returnDataID"
+        self.displayNames = {
+            self.distanceId: "All Distances",
+            self.prevId: "Optimal Previous Node",
+            self.QId: "Set of all nodes in Q",
+            self.minUID: "Node with the smallest distance from source",
+            self.neighbourID: "Neighbour of <span class='data {}raw'></>".format(self.minUID),  # Not clean but will do to show current node
+        }
+
         self.animationEdgeIDCounter = 0
 
     def initDistAndPrev(self, dist, prev):
         self.animation.addToUpdateQueue(6)
-        self.animation.addToUpdateQueue(7, data={"lineData": [self.distanceId, "distance: {}".format(self.__sanitise(dist))]})
-        self.animation.addToUpdateQueue(8, data={"lineData": [self.prevId, "previous: {}".format(self.__sanitise(prev))]})
+        self.animation.addToUpdateQueue(7, data=AnimationUpdate.getLineData(self.distanceId, dist, "Distance", self.displayNames[self.distanceId]))
+        self.animation.addToUpdateQueue(8, data=AnimationUpdate.getLineData(self.prevId, prev, "Previous", self.displayNames[self.prevId]))
 
     def updateDist(self, dist: dict):
-        self.animation.addToUpdateQueue(11, data={"lineData": [self.distanceId, "distance: {}".format(self.__sanitise(dist))]})
+        self.animation.addToUpdateQueue(11, data=AnimationUpdate.getLineData(self.distanceId, dist, "Distance", self.displayNames))
 
     def initQ(self, q):
-        self.animation.addToUpdateQueue(12, data={"lineData": [self.QId, "Q: {}".format(self.__sanitise(q))]})
+        self.animation.addToUpdateQueue(12, data=AnimationUpdate.getLineData(self.QId, q, "Q", self.displayNames[self.QId]))
 
     def setMinU(self, minVertex):
         nodes = [{"id": minVertex.id, "color": "yellow", "label": str(minVertex.id)}]
-        self.animation.addToUpdateQueue(15, data={"lineData": [self.minUID, "Smallest Node: {}".format(self.__sanitise(minVertex))]}, nodes=nodes)
+        self.animation.addToUpdateQueue(15, data=AnimationUpdate.getLineData(self.minUID, minVertex, "Smallest Node", self.displayNames[self.minUID]), nodes=nodes)
 
     def removeU(self, q, source: Node):
-        self.animation.addToUpdateQueue(16, data={"lineData": [self.QId, "Q: {}".format(self.__sanitise(q))]})
+        self.animation.addToUpdateQueue(16, data=AnimationUpdate.getLineData(self.QId, q, "Q", self.displayNames[self.QId]))
+
         nodes = [{"id": source.id, "color": "yellow", "label": str(source.id)}]
         neighbour = [i.toNode for i in source.neighbourEdge]
         if len(neighbour) > 0:
             nodes += [{"id": i, "color": "purple", "label": str(i)} for i in neighbour]
-        self.animation.addToUpdateQueue(17, data={"lineData": [self.neighbourID, "neighbour node(s): {}".format(self.__sanitise(neighbour))]}, nodes=nodes)
+        self.animation.addToUpdateQueue(17, data=AnimationUpdate.getLineData(self.neighbourID, neighbour, "Neighbour node(s)", self.displayNames[self.neighbourID]), nodes=nodes)
 
     def findAltAndCmp(self, uDistance, vDistance, cost, sourceNode, destNode, previous, dijkSource, graph):
         self.animationEdgeIDCounter += 1
@@ -65,28 +74,18 @@ class DijkstraPseudoMapping:
                 pathEdges.append(e)
 
         edge += pathEdges
-        self.animation.addToUpdateQueue(18, data={"lineData": [self.altAdditionID, "{} + {}".format(uDistance, cost)]}, edges=edge)
-        self.animation.addToUpdateQueue(19, data={"lineData": [self.cmpCostID, "{} < {}".format(uDistance + cost, vDistance)]})
+        self.animation.addToUpdateQueue(18, data=AnimationUpdate.getLineData(self.altAdditionID, "{} + {}".format(uDistance, cost)), edges=edge)
+        self.animation.addToUpdateQueue(19, data=AnimationUpdate.getLineData(self.cmpCostID, "{} < {}".format(uDistance + cost, vDistance)))
 
-    def setDistAndPrevToAlt(self, distance, prev):
-        self.animation.addToUpdateQueue(20, data={"lineData": [self.distanceId, "distance: {}".format(self.__sanitise(distance))]})
-        self.animation.addToUpdateQueue(21, data={"lineData": [self.prevId, "previous: {}".format(self.__sanitise(prev))]})
+    def setDistAndPrevToAlt(self, dist, prev):
+        self.animation.addToUpdateQueue(20, data=AnimationUpdate.getLineData(self.distanceId, dist, "Distance", self.displayNames))
+        self.animation.addToUpdateQueue(21, data=AnimationUpdate.getLineData(self.prevId, prev, "Previous", self.displayNames[self.prevId]))
         self.animation.addToUpdateQueue(22)
 
     def ret(self, dist, prev):
         self.animation.addToUpdateQueue(23)
         self.animation.addToUpdateQueue(24)
-        self.animation.addToUpdateQueue(25, data={"lineData": [self.returnDataID, "Distance: {}, Previous: {}".format(dist, prev)]})
+        self.animation.addToUpdateQueue(25, data=AnimationUpdate.getLineData(self.returnDataID, "Distance: {}, Previous: {}".format(dist, prev)))
 
     def getUpdates(self):
-        return dict(**self.animation.getFrames())
-
-    @staticmethod
-    def __sanitise(data):
-        if isinstance(data, set):
-            return "{}" if len(data) == 0 else data
-        if isinstance(data, Node):
-            return data.id
-        if isinstance(data, Edge):
-            return "Error"
-        return data
+        return self.animation.getFrames()

@@ -1,5 +1,7 @@
+import json
 import string
 
+from Viz.Graph.DataSet import Node, Edge
 from Viz.pesudo_algorithms.algorithmExporter import Algorithm
 
 
@@ -26,9 +28,9 @@ class AnimationUpdate:
         self.lines = Algorithm(algorithmFile).getJsonAlgo()['lines']
 
     def addToUpdateQueue(self, codeToLineNumber: int,
-                         options: dict = None,
-                         edges: list = None,
-                         nodes: list = None,
+                         options: dict = None,  # Same as vis.js options used for update
+                         edges: list = None,  # Same as vis.js edges used for update
+                         nodes: list = None,  # Same as vis.js nodes used for update
                          data: dict = None,
                          overrideExplanation: string = None):
         update = {
@@ -43,3 +45,19 @@ class AnimationUpdate:
 
     def getFrames(self):
         return dict(**self.frames)
+
+    @staticmethod
+    def getLineData(classId, rawData, inlineExp=None, tableName=None):
+        return {"classID": classId, "rawData": AnimationUpdate.__sanitise(rawData), "inlineExp": inlineExp, "tableExp": tableName}
+
+    @staticmethod
+    def __sanitise(data):
+        if (isinstance(data, dict)):
+            return "{}".format(data)
+        if isinstance(data, set):
+            return "{}" if len(data) == 0 else data
+        if isinstance(data, Node):
+            return str(data.id)
+        if isinstance(data, Edge):
+            return "Error, Type 'Edge' Not Expected!"
+        return str(data)
