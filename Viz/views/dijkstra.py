@@ -19,4 +19,4 @@ def index(request: WSGIRequest) -> HttpResponse:
     res["jsonAlgo"] = json.dumps(algo.getJsonAlgo())
     res["pageTitle"] = "Dijkstra Algorithm"
 
-    return render_to_response("dijkstra.html", res)
+    return render_to_response("algorithm_base.html", res)

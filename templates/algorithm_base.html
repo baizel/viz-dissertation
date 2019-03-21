@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+{# Remove Nav bar for this page #}
+{#{% block fixed_nav_bar_css %}#}
+{#{% endblock %}#}
+{##}
+{#{% block fixed_nav_bar_html %}#}
+{#{% endblock %}#}
+{#<script src=https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.4.0/cytoscape.min.js></script>#}
+
+{% block js %}
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js
+            xmlns="http://www.w3.org/1999/html"></script>
+    <script>
+        // Pesudo code from python render
+        var algo = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
+        $(document).ready(function () {
+
+        });
+    </script>
+    <script src="{% static 'js/ClientAnimation.js' %}"></script>
+    <script src="{% static 'js/Utils.js' %}"></script>
+
+
+{% endblock %}
+
+{% block css %}
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"/>
+    <style type="text/css">
+        #network {
+            width: 100%;
+            height: 693px;
+            border: 0px solid lightgray;
+        }
+
+        .anim {
+            height: 100vh;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Distance</h4>
+            <div class="input-field col s6">
+                <input placeholder="Distance" id="dist" type="text" class="validate">
+                <label for="dist">Distance of the edge</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Save</a>
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+        </div>
+    </div>
+    <div class="row {{ primaryColour }}">
+
+        <div class="row" style=" margin-bottom: 0">
+            <div class="col l12 center">
+                <h4>{{ pageTitle }}</h4>
+            </div>
+        </div>
+        <div class="col l11">
+            <div class="col  l6 codeGen">
+                <!-- Pesudo Code injected by JS -->
+                <pre>
+<code id="generatedCode">
+</code>
+            </pre>
+                <label>
+                    <input type="checkbox" checked="checked" class="overflowCheck" onclick="toggleOverflow()"/>
+                    <span>Allow Overflow</span>
+                </label>
+            </div>
+            <div class="col  l6 minHeight">
+                <div id="network"></div>
+                <div class="row">
+                    <div class="col s3">
+                        <label>
+                            <input type="checkbox" checked="checked"/>
+                            <span>Random Edge Distances</span>
+                        </label>
+                    </div>
+                    <div class = "col s3 valign-wrapper"><span class="dot" style="background-color: {{ selectedNodeColor }} !important;"></span><label class="keys"> Source Node</label></div>
+                    <div class = "col s3 valign-wrapper"><span class="dot" style="background-color: {{ currentNodeColor }} !important;"></span><label class="keys"> Current Node</label></div>
+                    <div class = "col s3 valign-wrapper"><span class="dot" style="background-color: {{ neighbourNodeColor }} !important;"></span><label class="keys"> Neighbour Node</label></div>
+                </div>
+            </div>
+
+            <div class="col  l6">
+                <h4>Current Values</h4>
+                <p>The table of value will b populated here as you step through the algorithm</p>
+                <table id="tableValues">
+                    <tr>
+                        <th>Name</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                    </tr>
+                </table>
+            </div>
+            <div class="col  l6">
+                <h4>Explanation </h4>
+                <h5 id="exp">
+                    A brief explanation will be shown here when stepping through the algorithm
+                </h5>
+            </div>
+        </div>
+        <div class="col l1 pushpin {{ secondaryColour }}" style="right: 0;">
+            <div class="col  l12 anim">
+                <div class="valign-wrapper anim ">
+                    <div class="container ">
+                        <div class="row">
+                            <div class="col l12 center" id="animation-msg"><p>Select a source node to start an animation
+                                <p></div>
+                            <div class="col l12 center ">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="previousFrame()">
+                                    <i class="small material-icons"> navigate_before</i></a>
+                            </div>
+                            <div class="col l12 center ">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="playAnimation()" id="play-btn">
+                                    <i class="small material-icons">play_arrow</i></a>
+                            </div>
+                            <div class="col l12 center ">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }} hidden" onclick="pauseAnimation()" id="pause-btn">
+                                    <i class="small material-icons">pause</i></a>
+                            </div>
+                            <div class="col l12 center ">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="nextFrame()">
+                                    <i class="small material-icons">navigate_next</i></a>
+                            </div>
+                            <div class="col l12 center ">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="resetLines()">
+                                    <i class="small material-icons">replay</i></a>
+                            </div>
+                            <div class="col l12 center">
+                                <div class="col l12 center ">
+                                    <p>Delay between frames</p>
+                                    <label class="black-text">3000ms</label>
+                                    <input type="range" orient="vertical" class="animation-controls" id="animationSpeed" min="10" max="3000" value="1000"
+                                           onchange="updateAnimationTime(this.value)" oninput="updateAnimationTime(this.value)"/>
+                                    <label class="black-text">10ms</label>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

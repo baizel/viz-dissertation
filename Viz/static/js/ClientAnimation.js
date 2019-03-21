@@ -1,7 +1,8 @@
-var NODE_COLOUR = "lightblue";
-var NODE_SELECTED_COLOUR = "red";
+var NODE_COLOUR = "#64b5f6";
+var NODE_SELECTED_COLOUR = "#f44336";
 var NODE_SHAPE = "circle";
-var EDGE_COLOUR = "blue";
+
+var EDGE_COLOUR = "#2196f3";
 var EDGE_TYPE = "arrow";
 
 
@@ -30,7 +31,7 @@ var edges = new vis.DataSet([
 ]);
 
 // create a network
-var container = document.getElementById('dijkstraNodes');
+var container = document.getElementById('network');
 
 // provide the data in the vis format
 var data = {
@@ -61,7 +62,7 @@ var options = {
             opacity: 0.8
         }
     },
-    interaction: {hover: true},
+    interaction: {hover: true, dragView: false, zoomView: false},
     manipulation: {
         enabled: true,
         addNode: function (nodeData, callback) {
@@ -153,7 +154,7 @@ function animate(updates, lineNumber) {
     network.unselectAll(); // To show edge colors instead of highlighted colors
 
     if (selectedNode !== null && nodes.get(selectedNode.id).color === NODE_COLOUR) {
-        nodes.update({id: selectedNode.id, color: "red"});
+        nodes.update({id: selectedNode.id, color: NODE_SELECTED_COLOUR});
     }
     edges.remove(previousAddedEdges);
     previousAddedEdges = $.extend(true, [], updates.updates[lineNumber].edges);
@@ -181,11 +182,11 @@ function animate(updates, lineNumber) {
     line = updates.updates[lineNumber].mapping;
     if (lineNumber > 0) {
         prevLine = updates.updates[lineNumber - 1].mapping;
-        $("#codeline-" + prevLine).css('background-color', 'white');
+        $("#codeline-" + prevLine).css('background-color', '');
     }
     if (lineNumber < updates.updates.length - 1) {
         nextLine = updates.updates[lineNumber + 1].mapping;
-        $("#codeline-" + nextLine).css('background-color', 'white');
+        $("#codeline-" + nextLine).css('background-color', '');
     }
 
     codeLine = $("#codeline-" + line);
@@ -259,7 +260,7 @@ function resetLines() {
         }
     }
     $(".data").html("");
-    $("code").css('background-color', 'white');
+    $("code").css('background-color', '');
     listOfDataClasses = [];
     $('table tr.tableValueRow').remove();
 }
@@ -291,16 +292,18 @@ function getUpdateFrames(callback) {
 function updateAnimationTime(val) {
     pauseAnimation();
     animationSpeed = val;
-    $("#animationSpeedLabel").text("Animation Speed = " + animationSpeed.toString() + "ms");
+    $("#animationSpeedLabel").text(animationSpeed.toString() + "ms");
     playAnimation()
 }
 
 function updateAnimationControls() {
     if (selectedNode == null) {
         $("a.animation-controls").attr("disabled", true);
+        document.getElementById("animationSpeed").disabled = true;
         $("#animation-msg").attr("hidden", false);
     } else {
         $("a.animation-controls").attr("disabled", false);
+        document.getElementById("animationSpeed").disabled = false;
         $("#animation-msg").attr("hidden", true);
 
     }
@@ -323,4 +326,11 @@ $(document).ready(function () {
     }
 
     updateAnimationControls();
+    let minHeight = 600;
+    if ($(".codeGen").height() > minHeight) {
+        minHeight = $(".codeGen").height() + 20 //20 for the offset of scroll bar
+    }
+    $(".minHeight").css("height", minHeight);
+    $(".network").css("height", minHeight);
+
 });

@@ -1,14 +1,15 @@
 $(document).ready(function () {
     $('.sidenav').sidenav();
     $('.modal').modal();
-    pushPinInit();
+    $('.pushpin').pushpin();
+
 });
 
 function pushPinInit() {
-    $('.pushpin').pushpin({
-        offset: $(this).height() - $(".pushpin").height()
-    });
-    $("main").css("padding-bottom", $(".pushpin").height());
+    // $('.pushpin').pushpin({
+    //     offset: $(this).height() - $(".pushpin").height()
+    // });
+    // $("main").css("padding-bottom", $(".pushpin").height());
 }
 
 $(window).resize(function () {

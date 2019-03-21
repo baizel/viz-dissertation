@@ -1,5 +1,6 @@
 from Viz.Graph.DataSet import Node, Edge
 from Viz.utils.AnimationUpdate import AnimationUpdate
+from Viz.utils.context import NEIGHBOUR_NODE_COLOR, SELECTED_NODE_COLOR, CURRENT_NODE_COLOR
 
 
 def ser(obj):
@@ -43,25 +44,24 @@ class DijkstraPseudoMapping:
         self.animation.addToUpdateQueue(12, data=AnimationUpdate.getLineData(self.QId, q, "Q", self.displayNames[self.QId]))
 
     def setMinU(self, minVertex):
-        nodes = [{"id": minVertex.id, "color": "yellow", "label": str(minVertex.id)}]
+        nodes = [{"id": minVertex.id, "color": CURRENT_NODE_COLOR, "label": str(minVertex.id)}]
         self.animation.addToUpdateQueue(15, data=AnimationUpdate.getLineData(self.minUID, minVertex, "Smallest Node", self.displayNames[self.minUID]), nodes=nodes)
 
     def removeU(self, q, source: Node):
         self.animation.addToUpdateQueue(16, data=AnimationUpdate.getLineData(self.QId, q, "Q", self.displayNames[self.QId]))
 
-        nodes = [{"id": source.id, "color": "yellow", "label": str(source.id)}]
+        nodes = [{"id": source.id, "color": CURRENT_NODE_COLOR, "label": str(source.id)}]
         neighbour = [i.toNode for i in source.neighbourEdge]
         if len(neighbour) > 0:
-            nodes += [{"id": i, "color": "purple", "label": str(i)} for i in neighbour]
+            nodes += [{"id": i, "color": NEIGHBOUR_NODE_COLOR, "label": str(i)} for i in neighbour]
         self.animation.addToUpdateQueue(17, data=AnimationUpdate.getLineData(self.neighbourID, neighbour, "Neighbour node(s)", self.displayNames[self.neighbourID]), nodes=nodes)
 
     def findAltAndCmp(self, uDistance, vDistance, cost, sourceNode, destNode, previous, dijkSource, graph):
         self.animationEdgeIDCounter += 1
 
-        edge = [{"id": "animation" + str(self.animationEdgeIDCounter), "from": sourceNode, "to": destNode, "label": "{} + {}".format(uDistance, cost), "color": {"color": "red"}}]
+        edge = [{"id": "animation" + str(self.animationEdgeIDCounter), "from": sourceNode, "to": destNode, "label": "{} + {}".format(uDistance, cost), "color": {"color": SELECTED_NODE_COLOR}}]
         base = sourceNode
         pathNodes = [] if base is None else [sourceNode]
-        # {"id": sourceNode, "color": {"color": "red"}}
         while base is not None and base != dijkSource.id:
             base = previous[base]
             if base is not None:
@@ -70,7 +70,7 @@ class DijkstraPseudoMapping:
         if len(pathNodes) > 1:
             for i in range(0, len(pathNodes) - 1):
                 edgeId = graph.getEdge(pathNodes[i + 1], pathNodes[i]).id
-                e = {"id": edgeId, "color": {"color": "red"}, "isNew": False}
+                e = {"id": edgeId, "color": {"color": SELECTED_NODE_COLOR}, "isNew": False}
                 pathEdges.append(e)
 
         edge += pathEdges
@@ -85,7 +85,7 @@ class DijkstraPseudoMapping:
     def ret(self, dist, prev):
         self.animation.addToUpdateQueue(23)
         self.animation.addToUpdateQueue(24)
-        self.animation.addToUpdateQueue(25, data=AnimationUpdate.getLineData(self.returnDataID, "Distance: {}, Previous: {}".format(dist, prev)))
+        self.animation.addToUpdateQueue(25, data=AnimationUpdate.getLineData(self.returnDataID, "Distance: {}, Previous: {}".format(dist, prev),""))
 
     def getUpdates(self):
         return self.animation.getFrames()

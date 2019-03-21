@@ -21,12 +21,17 @@
 {% block css %}
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"/>
     <style type="text/css">
-        #dijkstraNodes {
+        #network {
             width: 100%;
-            height: 630px;
+            height: 720px;
             border: 0px solid lightgray;
         }
-
+        #generatedCode {
+            height: 720px;
+        }
+        #anim {
+            height: 720px;
+        }
         .full {
             min-height: 100vh;
         }
@@ -34,22 +39,8 @@
 
 {% endblock %}
 {% block content %}
-    <div id="modal1" class="modal">
-        <div class="modal-content">
-            <h4>Distance</h4>
-            <div class="input-field col s6">
-                <input placeholder="Distance" id="dist" type="text" class="validate">
-                <label for="dist">Distance of the edge</label>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Save</a>
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
-        </div>
-    </div>
-
     <div class="row" style=" margin-bottom: 0">
-        <div class="col s12 m5 l5">
+        <div class="col l5">
             <!-- Pesudo Code injected by JS -->
             <pre>
 <code id="generatedCode">
@@ -60,20 +51,64 @@
                 <span>Allow Overflow</span>
             </label>
         </div>
-        <div class=" col s12 m7 l7">
+
+        <div class=" col l6">
             <div id="dijkstraNodes"></div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col s12 m7 l6">
+        <div class=" col l1 {{ primaryColour }}">
+            <div id="anim" class="valign-wrapper">
+                <div class="container ">
+                    <div class="row">
+                        <div class="col l12 center ">
+                            <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ secondaryColour }}"
+                               onclick="previousFrame()">
+                                <i class="small material-icons"> navigate_before</i></a>
+                        </div>
+                        <div class="col l12 center ">
+                            <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ secondaryColour }}"
+                               onclick="playAnimation()"
+                               id="play-btn"> <i class="small material-icons">play_arrow</i></a>
+                        </div>
+                        <div class="col l12 center ">
+                            <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ secondaryColour }} hidden"
+                               onclick="pauseAnimation()"
+                               id="pause-btn"><i class="small material-icons">pause</i></a>
+
+
+                        </div>
+                        <div class="col l12 center ">
+                            <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ secondaryColour }}"
+                               onclick="nextFrame()">
+                                <i class="small material-icons">navigate_next</i></a>
+
+
+                        </div>
+                        <div class="col l12 center ">
+                            <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ secondaryColour }}"
+                               onclick="resetLines()">
+                                <i class="small material-icons">replay</i></a>
+                        </div>
+                        <div class="col l6">
+                            <div class="col l12 center ">
+                                <label id="animationSpeedLabel" class="black-text" for="animationSpeed">Delay Between Frames = 1000ms</label>
+                                <input type="range" orient="vertical" class="animation-controls" id="animationSpeed" min="100" max="3000" value="1000"
+                                       onchange="updateAnimationTime(this.value)" oninput="updateAnimationTime(this.value)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col l6">
             <h4>Explanation </h4>
             <h5 id="exp">
                 This Line is doing something
             </h5>
         </div>
 
-        <div class="col s12 m5 l5">
+        <div class="col l6">
             <h4>Current Values</h4>
             <p>The table of value will b populated here as you step through the algorithm</p>
             <table id="tableValues">
@@ -92,39 +127,39 @@
 {% block footer %}
 
 
-    <div class="pushpin row {{ primaryColour }}" onresize="pushPinInit()">
-        <div class="container valign-wrapper">
-
-            <div class="col l6">
-                <label id="animationSpeedLabel" class="black-text" for="animationSpeed">Delay Between Frames = 1000ms</label>
-                <p class="range-field">
-                    <input type="range" class="animation-controls" id="animationSpeed" min="100" max="3000" value="1000"
-                           onchange="updateAnimationTime(this.value)" oninput="updateAnimationTime(this.value)"/>
-                </p>
-            </div>
-            <div class="col l6 center ">
-                <a class="animation-controls waves-effect waves-light btn-floating  {{ secondaryColour }}"
-                   onclick="previousFrame()">
-                    <i class="small material-icons"> navigate_before</i></a>
-
-                <a class="animation-controls waves-effect waves-light btn-floating  {{ secondaryColour }}"
-                   onclick="playAnimation()"
-                   id="play-btn"> <i class="small material-icons">play_arrow</i></a>
-
-                <a class="animation-controls waves-effect waves-light btn-floating  {{ secondaryColour }} hidden"
-                   onclick="pauseAnimation()"
-                   id="pause-btn"><i class="small material-icons">pause</i></a>
-
-                <a class="animation-controls waves-effect waves-light btn-floating  {{ secondaryColour }}"
-                   onclick="nextFrame()">
-                    <i class="small material-icons">navigate_next</i></a>
-
-                <a class="animation-controls waves-effect waves-light btn-floating {{ secondaryColour }}"
-                   onclick="resetLines()">
-                    <i class="small material-icons">replay</i></a>
-                <div id="animation-msg">Select a source node to start an animation</div>
-            </div>
-
-        </div>
-    </div>
+{#    <div class="pushpin row {{ primaryColour }}" onresize="pushPinInit()">#}
+{#        <div class="container valign-wrapper">#}
+{##}
+{#            <div class="col l6">#}
+{#                <label id="animationSpeedLabel" class="black-text" for="animationSpeed">Delay Between Frames = 1000ms</label>#}
+{#                <p class="range-field">#}
+{#                    <input type="range" class="animation-controls" id="animationSpeed" min="100" max="3000" value="1000"#}
+{#                           onchange="updateAnimationTime(this.value)" oninput="updateAnimationTime(this.value)"/>#}
+{#                </p>#}
+{#            </div>#}
+{#            <div class="col l6 center ">#}
+{#                <a class="animation-controls waves-effect waves-light btn-floating  {{ secondaryColour }}"#}
+{#                   onclick="previousFrame()">#}
+{#                    <i class="small material-icons"> navigate_before</i></a>#}
+{##}
+{#                <a class="animation-controls waves-effect waves-light btn-floating  {{ secondaryColour }}"#}
+{#                   onclick="playAnimation()"#}
+{#                   id="play-btn"> <i class="small material-icons">play_arrow</i></a>#}
+{##}
+{#                <a class="animation-controls waves-effect waves-light btn-floating  {{ secondaryColour }} hidden"#}
+{#                   onclick="pauseAnimation()"#}
+{#                   id="pause-btn"><i class="small material-icons">pause</i></a>#}
+{##}
+{#                <a class="animation-controls waves-effect waves-light btn-floating  {{ secondaryColour }}"#}
+{#                   onclick="nextFrame()">#}
+{#                    <i class="small material-icons">navigate_next</i></a>#}
+{##}
+{#                <a class="animation-controls waves-effect waves-light btn-floating {{ secondaryColour }}"#}
+{#                   onclick="resetLines()">#}
+{#                    <i class="small material-icons">replay</i></a>#}
+{#                <div id="animation-msg">Select a source node to start an animation</div>#}
+{#            </div>#}
+{##}
+{#        </div>#}
+{#    </div>#}
 {% endblock %}
