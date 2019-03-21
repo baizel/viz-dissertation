@@ -1,9 +1,8 @@
-import json
 import os
 import string
 
 
-class Algorithm:
+class PesudoAlgorithm:
     def __init__(self, fileName: string):
         self.__file = fileName
         self.__jsonAlgo = self.__read(fileName)

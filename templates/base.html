@@ -33,10 +33,16 @@
 <body>
 <main>
     {% block fixed_nav_bar_html %}
-
         <ul class="sidenav  sidenav-fixed" id="mobile-nav">
+
             {% include 'nav_content.html' %}
+            <div class = "mid">
+                <li><a class="waves-effect center" href="https://www.github.com/baizel/dissertation"><i class="center-align small material-icons">all_inclusive</i></a></li>
+            </div>
+
+
         </ul>
+
     {% endblock %}
 
 

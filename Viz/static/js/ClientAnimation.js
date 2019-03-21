@@ -326,9 +326,9 @@ $(document).ready(function () {
     }
 
     updateAnimationControls();
-    let minHeight = 600;
+    let minHeight = 750;
     if ($(".codeGen").height() > minHeight) {
-        minHeight = $(".codeGen").height() + 20 //20 for the offset of scroll bar
+        minHeight = $(".codeGen").height()
     }
     $(".minHeight").css("height", minHeight);
     $(".network").css("height", minHeight);

@@ -3,14 +3,6 @@ from Viz.utils.AnimationUpdate import AnimationUpdate
 from Viz.utils.context import NEIGHBOUR_NODE_COLOR, SELECTED_NODE_COLOR, CURRENT_NODE_COLOR
 
 
-def ser(obj):
-    if isinstance(obj, Node):
-        return obj.id
-    if isinstance(obj, Edge):
-        return obj.toNode
-    return obj.__dict__
-
-
 class DijkstraPseudoMapping:
     def __init__(self):
         self.animation = AnimationUpdate("Dijkstra.txt")
@@ -85,7 +77,7 @@ class DijkstraPseudoMapping:
     def ret(self, dist, prev):
         self.animation.addToUpdateQueue(23)
         self.animation.addToUpdateQueue(24)
-        self.animation.addToUpdateQueue(25, data=AnimationUpdate.getLineData(self.returnDataID, "Distance: {}, Previous: {}".format(dist, prev),""))
+        self.animation.addToUpdateQueue(25, data=AnimationUpdate.getLineData(self.returnDataID, "Distance: {}, Previous: {}".format(dist, prev), ""))
 
     def getUpdates(self):
         return self.animation.getFrames()

@@ -1,7 +1,7 @@
 import string
 
-from .DijkstraPseudoMapping import DijkstraPseudoMapping
-from .Graph import INF, Graph
+from Viz.algorithms.DijkstraPseudoMapping import DijkstraPseudoMapping
+from Viz.Graph.Graph import INF, Graph
 
 
 class Dijkstra:

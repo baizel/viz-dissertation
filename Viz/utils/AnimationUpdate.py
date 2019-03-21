@@ -1,8 +1,7 @@
-import json
 import string
 
 from Viz.Graph.DataSet import Node, Edge
-from Viz.pesudo_algorithms.algorithmExporter import Algorithm
+from Viz.algorithms.pesudo_algorithms.algorithmExporter import PesudoAlgorithm
 
 
 class AnimationUpdate:
@@ -25,7 +24,7 @@ class AnimationUpdate:
     def __init__(self, algorithmFile):
         self.frames = dict()
         self.frames["updates"] = []
-        self.lines = Algorithm(algorithmFile).getJsonAlgo()['lines']
+        self.lines = PesudoAlgorithm(algorithmFile).getJsonAlgo()['lines']
 
     def addToUpdateQueue(self, codeToLineNumber: int,
                          options: dict = None,  # Same as vis.js options used for update
