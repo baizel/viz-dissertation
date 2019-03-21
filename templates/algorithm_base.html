@@ -1,12 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-{# Remove Nav bar for this page #}
-{#{% block fixed_nav_bar_css %}#}
-{#{% endblock %}#}
-{##}
-{#{% block fixed_nav_bar_html %}#}
-{#{% endblock %}#}
-{#<script src=https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.4.0/cytoscape.min.js></script>#}
 
 {% block js %}
     <script src=https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js
@@ -113,11 +106,11 @@
                             <div class="col l12 center" id="animation-msg"><p>Select a source node to start an animation
                                 <p></div>
                             <div class="col l12 center ">
-                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="previousFrame()">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="previousFrame({{ apiAlgo }})">
                                     <i class="small material-icons"> navigate_before</i></a>
                             </div>
                             <div class="col l12 center ">
-                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="playAnimation()" id="play-btn">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="playAnimation({{ apiAlgo }})" id="play-btn">
                                     <i class="small material-icons">play_arrow</i></a>
                             </div>
                             <div class="col l12 center ">
@@ -125,7 +118,7 @@
                                     <i class="small material-icons">pause</i></a>
                             </div>
                             <div class="col l12 center ">
-                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="nextFrame()">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="nextFrame({{ apiAlgo }})">
                                     <i class="small material-icons">navigate_next</i></a>
                             </div>
                             <div class="col l12 center ">

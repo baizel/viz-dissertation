@@ -157,9 +157,9 @@ function animate(updates, lineNumber) {
         nodes.update({id: selectedNode.id, color: NODE_SELECTED_COLOUR});
     }
     edges.remove(previousAddedEdges);
-    previousAddedEdges = $.extend(true, [], updates.updates[lineNumber].edges);
+    previousAddedEdges = $.extend(true, [], updates[lineNumber].edges);
 
-    edges.update(updates.updates[lineNumber].edges);
+    edges.update(updates[lineNumber].edges);
     edges.update(previousColoredEdges);
     previousColoredEdges = [];
     for (let i of previousAddedEdges.slice()) {
@@ -169,31 +169,31 @@ function animate(updates, lineNumber) {
             previousColoredEdges.push(i);
         }
     }
-    if (updates.updates[lineNumber].nodes.length !== 0) {
+    if (updates[lineNumber].nodes.length !== 0) {
 
         for (let n = 0; n < previousAnimatedNodes.length; n++) {
             previousAnimatedNodes[n].color = NODE_COLOUR
         }
         nodes.update(previousAnimatedNodes);
-        previousAnimatedNodes = $.extend(true, [], updates.updates[lineNumber].nodes);
-        nodes.update(updates.updates[lineNumber].nodes);
+        previousAnimatedNodes = $.extend(true, [], updates[lineNumber].nodes);
+        nodes.update(updates[lineNumber].nodes);
     }
 
-    line = updates.updates[lineNumber].mapping;
+    line = updates[lineNumber].mapping;
     if (lineNumber > 0) {
-        prevLine = updates.updates[lineNumber - 1].mapping;
+        prevLine = updates[lineNumber - 1].mapping;
         $("#codeline-" + prevLine).css('background-color', '');
     }
-    if (lineNumber < updates.updates.length - 1) {
-        nextLine = updates.updates[lineNumber + 1].mapping;
+    if (lineNumber < updates.length - 1) {
+        nextLine = updates[lineNumber + 1].mapping;
         $("#codeline-" + nextLine).css('background-color', '');
     }
 
     codeLine = $("#codeline-" + line);
     codeLine.css('background-color', '#FFFF00');
-    $("#exp").text(updates.updates[lineNumber].explanation);
-    if (updates.updates[lineNumber].data != null) {
-        updateDataFromEvent = updates.updates[lineNumber].data;
+    $("#exp").text(updates[lineNumber].explanation);
+    if (updates[lineNumber].data != null) {
+        updateDataFromEvent = updates[lineNumber].data;
         console.log(updateDataFromEvent);
         spanTag = codeLine.children("span");
         spanTag.addClass(updateDataFromEvent.classID);
@@ -208,31 +208,31 @@ function animate(updates, lineNumber) {
 
 var animationInterval = null;
 
-function playAnimation() {
+function playAnimation(algo) {
     $("#play-btn").hide();
     $("#pause-btn").show();
-    animationInterval = setInterval(nextFrame, animationSpeed);
+    animationInterval = setInterval( function() {nextFrame(algo)}, animationSpeed);
 }
 
-function nextFrame() {
+function nextFrame(algo) {
     getUpdateFrames(function (updates) {
-        if (currentLine > updates.updates.length - 2) {
+        if (currentLine > updates.length - 2) {
             pauseAnimation();
         } else {
             currentLine++;
             animate(updates, currentLine);
         }
-    });
+    }, algo);
 }
 
-function previousFrame() {
+function previousFrame(algo) {
     getUpdateFrames(function (updates) {
         currentLine--;
         if (currentLine < 0) {
             currentLine = 0;
         }
         animate(updates, currentLine)
-    });
+    },algo);
 }
 
 function pauseAnimation() {
@@ -267,16 +267,16 @@ function resetLines() {
 
 var responseFrames = null;
 
-function getUpdateFrames(callback) {
+function getUpdateFrames(callback, algo) {
     if (responseFrames == null || dataChanged) {
         $.ajax({
-            url: "/api/",
+            url: "/api/"+algo+"/"+selectedNode.id,
             type: "get", //send it through get method
             data: {
-                "network": JSON.stringify(data), source: selectedNode.id
+                "network": JSON.stringify(data)
             },
             success: function (response) {
-                responseFrames = JSON.parse(response.updates);
+                responseFrames = response.updates;
                 callback(responseFrames);
                 dataChanged = false;
             },

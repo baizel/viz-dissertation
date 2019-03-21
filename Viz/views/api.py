@@ -18,9 +18,12 @@ def ser(obj):
     return obj.__dict__
 
 
-def index(request: WSGIRequest) -> HttpResponse:
+def index(request: WSGIRequest, algorithm, source) -> HttpResponse:
+    ret = {}
     network = json.loads(request.GET['network'])
-    source = json.loads(request.GET['source'])
-    g = Graph(network)
-    algo = Dijkstra(g, source)
-    return JsonResponse({"updates": json.dumps(algo.animationUpdates, default=ser)})
+    graph = Graph(network)
+
+    if algorithm == "dijkstra":
+        ret = Dijkstra(graph, source).animationUpdates
+
+    return JsonResponse(json.loads(json.dumps(ret, default=ser)))

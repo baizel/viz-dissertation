@@ -12,11 +12,15 @@ from Viz.utils.context import Context
 context: dict = dict()
 
 
-def index(request: WSGIRequest) -> HttpResponse:
+def index(request: WSGIRequest, algorithm) -> HttpResponse:
     cntx = Context()
-    algo = Algorithm("Dijkstra.txt")
     res = cntx.getContext()
-    res["jsonAlgo"] = json.dumps(algo.getJsonAlgo())
-    res["pageTitle"] = "Dijkstra Algorithm"
+    if algorithm == "dijkstra":
+        algo = Algorithm("Dijkstra.txt")
+        res["jsonAlgo"] = json.dumps(algo.getJsonAlgo())
+        res["pageTitle"] = "Dijkstra Algorithm"
+        res["apiAlgo"] = "'dijkstra'"
+    else:
+        return render_to_response("algorithm_not_supported.html")
 
     return render_to_response("algorithm_base.html", res)
