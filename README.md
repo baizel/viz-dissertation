@@ -6,4 +6,5 @@ can be accessed at
 https://viz.baizel.dev 
 
 Need to have 'dbpasswd' set as an environment variable. 
+
 Dbase: https://cloud.mongodb.com
