@@ -39,7 +39,7 @@ def index(request: WSGIRequest, algorithm, source=None) -> HttpResponse:
     if algorithm == "dijkstra":
         ret = Dijkstra(graph, source).animationUpdates
     elif algorithm == "ford":
-        BellmanFord(graph,source)
+        ret = BellmanFord(graph,source).animationUpdates
     elif algorithm == "floyd":
         pass
 

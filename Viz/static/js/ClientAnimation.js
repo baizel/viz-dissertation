@@ -191,18 +191,32 @@ function animate(updates, lineNumber) {
 
     codeLine = $("#codeline-" + line);
     codeLine.css('background-color', '#FFFF00');
+
     $("#exp").text(updates[lineNumber].explanation);
+
+    //update Data
     if (updates[lineNumber].data != null) {
         updateDataFromEvent = updates[lineNumber].data;
         console.log(updateDataFromEvent);
         spanTag = codeLine.children("span");
-        spanTag.addClass(updateDataFromEvent.classID);
-        if (updateDataFromEvent.tableExp != null) {
-            addToTable(updateDataFromEvent.classID + "raw", updateDataFromEvent.rawData, updateDataFromEvent.tableExp);
-            updateData(updateDataFromEvent.classID + "raw", updateDataFromEvent.rawData)
+        if (updateDataFromEvent.updateData.length > 0) {
+            for (let d of updateDataFromEvent.updateData) {
+                updateData(d.classID, d.rawData);
+                updateData(d.classID + "table", d.rawData); //update table data if it exists
+                if (d.isShownOnScreen) {
+                    spanTag.addClass(d.classID);
+                    let inlineExp = d.inlineExp != null ? d.inlineExp + ":" + d.rawData : d.rawData;
+                    console.log(d.classID);
+                    updateData(d.classID, inlineExp);
+                }
+            }
         }
-        let inlineExp = updateDataFromEvent.inlineExp != null ? updateDataFromEvent.inlineExp + ":" + updateDataFromEvent.rawData : "";
-        updateData(updateDataFromEvent.classID, inlineExp)
+        if (updateDataFromEvent.tableData.length > 0) {
+            for (let tableData of updateDataFromEvent.tableData) {
+                addToTable(tableData.classID + "table", tableData.rawData, tableData.tableExp);
+                updateData(tableData.classID + "table", tableData.rawData)
+            }
+        }
     }
 }
 
@@ -211,7 +225,9 @@ var animationInterval = null;
 function playAnimation(algo) {
     $("#play-btn").hide();
     $("#pause-btn").show();
-    animationInterval = setInterval( function() {nextFrame(algo)}, animationSpeed);
+    animationInterval = setInterval(function () {
+        nextFrame(algo)
+    }, animationSpeed);
 }
 
 function nextFrame(algo) {
@@ -232,7 +248,7 @@ function previousFrame(algo) {
             currentLine = 0;
         }
         animate(updates, currentLine)
-    },algo);
+    }, algo);
 }
 
 function pauseAnimation() {
@@ -270,7 +286,7 @@ var responseFrames = null;
 function getUpdateFrames(callback, algo) {
     if (responseFrames == null || dataChanged) {
         $.ajax({
-            url: "/api/"+algo+"/"+selectedNode.id,
+            url: "/api/" + algo + "/" + selectedNode.id,
             type: "get", //send it through get method
             data: {
                 "network": JSON.stringify(data)
