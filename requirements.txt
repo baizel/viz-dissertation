@@ -1,7 +1,7 @@
 certifi==2018.11.29
 chardet==3.0.4
 dataclasses==0.6
-Django==2.1.4
+Django>=2.1.6
 djangorestframework==3.9.1
 djongo==1.2.31
 dnspython==1.16.0
