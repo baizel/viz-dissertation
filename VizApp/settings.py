@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['viz.baizel.dev','viz-learn.herokuapp.com', 'vizapp.baizelmathe
 # Application definition
 
 INSTALLED_APPS = [
-    'scout_apm.django',
+    # 'scout_apm.django',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+if os.environ.get("RELEASE",False):
+    INSTALLED_APPS.append('scout_apm.django')
 
 #scout stuff
 SCOUT_NAME = "VizAppScout"

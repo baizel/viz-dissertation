@@ -16,23 +16,22 @@
         {% endif %}
     </div>
 </li>
+<div class="{{ primaryText }}">
+    <li><a class="{{ primaryText }}" href="/">Home</a></li>
+    <li><a class="{{ primaryText }}" href="/about">About</a></li>
+    <li><a class="{{ primaryText }}" href="/tutorial">Tutorial</a></li>
 
-<li><a href="/">Home</a></li>
-<li><a href="/about">About</a></li>
-<li><a href="/tutorial">Tutorial</a></li>
-
-<li>
-    <div class="divider"></div>
-</li>
-<li><a class="subheader">All Pairs Shortest Path</a></li>
-<li><a class="waves-effect" href="/algorithm/floyd">Floyd Warshall</a></li>
-<li>
-    <div class="divider"></div>
-</li>
-<li><a class="subheader">From source</a></li>
-<li><a class="waves-effect" href="/algorithm/dijkstra">Dijkstra</a></li>
-<li><a class="waves-effect" href="/algorithm/ford">Bellman Ford</a></li>
-
-
+    <li>
+        <div class="divider {{ primaryColour }}"></div>
+    </li>
+    <li><a class="subheader">All Pairs Shortest Path</a></li>
+    <li><a class="{{ primaryText }}" class="waves-effect" href="/algorithm/floyd">Floyd Warshall</a></li>
+    <li>
+        <div class="divider {{ primaryColour }}"></div>
+    </li>
+    <li><a class="subheader">From source</a></li>
+    <li><a class="waves-effect {{ primaryText }}" href="/algorithm/dijkstra">Dijkstra</a></li>
+    <li><a class="waves-effect {{ primaryText }}" href="/algorithm/ford">Bellman Ford</a></li>
+</div>
 
 
