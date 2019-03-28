@@ -1,5 +1,5 @@
 from Viz.Graph.DataSet import Node, Edge
-from Viz.utils.AnimationEngine import AnimationEngine, ExtraData
+from Viz.utils.AnimationEngine import AnimationEngine, ExtraData, HighlightEdges
 from Viz.utils.context import NEIGHBOUR_NODE_COLOR, SELECTED_NODE_COLOR, CURRENT_NODE_COLOR
 
 
@@ -21,8 +21,7 @@ class DijkstraPseudoMapping:
             self.minUID: "Node with the smallest distance from source",
             self.neighbourID: "Neighbour of <span class='data {}table'></>".format(self.minUID),  # Not clean but will do to show current node
         }
-
-        self.animationEdgeIDCounter = 0
+        self.edgeHighlighting = HighlightEdges()
 
     def initDistAndPrev(self, dist, prev):
         self.animation.addToUpdateQueue(6)
@@ -48,26 +47,10 @@ class DijkstraPseudoMapping:
             nodes += [{"id": i, "color": NEIGHBOUR_NODE_COLOR, "label": str(i)} for i in neighbour]
         self.animation.addToUpdateQueue(17, data=ExtraData.addSingleTableDataAndGet(self.neighbourID, neighbour, "Neighbour node(s)", self.displayNames[self.neighbourID]), nodes=nodes)
 
-    def findAltAndCmp(self, uDistance, vDistance, cost, sourceNode, destNode, previous, dijkSource, graph):
-        self.animationEdgeIDCounter += 1
-
-        edge = [{"id": "animation" + str(self.animationEdgeIDCounter), "from": sourceNode, "to": destNode, "label": "{} + {}".format(uDistance, cost), "color": {"color": SELECTED_NODE_COLOR}}]
-        base = sourceNode
-        pathNodes = [] if base is None else [sourceNode]
-        while base is not None and base != dijkSource.id:
-            base = previous[base]
-            if base is not None:
-                pathNodes.append(base)
-        pathEdges = []
-        if len(pathNodes) > 1:
-            for i in range(0, len(pathNodes) - 1):
-                edgeId = graph.getEdge(pathNodes[i + 1], pathNodes[i]).id
-                e = {"id": edgeId, "color": {"color": SELECTED_NODE_COLOR}, "isNew": False}
-                pathEdges.append(e)
-
-        edge += pathEdges
-        self.animation.addToUpdateQueue(18, data=ExtraData.addSingleTableDataAndGet(self.altAdditionID, "{} + {}".format(uDistance, cost)), edges=edge)
-        self.animation.addToUpdateQueue(19, data=ExtraData.addSingleTableDataAndGet(self.cmpCostID, "{} < {}".format(uDistance + cost, vDistance)))
+    def findAltAndCmp(self, distance, cost, u, v, previous, dijkSource, graph):
+        edge = self.edgeHighlighting.getEdges(distance, previous, u, v, cost, dijkSource, graph)
+        self.animation.addToUpdateQueue(18, data=ExtraData.addSingleTableDataAndGet(self.altAdditionID, "{} + {}".format(distance[u], cost)), edges=edge)
+        self.animation.addToUpdateQueue(19, data=ExtraData.addSingleTableDataAndGet(self.cmpCostID, "{} < {}".format(distance[u] + cost, distance[v])))
 
     def setDistAndPrevToAlt(self, dist, prev):
         self.animation.addToUpdateQueue(20, data=ExtraData.addSingleTableDataAndGet(self.distanceId, dist, "Distance", self.displayNames))

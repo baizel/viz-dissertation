@@ -2,6 +2,33 @@ import string
 
 from Viz.Graph.DataSet import Node, Edge
 from Viz.algorithms.pesudo_algorithms.algorithmExporter import PesudoAlgorithm
+from Viz.utils.context import SELECTED_NODE_COLOR
+
+
+class HighlightEdges:
+    def __init__(self):
+        self.animationEdgeIDCounter = 0
+
+    def getEdges(self, distance, previous, u, v, w, source, graph):
+        self.animationEdgeIDCounter += 1
+        edge = [{"id": "animation" + str(self.animationEdgeIDCounter), "from": u, "to": v, "label": "{} + {} ({}) < {}".format(
+            distance[u], w, distance[u] + w, distance[v]), "color": {"color": SELECTED_NODE_COLOR}}]
+
+        base = u
+        pathNodes = [] if base is None else [u]
+        while base is not None and base != source.id:
+            base = previous[base]
+            if base is not None:
+                pathNodes.append(base)
+        pathEdges = []
+        if len(pathNodes) > 1:
+            for i in range(0, len(pathNodes) - 1):
+                edgeId = graph.getEdge(pathNodes[i + 1], pathNodes[i]).id
+                e = {"id": edgeId, "color": {"color": SELECTED_NODE_COLOR}, "isNew": False}
+                pathEdges.append(e)
+
+        edge += pathEdges
+        return edge
 
 
 class ExtraData:
@@ -85,7 +112,6 @@ class AnimationEngine:
                          nodes: list = None,  # Same as vis.js nodes used for update
                          data: ExtraData = None,
                          overrideExplanation: string = None):
-
         # TODO implement overrideExplanation in client side
         update = {
             "mapping": codeToLineNumber,
