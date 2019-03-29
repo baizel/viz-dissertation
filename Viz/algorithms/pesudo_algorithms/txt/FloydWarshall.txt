@@ -1,11 +1,24 @@
-let dist be a |V| × |V| array of minimum distances initialized to ∞ (infinity)
-for each edge (u,v)
-   dist[u][v] ← w(u,v)  // the weight of the edge (u,v)
-for each vertex v
-   dist[v][v] ← 0
-for k from 1 to |V|
-   for i from 1 to |V|
-      for j from 1 to |V|
-         if dist[i][j] > dist[i][k] + dist[k][j]
-             dist[i][j] ← dist[i][k] + dist[k][j]
-         end if
+  <b>Algorithm:</b> Floyd-Warshall
+  <b>Inputs:</b> Graph(V,E)
+  <b>Variables:</b> distance: 2d array with shortest path for all pairs
+  <b>Return:</b> distance as a 2d array
+  <b>Begin</b>
+      <b>Let</b> distance <b>be sizeof<b>(V) * <b>sizeof</b>(V) array initialized <b>to</b> infinity
+
+      <b>for each</b> edge(u,v) <b>of</b> E <b>do:</b>
+          distance[u][v] = distanceBetween(u,v)
+      <b>done</b>
+     <b>for each</b> vertex v <b>of</b> V <b>do</b>:
+         distance[v][v] = 0
+     <b>done</b>
+     <b>for</b> i <b>from</b> 0 <b>to sizeof</b>(V) <b>do:</b>
+         <b>for</b> j <b>from</b> 0 <b>to sizeof</b>(V) <b>do:</b>
+             <b>for</b> k <b>from</b> 0 <b>to sizeof</b>(V) <b>do:</b>
+                 <b>if</b> distance[j][k] > distance[j][i] + distance[i][k]:
+                     distance[j][k] = distance[j][i] + distance[i][k]:
+                 <b>fi</b>
+             <b>done</b>
+         <b>done</b>
+     <b>done</b>
+     <b>return</b> distance[][]
+  <b>end</b>

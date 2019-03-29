@@ -6,6 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from Viz.Graph.DataSet import Node, Edge
 from Viz.algorithms.Dijkstra import Dijkstra
 from Viz.Graph.Graph import Graph
+from Viz.algorithms.Floyd import FloydWarshall
 from Viz.algorithms.Ford import BellmanFord
 
 context: dict = dict()
@@ -41,6 +42,7 @@ def index(request: WSGIRequest, algorithm, source=None) -> HttpResponse:
     elif algorithm == "ford":
         ret = BellmanFord(graph,source).animationUpdates
     elif algorithm == "floyd":
+        FloydWarshall(graph)
         pass
 
     return JsonResponse(json.loads(json.dumps(ret, default=ser)))
