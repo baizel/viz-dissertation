@@ -122,27 +122,30 @@ var selectedNode = null;
 var previousAnimatedNodes = [];
 var previousAddedEdges = [];
 var previousColoredEdges = [];
+var isSourceNeeded = false;
 
 network.on("selectNode", function (data) {
-    edges.remove(previousAddedEdges);
-    previousAddedEdges = [];
-    dataChanged = true;
-    let previousNode = null;
-    let update = [];
-    if (previousNodeId != null) {
-        previousNode = nodes.get(previousNodeId);
-        if (previousNode != null) {
-            previousNode.color = NODE_COLOUR;
-            update.push(previousNode);
+    if (isSourceNeeded) {
+        edges.remove(previousAddedEdges);
+        previousAddedEdges = [];
+        dataChanged = true;
+        let previousNode = null;
+        let update = [];
+        if (previousNodeId != null) {
+            previousNode = nodes.get(previousNodeId);
+            if (previousNode != null) {
+                previousNode.color = NODE_COLOUR;
+                update.push(previousNode);
+            }
         }
+        let sNode = nodes.get(data.nodes[0]);
+        previousNodeId = sNode.id;
+        sNode.color = NODE_SELECTED_COLOUR;
+        selectedNode = sNode;
+        update.push(sNode);
+        nodes.update(update);
+        updateAnimationControls();
     }
-    let sNode = nodes.get(data.nodes[0]);
-    previousNodeId = sNode.id;
-    sNode.color = NODE_SELECTED_COLOUR;
-    selectedNode = sNode;
-    update.push(sNode);
-    nodes.update(update);
-    updateAnimationControls();
 });
 
 function updateData(className, data) {
@@ -192,7 +195,7 @@ function animate(updates, lineNumber) {
     codeLine = $("#codeline-" + line);
     codeLine.css('background-color', '#FFFF00');
 
-    $("#exp").text(updates[lineNumber].explanation);
+    $("#exp").html(updates[lineNumber].explanation);
 
     //update Data
     if (updates[lineNumber].data != null) {
@@ -247,7 +250,8 @@ function previousFrame(algo) {
         if (currentLine < 0) {
             currentLine = 0;
         }
-        animate(updates, currentLine)
+        animate(updates, currentLine);
+        console.log(updates[currentLine]);
     }, algo);
 }
 
@@ -284,9 +288,13 @@ function resetLines() {
 var responseFrames = null;
 
 function getUpdateFrames(callback, algo) {
+    let nodeid = "";
+    if (selectedNode !== null){
+        nodeid = selectedNode.id
+    }
     if (responseFrames == null || dataChanged) {
         $.ajax({
-            url: "/api/" + algo + "/" + selectedNode.id,
+            url: "/api/" + algo + "/" + nodeid,
             type: "get", //send it through get method
             data: {
                 "network": JSON.stringify(data)
@@ -313,7 +321,7 @@ function updateAnimationTime(val) {
 }
 
 function updateAnimationControls() {
-    if (selectedNode == null) {
+    if (selectedNode == null && isSourceNeeded) {
         $("a.animation-controls").attr("disabled", true);
         document.getElementById("animationSpeed").disabled = true;
         $("#animation-msg").attr("hidden", false);

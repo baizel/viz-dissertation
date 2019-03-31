@@ -24,11 +24,11 @@ favicon_view = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
 
 urlpatterns = [
     re_path(r'^favicon\.ico$', favicon_view),
-    path('', homeView.index, name='index'),
-    path('tutorial/', homeView.index, name='index'),
-    path('about/', homeView.index, name='index'),
-    path('algorithm/<str:algorithm>/', algorithms.index, name='index'),
-    path('api/<str:algorithm>', api.index, name='api'),
-    path('api/<str:algorithm>/<int:source>', api.index, name='api'),
+    path('', homeView.index),
+    path('tutorial/', homeView.index),
+    path('about/', homeView.index),
+    path('algorithm/<str:algorithm>/', algorithms.index),
+    path('api/<str:algorithm>/', api.index),
+    path('api/<str:algorithm>/<int:source>', api.index),
     path('admin/', admin.site.urls),
 ]

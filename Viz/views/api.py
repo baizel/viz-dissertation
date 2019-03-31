@@ -33,16 +33,14 @@ def index(request: WSGIRequest, algorithm, source=None) -> HttpResponse:
 
     if algorithm != "floyd":
         if source is None:
-            err = JsonResponse({"Error": "No source for algorithm Dijkstra provided"})
+            err = JsonResponse({"Error": "No source for algorithm provided"})
             err.status_code = 404
             return err
-
     if algorithm == "dijkstra":
         ret = Dijkstra(graph, source).animationUpdates
     elif algorithm == "ford":
         ret = BellmanFord(graph,source).animationUpdates
     elif algorithm == "floyd":
-        FloydWarshall(graph)
-        pass
+        ret = FloydWarshall(graph).ree
 
     return JsonResponse(json.loads(json.dumps(ret, default=ser)))
