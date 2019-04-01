@@ -23,6 +23,7 @@ def index(request: WSGIRequest, algorithm) -> HttpResponse:
         algo = PesudoAlgorithm("FloydWarshall.txt")
         res["pageTitle"] = "Floyd-Warshall Algorithm"
         res["apiAlgo"] = "'floyd'"
+        res["isSourceNeeded"] = False
     elif algorithm == "ford":
         algo = PesudoAlgorithm("BellmanFord.txt")
         res["pageTitle"] = "Bellman Ford Algorithm"

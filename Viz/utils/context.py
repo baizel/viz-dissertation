@@ -33,6 +33,7 @@ class Context(metaclass=Singleton):
         self.__context["selectedNodeColor"] = SELECTED_NODE_COLOR
         self.__context["currentNodeColor"] = CURRENT_NODE_COLOR
         self.__context["neighbourNodeColor"] = NEIGHBOUR_NODE_COLOR
+        self.__context["isSourceNeeded"] = True
 
     def getContext(self) -> dict:
         """

@@ -3,16 +3,16 @@
   <b>Variables:</b> distance: 2d array with shortest path for all pairs
   <b>Return:</b> distance as a 2d array
   <b>Begin</b>
-      <b>Let</b> distance <b>be sizeof<b>(V) * <b>sizeof</b>(V) array initialized <b>to</b> infinity
+      <b>Let</b> distance <b>be sizeof<b>(V) * <b>sizeof</b>(V) array initialized <b>to</b> infinity //Create a Matrix with the size numberOfNodes * numberOfNodes
 
-      <b>for each</b> edge(u,v) <b>of</b> E <b>do:</b>
-          distance[u][v] = distanceBetween(u,v)
-      <b>done</b>
-     <b>for each</b> vertex v <b>of</b> V <b>do</b>:
-         distance[v][v] = 0
-     <b>done</b>
-     <b>for</b> i <b>from</b> 0 <b>to sizeof</b>(V) <b>do:</b>
-         <b>for</b> j <b>from</b> 0 <b>to sizeof</b>(V) <b>do:</b>
+      <b>for each</b> edge(u,v) <b>of</b> E <b>do:</b>                                              // Update the matrix with the known distances
+          distance[u][v] = distanceBetween(u,v)                                                     // Update the matrix with the known distances
+      <b>done</b>                                                                                   // Update the matrix with the known distances
+     <b>for each</b> vertex v <b>of</b> V <b>do</b>:                                                // Set the distance to 0 where the node is looking for itself
+         distance[v][v] = 0                                                                         // Set the distance to 0 where the node is looking for itself
+     <b>done</b>                                                                                    // Set the distance to 0 where the node is looking for itself
+     <b>for</b> i <b>from</b> 0 <b>to sizeof</b>(V) <b>do:</b>                                      // Iterate through all nodes
+         <b>for</b> j <b>from</b> 0 <b>to sizeof</b>(V) <b>do:</b>                                  // Iterate through all nodes
              <b>for</b> k <b>from</b> 0 <b>to sizeof</b>(V) <b>do:</b>
                  <b>if</b> distance[j][k] > distance[j][i] + distance[i][k]:
                      distance[j][k] = distance[j][i] + distance[i][k]:
@@ -20,5 +20,5 @@
              <b>done</b>
          <b>done</b>
      <b>done</b>
-     <b>return</b> distance[][]
+     <b>return</b> distance[][]                                                                     // Return the matrix
   <b>end</b>

@@ -122,7 +122,6 @@ var selectedNode = null;
 var previousAnimatedNodes = [];
 var previousAddedEdges = [];
 var previousColoredEdges = [];
-var isSourceNeeded = false;
 
 network.on("selectNode", function (data) {
     if (isSourceNeeded) {
@@ -313,11 +312,11 @@ function getUpdateFrames(callback, algo) {
     }
 }
 
-function updateAnimationTime(val) {
+function updateAnimationTime(val, algo) {
     pauseAnimation();
     animationSpeed = val;
     $("#animationSpeedLabel").text(animationSpeed.toString() + "ms");
-    playAnimation()
+    playAnimation(algo);
 }
 
 function updateAnimationControls() {
