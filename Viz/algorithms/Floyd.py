@@ -129,7 +129,6 @@ class FloydWarshall:
                   "<td><b>" + str(nodes) + "</b> </td>"
             for node, weight in listOfNodes.items():
                 color = ""
-                print(i, j, k, node, nodes)
                 if nodes == j:
                     if node == k:
                         color = CURRENT_NODE_COLOR_HTML
@@ -142,6 +141,5 @@ class FloydWarshall:
             row += "</tr>"
             table += row
         table += "</table>"
-        print(table)
         table = table.format(topRowNodes)
         return table

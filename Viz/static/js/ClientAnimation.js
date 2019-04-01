@@ -7,7 +7,6 @@ var EDGE_TYPE = "arrow";
 
 
 var numberOfNodes = 1;
-var numberOfEdges = 1;
 var dataChanged = false;
 
 var nodes = new vis.DataSet([
@@ -29,91 +28,115 @@ var edges = new vis.DataSet([
     {from: 5, to: 6, label: "11", distance: 11,},
     {from: 6, to: 7, label: "12", distance: 12,}
 ]);
+var network = null;
 
-// create a network
-var container = document.getElementById('network');
-
-// provide the data in the vis format
-var data = {
-    nodes: nodes,
-    edges: edges
-};
-// http://visjs.org/docs/network/#options
-var options = {
-    physics: {
-        enabled: true
-    },
-    height: '100%',
-    width: '100%',
-    nodes: {
-        shape: NODE_SHAPE,
-        color: NODE_COLOUR
-
-    },
-    edges: {
-        arrows: {
-            to: {enabled: true, scaleFactor: 1, type: EDGE_TYPE},
-            middle: {enabled: false, scaleFactor: 1, type: EDGE_TYPE},
-            from: {enabled: false, scaleFactor: 1, type: EDGE_TYPE}
+function initGraph(dataset) {
+    // create a network
+    var container = document.getElementById('network');
+    // http://visjs.org/docs/network/#options
+    var options = {
+        physics: {
+            enabled: true
         },
-        color: {
-            color: EDGE_COLOUR,
-            inherit: false,
-            opacity: 0.8
+        height: '100%',
+        width: '100%',
+        nodes: {
+            shape: NODE_SHAPE,
+            color: NODE_COLOUR
+
+        },
+        edges: {
+            arrows: {
+                to: {enabled: true, scaleFactor: 1, type: EDGE_TYPE},
+                middle: {enabled: false, scaleFactor: 1, type: EDGE_TYPE},
+                from: {enabled: false, scaleFactor: 1, type: EDGE_TYPE}
+            },
+            color: {
+                color: EDGE_COLOUR,
+                inherit: false,
+                opacity: 0.8
+            }
+        },
+        interaction: {hover: true, dragView: false, zoomView: false},
+        manipulation: {
+            enabled: true,
+            addNode: function (nodeData, callback) {
+                dataChanged = true;
+                resetLines();
+                numberOfNodes++;
+                nodeData.label = numberOfNodes.toString();
+                nodeData.id = numberOfNodes;
+                nodeData.shape = NODE_SHAPE;
+                //TODO: error Checking
+                callback(nodeData);
+            },
+            addEdge: function (edgeData, callback) {
+                dataChanged = true;
+                resetLines();
+                //TODO: fix modal
+                $('.modal').modal({
+                    'onCloseEnd': function () {
+                        edgeData.label = document.getElementById("dist").value;
+                        edgeData.distance = parseInt(document.getElementById("dist").value);
+                        callback(edgeData)
+                    }
+                });
+                $('.modal').modal('open');
+            },
+            editNode: function (nodeData, callback) {
+                dataChanged = true;
+                resetLines();
+                callback(nodeData)
+            },
+            editEdge: function (edgeData, callback) {
+                dataChanged = true;
+                resetLines();
+                callback(edgeData);
+            },
+            deleteNode: function (object, callback) {
+                previousNodeId = null;
+                selectedNode = null;
+                dataChanged = true;
+                resetLines();
+                callback(object)
+            },
+            deleteEdge: function (object, callback) {
+                dataChanged = true;
+                resetLines();
+                callback(object)
+            },
         }
-    },
-    interaction: {hover: true, dragView: false, zoomView: false},
-    manipulation: {
-        enabled: true,
-        addNode: function (nodeData, callback) {
-            dataChanged = true;
-            resetLines();
-            numberOfNodes++;
-            nodeData.label = numberOfNodes.toString();
-            nodeData.id = numberOfNodes;
-            nodeData.shape = NODE_SHAPE;
-            //TODO: error Checking
-            callback(nodeData);
-        },
-        addEdge: function (edgeData, callback) {
-            dataChanged = true;
-            resetLines();
-            //TODO: fix modal
-            $('.modal').modal({
-                'onCloseEnd': function () {
-                    edgeData.label = document.getElementById("dist").value;
-                    edgeData.distance = parseInt(document.getElementById("dist").value);
-                    callback(edgeData)
-                }
-            });
-            $('.modal').modal('open');
-        },
-        editNode: function (nodeData, callback) {
-            dataChanged = true;
-            resetLines();
-            callback(nodeData)
-        },
-        editEdge: function (edgeData, callback) {
-            dataChanged = true;
-            resetLines();
-            callback(edgeData);
-        },
-        deleteNode: function (object, callback) {
-            previousNodeId = null;
-            selectedNode = null;
-            dataChanged = true;
-            resetLines();
-            callback(object)
-        },
-        deleteEdge: function (object, callback) {
-            dataChanged = true;
-            resetLines();
-            callback(object)
-        },
-    }
-};
+    };
 
-var network = new vis.Network(container, data, options);
+    network = new vis.Network(container, dataset, options);
+    network.on("selectNode", function (data) {
+        if (isSourceNeeded) {
+            edges.remove(previousAddedEdges);
+            previousAddedEdges = [];
+            dataChanged = true;
+            let previousNode = null;
+            let update = [];
+            if (previousNodeId != null) {
+                previousNode = nodes.get(previousNodeId);
+                if (previousNode != null) {
+                    previousNode.color = NODE_COLOUR;
+                    update.push(previousNode);
+                }
+            }
+            let sNode = nodes.get(data.nodes[0]);
+            previousNodeId = sNode.id;
+            sNode.color = NODE_SELECTED_COLOUR;
+            selectedNode = sNode;
+            update.push(sNode);
+            nodes.update(update);
+            updateAnimationControls();
+        }
+    });
+    network.setOptions(options);
+
+}
+
+var data = null;
 var currentLine = -1; // -1 to offset the first increment
 var animationSpeed = 1000; //In ms
 var listOfDataClasses = [];
@@ -123,29 +146,6 @@ var previousAnimatedNodes = [];
 var previousAddedEdges = [];
 var previousColoredEdges = [];
 
-network.on("selectNode", function (data) {
-    if (isSourceNeeded) {
-        edges.remove(previousAddedEdges);
-        previousAddedEdges = [];
-        dataChanged = true;
-        let previousNode = null;
-        let update = [];
-        if (previousNodeId != null) {
-            previousNode = nodes.get(previousNodeId);
-            if (previousNode != null) {
-                previousNode.color = NODE_COLOUR;
-                update.push(previousNode);
-            }
-        }
-        let sNode = nodes.get(data.nodes[0]);
-        previousNodeId = sNode.id;
-        sNode.color = NODE_SELECTED_COLOUR;
-        selectedNode = sNode;
-        update.push(sNode);
-        nodes.update(update);
-        updateAnimationControls();
-    }
-});
 
 function updateData(className, data) {
     listOfDataClasses.push(className);
@@ -199,7 +199,6 @@ function animate(updates, lineNumber) {
     //update Data
     if (updates[lineNumber].data != null) {
         updateDataFromEvent = updates[lineNumber].data;
-        console.log(updateDataFromEvent);
         spanTag = codeLine.children("span");
         if (updateDataFromEvent.updateData.length > 0) {
             for (let d of updateDataFromEvent.updateData) {
@@ -208,7 +207,6 @@ function animate(updates, lineNumber) {
                 if (d.isShownOnScreen) {
                     spanTag.addClass(d.classID);
                     let inlineExp = d.inlineExp != null ? d.inlineExp + ":" + d.rawData : d.rawData;
-                    console.log(d.classID);
                     updateData(d.classID, inlineExp);
                 }
             }
@@ -250,7 +248,6 @@ function previousFrame(algo) {
             currentLine = 0;
         }
         animate(updates, currentLine);
-        console.log(updates[currentLine]);
     }, algo);
 }
 
@@ -288,7 +285,7 @@ var responseFrames = null;
 
 function getUpdateFrames(callback, algo) {
     let nodeid = "";
-    if (selectedNode !== null){
+    if (selectedNode !== null) {
         nodeid = selectedNode.id
     }
     if (responseFrames == null || dataChanged) {
@@ -341,8 +338,27 @@ function addToTable(dataClass, value, displayName) {
 
 ////////////////////////////////////////////////////// Init ////////////////////////////////////////////////////
 $(document).ready(function () {
+    $.ajax({
+        url: "/api/graph/random",
+        type: "get", //send it through get method
+        success: function (response) {
+            data = {
+                nodes: new vis.DataSet(response.nodes),
+                edges: new vis.DataSet(response.edges)
+            };
+            nodes = data.nodes;
+            edges = data.edges;
+            initGraph(data);
+        },
+        error: function (xhr) {
+            data = {
+                nodes: nodes,
+                edges: edges
+            };
+            initGraph(data);
+        }
+    });
     $("#pause-btn").hide();
-    network.setOptions(options);
 
     for (i = 0; i < algo["lines"].length; i++) {
         $("#generatedCode").append("<code id=codeline-" + i + ">" + i + algo["lines"][i]["line"] + "</code>")

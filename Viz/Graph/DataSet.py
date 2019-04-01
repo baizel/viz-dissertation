@@ -9,7 +9,7 @@ class Options:
 
 class Node:
     def __init__(self, nodeId: string, label: string, color: string, edges: List['Edge'] = None, options: Options = None):
-        self.__id:string = nodeId
+        self.__id: string = nodeId
         self.__neighbourEdge = edges if edges is not None else []
         self.__label = label
         self.__color = color
@@ -71,16 +71,17 @@ class Edge:
     def __str__(self):
         return "from {} to {} dist {} label {}".format(self.fromNode, self.toNode, self.distance, self.label)
 
-    #
-    # @classmethod
-    # def fromRaw(cls, data: dict) -> List['Edge']:
-    #     rt = []
-    #     for edges in data["edges"]["_data"]:
-    #         edgeData = data["edges"]["_data"][edges]
-    #         fromNode = data.get("nodes").get("_data").get(str(edgeData.get("from")))
-    #         toNode = data.get("nodes").get("_data").get(str(edgeData.get("to")))
-    #         edge = Edge(Node(fromNode.get("id"), fromNode.get("label")), Node(toNode.get("id"), toNode.get("label")), int(edgeData.get("distance")), edgeData.get("label"))
-    #         rt.append(edge)
-    #     return rt
+    def __contains__(self, item):
+        ret = False
+        if isinstance(item, list):
+            for i in item:
+                ret += i.get("from", None) == self.fromNode and i.get("to", None) == self.toNode
+            return ret
+        return item in self
+
+    def getJson(self):
+        """ Only used for to send edge data to creat random graph """
+        return {"from": self.fromNode, "to": self.toNode, "label": str(self.distance), "distance": self.distance}
+
     def __repr__(self):
         return self.__str__()

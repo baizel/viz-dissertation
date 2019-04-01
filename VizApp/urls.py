@@ -30,5 +30,7 @@ urlpatterns = [
     path('algorithm/<str:algorithm>/', algorithms.index),
     path('api/<str:algorithm>/', api.index),
     path('api/<str:algorithm>/<int:source>', api.index),
+    path('api/graph/random', api.randomGraph),
+    path('api/graph/random/<int:numberOfNodes>', api.randomGraph),
     path('admin/', admin.site.urls),
 ]
