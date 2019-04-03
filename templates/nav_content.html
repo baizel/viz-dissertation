@@ -1,22 +1,25 @@
+{% load socialaccount %}
+{% load static %}
 <li>
-    <div class="user-view">
-        <div class="background">
-            <img src="https://picsum.photos/301/201">
-        </div>
-        {% if userName %}
-            <a href="#user"><img class="circle" src="https://picsum.photos/100"></a>
-            <a href="#name"><span class="white-text name">{{ user }}</span></a>
-            {% if email %}
-                <a href="#email"><span class="white-text email">{{ email }}</span></a>
+    <div class="user-view center">
+        {% if user.is_authenticated %}
+            {% if not user.socialaccount_set.all.0.get_avatar_url %}
+                <a href="#user"><img class="circle" src="{% static 'images/default_profile.jpeg' %}" style="display: block;margin-left: auto;margin-right: auto;"></a>
+            {% else %}
+                <a href="#user"><img class="circle" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="display: block;margin-left: auto;margin-right: auto;"></a>
+
             {% endif %}
+            <a href="#name"><span class="black-text name">{{ user.first_name|title }}</span></a>
+            <a href="#email"><span class="black-text email">{{ user.email }}</span></a>
         {% else %}
-            <a href="#user"><img class="circle" src="https://picsum.photos/100"></a>
-            <a href="#name"><span class="white-text name">Anon</span></a>
-            <a href="#email"><span class="white-text email"></span></a>
+            <a href="#user"><img class="circle" src="{% static 'images/default_profile.jpeg' %}" style="display: block;margin-left: auto;margin-right: auto;"></a>
+            <a href="#name"><span class="black-text name">Anon</span></a>
         {% endif %}
     </div>
 </li>
-
+<li>
+    <div class="divider"></div>
+</li>
 <li><a href="/">Home</a></li>
 <li><a href="/about">About</a></li>
 <li><a href="/tutorial">Tutorial</a></li>
@@ -32,7 +35,33 @@
 <li><a class="subheader">From source</a></li>
 <li><a class="waves-effect" href="/algorithm/dijkstra">Dijkstra</a></li>
 <li><a class="waves-effect" href="/algorithm/ford">Bellman Ford</a></li>
+<li>
+    <div class="divider"></div>
+</li>
+<li><a class="subheader">User</a></li>
+{% if user.is_authenticated %}
+    <li><a href="{% url 'account_logout' %}">Log out</a>
+        {% else %}
+{#        Dissable this for now as custom ui needs to be updated #}
+{#    <li><a class="waves-effect" href="{% url 'account_login' %}">Log In </a></li>#}
+{#    <li><a href="{% url 'account_signup' %}">Sign Up</a></li>#}
+    <li>
+        <a href="{% provider_login_url 'google' %}">
+            <img class="icon" src="https://img.icons8.com/color/24/000000/google-logo.png" style="vertical-align: middle;">
+            <span style="padding-left: 2px">Log In With Google</span>
+        </a>
+    </li>
 
 
-
-
+{% endif %}
+<li>
+    <div class="divider"></div>
+</li>
+<div class="sidenav-footer">
+    <li>
+        <a class="waves-effect" href="https://www.github.com/baizel/dissertation">
+            <img class="icon" src="{% static 'images/github-circle.png' %}" alt="GitHub" style="vertical-align: middle;"/>
+            <span style="padding-left: 2px">Source code on GitHub</span>
+        </a>
+    </li>
+</div>
