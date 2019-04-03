@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'Viz.apps.VizConfig',
+    'Viz',
     'users',
 ]
 AUTH_USER_MODEL = 'users.CustomUser'
