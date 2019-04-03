@@ -1,16 +1,8 @@
-certifi==2018.11.29
-chardet==3.0.4
-dataclasses==0.6
 Django>=2.1.6
-djangorestframework==3.9.1
 djongo==1.2.31
 dnspython==1.16.0
 dnspython3==1.15.0
-idna==2.8
-psutil==5.5.1
 pymongo==3.7.2
-pytz==2018.7
-requests==2.21.0
 scout-apm==2.0.2
 sqlparse==0.2.4
 django-allauth==0.39.1
