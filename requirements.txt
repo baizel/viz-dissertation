@@ -13,3 +13,4 @@ pytz==2018.7
 requests==2.21.0
 scout-apm==2.0.2
 sqlparse==0.2.4
+django-allauth==0.39.1
