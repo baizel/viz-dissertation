@@ -1,5 +1,5 @@
 #!/bin/bash
 
-./manage.py makemigrations VizApp
-./manage.py migrate
+python manage.py makemigrations --no-input
+python manage.py migrate --no-input
 
