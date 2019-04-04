@@ -25,27 +25,15 @@ class EdgeClass:
 
 def ser(obj):
     if isinstance(obj, Node):
-        return obj.id
-    if isinstance(obj, EdgeClass):
-        return obj.toNode
+        return obj.getJson()
+    if isinstance(obj, Edge):
+        return obj.getJson()
     return obj.__dict__
 
 
 def randomGraph(request: WSGIRequest, numberOfNodes=8):
-    nodes = []
-    edges = []
-    for i in range(1, numberOfNodes + 1):
-        n = {"id": i, "label": str(i)}
-        nodes.append(n)
-    for i in range(1, numberOfNodes * 2):  # Just try to add much edges as it can maybe add an api end point
-        dist = random.randrange(1, 50)
-        fromNode = random.randrange(1, numberOfNodes + 1)
-        toNode = random.randrange(1, numberOfNodes + 1)
-
-        e = Edge(None, fromNode, toNode, dist, str(dist))
-        if edges not in e and toNode != fromNode:  # Weird order of 'edges not in e' because code when executed needs to be '!e.__contains__(edges)'  instead of edges.__contains__(e)
-            edges.append(e.getJson())
-    err = JsonResponse({"nodes": nodes, "edges": edges})
+    ret = Graph.generateRandomGraph(numberOfNodes).getJavaScriptData()
+    err = JsonResponse(json.loads(json.dumps(ret, default=ser)))
     err.status_code = 200
     return err
 

@@ -18,14 +18,14 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.generic import RedirectView
 
-from Viz.views import homeView, algorithms, api
+from Viz.views import homeView, algorithms, api, tutorial
 
 favicon_view = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
 
 urlpatterns = [
     re_path(r'^favicon\.ico$', favicon_view),
     path('', homeView.HomePageView.as_view(), name="home"),
-    path('tutorial/', homeView.HomePageView.as_view()),
+    path('tutorial/', tutorial.view),
     path('about/', homeView.HomePageView.as_view()),
     path('algorithm/<str:algorithm>/', algorithms.AlgorithmView.as_view()),
     path('api/<str:algorithm>/', api.index),

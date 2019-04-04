@@ -15,6 +15,8 @@ class Node:
         self.__color = color
         self.__options = options
 
+    def getJson(self):
+        return {"id":self.__id,"label":self.__label}
     @property
     def id(self):
         return self.__id
@@ -73,15 +75,16 @@ class Edge:
 
     def __contains__(self, item):
         ret = False
-        if isinstance(item, list):
-            for i in item:
+        if isinstance(item, dict):
+            for j in item:
+                i = item[j]
                 ret += i.get("from", None) == self.fromNode and i.get("to", None) == self.toNode
             return ret
         return item in self
 
     def getJson(self):
         """ Only used for to send edge data to creat random graph """
-        return {"from": self.fromNode, "to": self.toNode, "label": str(self.distance), "distance": self.distance}
+        return {"id": self.id, "from": self.fromNode, "to": self.toNode, "label": str(self.distance), "distance": self.distance}
 
     def __repr__(self):
         return self.__str__()

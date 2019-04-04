@@ -94,13 +94,11 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'VizApp',
-        'HOST': 'mongodb+srv://vizapp:XypWofo1JMJo0kVo@dev-svfta.mongodb.net/test?retryWrites=true'.format(
-            (os.environ['dbpasswd']))
+        'NAME': '{}'.format(os.environ['dbname']),
+        'HOST': '{}'.format((os.environ['dbhost']))
     }
 
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -146,3 +144,4 @@ AUTHENTICATION_BACKENDS = (
 SITE_ID = 1
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_LOGOUT_ON_GET = True
