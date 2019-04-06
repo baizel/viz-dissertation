@@ -23,9 +23,10 @@ def view(request):
     quiz = QuizEngine()
     graph = quiz.graph
     algo = quiz.getPesudoJSONAlgorithm()
+    questions = quiz.generateQuestions(6)
     return render(request, "tutorial.html",
                   context={"test": json.dumps(graph.getJavaScriptData(), default=customSerializer),
-                           "jsonAlgo": json.dumps(algo), "preface": quiz.preface, "questionsjs": json.dumps(quiz.generateQuestions(6)),"questions": quiz.generateQuestions(6)})
+                           "jsonAlgo": json.dumps(algo), "preface": quiz.preface, "questionsjs": json.dumps(questions), "questions": questions})
 
 
 class QuizEngine:
@@ -48,7 +49,6 @@ class QuizEngine:
                        '''.format(self.sourceNode)
 
         self.__questionGenerators = [self.generateDistanceOfRandomNodeQuestion, self.generateCurrentNodeQuestion, self.generateNeighbourQuestions]
-        self.generateQuestions(10)
 
     def generateQuestions(self, numberOfQs):
         questions = []
@@ -56,7 +56,7 @@ class QuizEngine:
             qsGen = secrets.choice(self.__questionGenerators)
             qs = qsGen()
             questions.append(qs)
-            print(qs)
+            print("reeeee", qs, i)
         return questions
 
     def __populateStates(self):
@@ -80,7 +80,7 @@ class QuizEngine:
         ansIndex = iteration * 2
         ans = list(self.__nodeStateOrder[ansIndex].values())[0][0]['id']
         options = [i for i in range(1, self.__maxNodes + 1)]
-        return {"qs": baseQuestion, "ans": ans, "choices": options, "isMultipleChoice": False}
+        return {"qs": baseQuestion, "ans": [ans], "choices": options, "isMultipleChoice": False}
 
     def generateNeighbourQuestions(self):
         iteration = random.randint(0, self.__maxNodes - 1)
@@ -100,14 +100,14 @@ class QuizEngine:
     def generateDistanceOfRandomNodeQuestion(self):
         iteration = random.randint(1, self.__maxNodes - 1)
         randomNode = random.randint(1, self.__maxNodes)
-        question = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24),whats the distance for node {}?".format(ordinal(iteration), randomNode)
+        question = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24), whats the distance for node {}?".format(ordinal(iteration), randomNode)
         ans = self.__getNodeDistanceAtState(self.__distanceState, iteration)[randomNode]
         options = [str(random.randint(0, 50)) for _ in range(4)]
         options.append(str(ans))
         if str(ans) != self.INF_OPTIONS:
             options.append(self.INF_OPTIONS)
         random.shuffle(options)
-        return {"qs": question, "ans": ans, "choices": options, "isMultipleChoice": False}
+        return {"qs": question, "ans": [ans], "choices": options, "isMultipleChoice": False}
 
     def getPesudoJSONAlgorithm(self):
         return self.__animationEngine.pesudoAlgorithm.getJsonAlgo()
