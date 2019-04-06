@@ -1,8 +1,128 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block js %}
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js
+            xmlns="http://www.w3.org/1999/html"></script>
+    <script>
+        var algo = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
+        var questions = JSON.parse('{{ questionsjs|safe|escapejs  }}');
+        $(document).ready(function () {
+            var NODE_COLOUR = "#64b5f6";
+            var NODE_SELECTED_COLOUR = " #f44336";
+            var NODE_SHAPE = "circle";
+
+            var EDGE_COLOUR = "#2196f3";
+            var EDGE_TYPE = "arrow";
+
+            var data = {{ test|safe }};
+            // create a network
+            var container = document.getElementById('network');
+            // http://visjs.org/docs/network/#options
+            var options = {
+                physics: {
+                    enabled: true
+                },
+                height: '100%',
+                width: '100%',
+                nodes: {
+                    shape: NODE_SHAPE,
+                    color: NODE_COLOUR
+
+                },
+                edges: {
+                    arrows: {
+                        to: {enabled: true, scaleFactor: 1, type: EDGE_TYPE},
+                        middle: {enabled: false, scaleFactor: 1, type: EDGE_TYPE},
+                        from: {enabled: false, scaleFactor: 1, type: EDGE_TYPE}
+                    },
+                    color: {
+                        color: EDGE_COLOUR,
+                        inherit: false,
+                        opacity: 0.8
+                    }
+                },
+                interaction: {hover: true, dragView: false, zoomView: false},
+                manipulation: {
+                    enabled: false,
+                }
+            };
+
+            network = new vis.Network(container, data, options);
+
+
+            for (i = 0; i < algo["lines"].length; i++) {
+                $("#generatedCode").append("<code id=codeline-" + i + ">" + i + algo["lines"][i]["line"] + "</code>")
+            }
+
+            let minHeight = 750;
+            if ($(".codeGen").height() > minHeight) {
+                minHeight = $(".codeGen").height()
+            }
+            $(".minHeight").css("height", minHeight);
+            $(".network").css("height", minHeight);
+        });
+    </script>
+
+
+
+{% endblock %}
+{% block css %}
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"/>
+    <style type="text/css">
+        #network {
+            width: 100%;
+            height: 693px;
+            border: 0px solid lightgray;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-    <div class="container">
     <h1>Tutorials</h1>
+
+    <div class="row" style=" margin-bottom: 0">
+        <div class="col l12 center">
+            <h4>{{ pageTitle }}</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col l6 codeGen">
+            <!-- Pesudo Code injected by JS -->
+            <pre>
+<code id="generatedCode">
+</code>
+            </pre>
+        </div>
+        <div class="col l6 minHeight">
+            <div id="network"></div>
+        </div>
+        <div class="col s12">
+            <div class="container">
+                <h2>Questions</h2>
+                <p id="preface">{{ preface|safe }}</p>
+                <div id="questions">
+                    <form class="col s12">
+                        {% for i in questions %}
+                            <div class="input-field col s12">
+                                <p>{{ forloop.counter }}) {{ i.qs }}</p>
+                                {% for j in i.choices %}
+                                    <p>
+                                        <label>
+                                            <input name="group{{ forloop.parentloop.counter }}" type="{{ i.isMultipleChoice|yesno:"checkbox,radio" }}"/>
+                                            <span>{{ j }}</span>
+                                        </label>
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

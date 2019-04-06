@@ -104,7 +104,10 @@ class AnimationEngine:
     def __init__(self, algorithmFile):
         self.frames = dict()
         self.frames["updates"] = []
-        self.lines = PesudoAlgorithm(algorithmFile).getJsonAlgo()['lines']
+        self.pesudoAlgorithm = PesudoAlgorithm(algorithmFile)
+        self.lines = self.pesudoAlgorithm.getJsonAlgo()['lines']
+        self.nodeOrder = []
+        self.edgeOrder = []
 
     def addToUpdateQueue(self, codeToLineNumber: int,
                          options: dict = None,  # Same as vis.js options used for update
@@ -112,7 +115,10 @@ class AnimationEngine:
                          nodes: list = None,  # Same as vis.js nodes used for update
                          data: ExtraData = None,
                          overrideExplanation: string = None):
-        # TODO implement overrideExplanation in client side
+        if nodes is not None and len(nodes) > 0:
+            self.nodeOrder.append({codeToLineNumber: nodes})
+        if edges is not None and len(edges) > 0:
+            self.edgeOrder.append({codeToLineNumber: edges})
         update = {
             "mapping": codeToLineNumber,
             "explanation": self.lines[codeToLineNumber].get("exp", "") if overrideExplanation is None else overrideExplanation,

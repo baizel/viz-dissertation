@@ -1,3 +1,5 @@
+from Viz.Graph.DataSet import Node, Edge
+
 SELECTED_NODE_COLOR = "#f44336"
 CURRENT_NODE_COLOR = "#ffeb3b"
 NEIGHBOUR_NODE_COLOR = "#ce93d8"
@@ -5,6 +7,15 @@ NEIGHBOUR_NODE_COLOR = "#ce93d8"
 SELECTED_NODE_COLOR_HTML = "red lighten-2"
 CURRENT_NODE_COLOR_HTML = "yellow lighten-1"
 NEIGHBOUR_NODE_COLOR_HTML = "purple lighten-3"
+
+
+def customSerializer(obj):
+    if isinstance(obj, Node):
+        return obj.getJson()
+    if isinstance(obj, Edge):
+        return obj.getJson()
+    return obj.__dict__
+
 
 class Singleton(type):
     """

@@ -1,14 +1,13 @@
 import json
-import random
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse, JsonResponse
 
-from Viz.Graph.DataSet import Node, Edge
 from Viz.algorithms.Dijkstra import Dijkstra
 from Viz.Graph.Graph import Graph
 from Viz.algorithms.Floyd import FloydWarshall
 from Viz.algorithms.Ford import BellmanFord
+from Viz.utils.context import customSerializer
 
 context: dict = dict()
 
@@ -23,17 +22,9 @@ class EdgeClass:
         return {"from": self.fromNode, "to": self.toNode, "label": str(self.distance), "distance": self.distance}
 
 
-def ser(obj):
-    if isinstance(obj, Node):
-        return obj.getJson()
-    if isinstance(obj, Edge):
-        return obj.getJson()
-    return obj.__dict__
-
-
-def randomGraph(request: WSGIRequest, numberOfNodes=8):
+def randomGraph(request: WSGIRequest, numberOfNodes=7):
     ret = Graph.generateRandomGraph(numberOfNodes).getJavaScriptData()
-    err = JsonResponse(json.loads(json.dumps(ret, default=ser)))
+    err = JsonResponse(json.loads(json.dumps(ret, default=customSerializer)))
     err.status_code = 200
     return err
 
@@ -61,4 +52,4 @@ def index(request: WSGIRequest, algorithm, source=None) -> HttpResponse:
     elif algorithm == "floyd":
         ret = FloydWarshall(graph).ree
 
-    return JsonResponse(json.loads(json.dumps(ret, default=ser)))
+    return JsonResponse(json.loads(json.dumps(ret, default=customSerializer)))

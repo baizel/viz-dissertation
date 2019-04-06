@@ -1,13 +1,14 @@
 from django.db import models
 
 
-# class BookManager(models.Manager):
-#     def createBook(self, title):
-#         book = self.create(title=title)
+# class MultipleChoiceQuestionManager(models.Manager):
+#     def createQs(self, question, choices, answer):
+#         qs = self.create(question=question, choices=choices, answer=answer)
 #         # do something with the book
-#         return book
+#         return qs
 #
 #
-# class Book(models.Model):
-#     title = models.CharField(max_length=100)
-#     objects = BookManager()
+# class MultipleChoiceQuestion(models.Model):
+#     question = models.CharField(max_length=250)
+#
+#     objects = MultipleChoiceQuestionManager()

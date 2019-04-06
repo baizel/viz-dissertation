@@ -28,13 +28,15 @@ class Graph:
         return {"nodes": self.nodes, "edges": self.edges}
 
     @classmethod
-    def generateRandomGraph(cls, numberOfNodes):
+    def generateRandomGraph(cls, numberOfNodes, numberOfEdges = None):
+        if numberOfEdges is None:
+            numberOfEdges = numberOfNodes * 2 # Just try to add much edges as it can for now, maybe add an api end point?
         nodes = {}
         edges = {}
         for i in range(1, numberOfNodes + 1):
             n = {"id": i, "label": str(i)}
             nodes[str(i)] = n
-        for i in range(1, numberOfNodes * 2):  # Just try to add much edges as it can maybe add an api end point
+        for i in range(1, numberOfEdges):
             dist = random.randrange(1, 50)
             fromNode = random.randrange(1, numberOfNodes + 1)
             toNode = random.randrange(1, numberOfNodes + 1)

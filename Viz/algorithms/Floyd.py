@@ -9,7 +9,7 @@ from Viz.utils.context import CURRENT_NODE_COLOR_HTML, SELECTED_NODE_COLOR_HTML,
 
 class Mapping:
     def __init__(self):
-        self.__animationEngine = AnimationEngine("FloydWarshall.txt")
+        self.animationEngine = AnimationEngine("FloydWarshall.txt")
         self.tableMatrixID = "TableMatrixID"
         self.tableMatrixLabel = "Distance Matrix"
         self.forLoopI = "iForLoopId"
@@ -17,44 +17,44 @@ class Mapping:
         self.forLoopK = "kForLoopId"
 
     def setToInf(self, htmlTable):
-        self.__animationEngine.addToUpdateQueue(5, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
+        self.animationEngine.addToUpdateQueue(5, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
 
     def setDistances(self, htmlTable):
-        self.__animationEngine.addToUpdateQueue(7)
-        self.__animationEngine.addToUpdateQueue(8, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
+        self.animationEngine.addToUpdateQueue(7)
+        self.animationEngine.addToUpdateQueue(8, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
 
     def setToZero(self, htmlTable):
-        self.__animationEngine.addToUpdateQueue(10)
-        self.__animationEngine.addToUpdateQueue(11, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
+        self.animationEngine.addToUpdateQueue(10)
+        self.animationEngine.addToUpdateQueue(11, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
 
     def iLoop(self, i):
         nodes = [{"id": i.id, "color": NEIGHBOUR_NODE_COLOR}]
-        self.__animationEngine.addToUpdateQueue(13, data=ExtraData.addSingleTableDataAndGet(self.forLoopI, i, inlineExp="i ="), nodes=nodes)
+        self.animationEngine.addToUpdateQueue(13, data=ExtraData.addSingleTableDataAndGet(self.forLoopI, i, inlineExp="i ="), nodes=nodes)
 
     def jLoop(self, j):
         nodes = [{"id": j.id, "color": SELECTED_NODE_COLOR}]
-        self.__animationEngine.addToUpdateQueue(14, data=ExtraData.addSingleTableDataAndGet(self.forLoopJ, j, inlineExp="j ="), nodes=nodes)
+        self.animationEngine.addToUpdateQueue(14, data=ExtraData.addSingleTableDataAndGet(self.forLoopJ, j, inlineExp="j ="), nodes=nodes)
 
     def kLoop(self, i, j, k, distance, htmlTable):
         nodes = [{"id": k.id, "color": CURRENT_NODE_COLOR}, {"id": j.id, "color": SELECTED_NODE_COLOR}, {"id": i.id, "color": NEIGHBOUR_NODE_COLOR}]
         data = ExtraData(self.forLoopK, k, inlineExp="k =", isShownOnScreen=True)
         data.addToTable(self.tableMatrixID, self.tableMatrixLabel, htmlTable)
         exp = self.__createExp(i, j, k, distance)
-        self.__animationEngine.addToUpdateQueue(15, data=data, nodes=nodes, overrideExplanation=exp)
-        self.__animationEngine.addToUpdateQueue(16,overrideExplanation=exp)
+        self.animationEngine.addToUpdateQueue(15, data=data, nodes=nodes, overrideExplanation=exp)
+        self.animationEngine.addToUpdateQueue(16, overrideExplanation=exp)
 
     def assignDistance(self, i, j, k, distance, htmlTable):
         exp = self.__createExp(i, j, k, distance)
-        self.__animationEngine.addToUpdateQueue(17, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False),
-                                                overrideExplanation=exp)
-        self.__animationEngine.addToUpdateQueue(18, overrideExplanation=exp)
+        self.animationEngine.addToUpdateQueue(17, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False),
+                                              overrideExplanation=exp)
+        self.animationEngine.addToUpdateQueue(18, overrideExplanation=exp)
 
     def ret(self):
-        self.__animationEngine.addToUpdateQueue(19)
-        self.__animationEngine.addToUpdateQueue(20)
-        self.__animationEngine.addToUpdateQueue(21)
-        self.__animationEngine.addToUpdateQueue(22)
-        self.__animationEngine.addToUpdateQueue(23)
+        self.animationEngine.addToUpdateQueue(19)
+        self.animationEngine.addToUpdateQueue(20)
+        self.animationEngine.addToUpdateQueue(21)
+        self.animationEngine.addToUpdateQueue(22)
+        self.animationEngine.addToUpdateQueue(23)
 
     def __createExp(self, i, j, k, distance):
         exp = "The distance from node {}<code>(j)</code> to node <code>{}(i)</code> is <code>{} <span class='{}'>(distance[j][i])</span></code></br>".format(j, i, distance[j][i], SELECTED_NODE_COLOR_HTML)
@@ -71,7 +71,7 @@ class Mapping:
         return exp
 
     def getFrames(self):
-        return self.__animationEngine.getFrames()
+        return self.animationEngine.getFrames()
 
 
 class FloydWarshall:
@@ -86,33 +86,33 @@ class FloydWarshall:
         return columns
 
     def __init__(self, graph: Graph):
-        m = Mapping()
+        self.__mapping = Mapping()
         distance = self.__initDistances(graph.nodes)
-        m.setToInf(self.makeHTMLtable(distance))
+        self.__mapping.setToInf(self.makeHTMLtable(distance))
 
-        edges: Edge
+        edges: Edge  # type hinting
         for edges in graph.edges.copy():
             u = graph.getNode(edges.fromNode)
             v = graph.getNode(edges.toNode)
             distance[u][v] = edges.distance
-            m.setDistances(self.makeHTMLtable(distance, None, u, v))
+            self.__mapping.setDistances(self.makeHTMLtable(distance, None, u, v))
 
         for node in graph.nodes.copy():
             distance[node][node] = 0
-            m.setToZero(self.makeHTMLtable(distance, node, node))
+            self.__mapping.setToZero(self.makeHTMLtable(distance, node, node))
 
         for i in graph.nodes.copy():
-            m.iLoop(i)
+            self.__mapping.iLoop(i)
             for j in graph.nodes.copy():
-                m.jLoop(j)
+                self.__mapping.jLoop(j)
                 for k in graph.nodes.copy():
-                    m.kLoop(i, j, k, distance, self.makeHTMLtable(distance, i, j, k))
+                    self.__mapping.kLoop(i, j, k, distance, self.makeHTMLtable(distance, i, j, k))
                     alt = distance[j][i] + distance[i][k]
                     if distance[j][k] > alt:
                         distance[j][k] = alt
-                        m.assignDistance(i, j, k, distance, self.makeHTMLtable(distance, i, j, k))
-        m.ret()
-        self.ree = m.getFrames()
+                        self.__mapping.assignDistance(i, j, k, distance, self.makeHTMLtable(distance, i, j, k))
+        self.__mapping.ret()
+        self.ree = self.__mapping.getFrames()
 
     @staticmethod
     def makeHTMLtable(distance, i=None, j=None, k=None):
@@ -143,3 +143,6 @@ class FloydWarshall:
         table += "</table>"
         table = table.format(topRowNodes)
         return table
+
+    def getAnimationEngine(self):
+        return self.__mapping.animationEngine

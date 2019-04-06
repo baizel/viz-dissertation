@@ -45,7 +45,7 @@ class BellmanFordMapping:
         data.addToTable(self.uID, self.displayNames[self.uID], u)
         data.addToTable(self.vID, self.displayNames[self.vID], v)
         data.addToTable(self.wID, self.displayNames[self.wID], w)
-        nodes = [{"id": u.id, "color": CURRENT_NODE_COLOR}, {"id": v, "color": NEIGHBOUR_NODE_COLOR}]
+        nodes = [{"id": u.id, "color": CURRENT_NODE_COLOR}, {"id": v.id, "color": NEIGHBOUR_NODE_COLOR}]
         self.animationEngine.addToUpdateQueue(12, data=data, nodes=nodes)
         self.animationEngine.addToUpdateQueue(13, edges=self.edgeHighlighter.getEdges(distance, previous, u, v, w, sourceNode, graph), data=ExtraData.addSingleTableDataAndGet(
             self.innerIfD, "{} + {} < {} = {}".format(distance[u], w, distance[v], distance[u] + w < distance[v])))
@@ -94,7 +94,7 @@ class BellmanFord:
     def __init__(self, graph: Graph, source: string):
         source = graph.getNode(source)
         assert source is not None, 'Such source node doesn\'t exist'
-        mapping = BellmanFordMapping()
+        self.__mapping = BellmanFordMapping()
 
         distances = {}
         previousVertices = {}
@@ -102,33 +102,36 @@ class BellmanFord:
         for vertex in graph.nodes:
             distances[vertex] = INF
             previousVertices[vertex] = None
-            mapping.initDistAndPrev(distances, previousVertices)
+            self.__mapping.initDistAndPrev(distances, previousVertices)
 
         distances[source] = 0
-        mapping.firstForLoop(distances)
+        self.__mapping.firstForLoop(distances)
         for _ in range(len(graph.nodes.copy()) - 1):
             for edges in graph.edges.copy():
                 u = graph.getNode(edges.fromNode)
                 v = graph.getNode(edges.toNode)
                 w = edges.distance
-                mapping.innerLoop(u, v, w, distances, graph, source, previousVertices)
+                self.__mapping.innerLoop(u, v, w, distances, graph, source, previousVertices)
                 if distances[u] + w < distances[v]:
                     distances[v] = distances[u] + w
                     previousVertices[v] = u
-                    mapping.ifStatement(u, v, w, distances, previousVertices)
+                    self.__mapping.ifStatement(u, v, w, distances, previousVertices)
 
-        mapping.secondForLoop()
+        self.__mapping.secondForLoop()
         for edges in graph.edges.copy():
             u = graph.getNode(edges.fromNode)
             v = graph.getNode(edges.toNode)
             w = edges.distance
 
-            mapping.innerIf(u, v, w, distances, previousVertices, graph, source)
+            self.__mapping.innerIf(u, v, w, distances, previousVertices, graph, source)
             if distances[u] + w < distances[v]:
                 print("Error negative weight cycles")
-                mapping.err()
-                self.animationUpdates = mapping.getUpdates()
+                self.__mapping.err()
+                self.animationUpdates = self.__mapping.getUpdates()
                 return
 
-        mapping.ret(distances, previousVertices)
-        self.animationUpdates = mapping.getUpdates()
+        self.__mapping.ret(distances, previousVertices)
+        self.animationUpdates = self.__mapping.getUpdates()
+
+    def getAnimationEngine(self):
+        return self.__mapping.animationEngine
