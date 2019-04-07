@@ -1,35 +1,28 @@
 import json
 
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, QueryDict
+from djongo.sql2mongo import SQLDecodeError
 
 from Viz.algorithms.Dijkstra import Dijkstra
 from Viz.Graph.Graph import Graph
 from Viz.algorithms.Floyd import FloydWarshall
 from Viz.algorithms.Ford import BellmanFord
-from Viz.utils.context import customSerializer
+from Viz.models import Questions, Quiz, QuizScores, AttemptedQuestion
+from Viz.utils.context import NodeEdgeSerializer
+from users.models import CustomUser
 
 context: dict = dict()
 
 
-class EdgeClass:
-    def __init__(self, fromNode, toNode, distance):
-        self.fromNode = fromNode
-        self.toNode = toNode
-        self.distance = distance
-
-    def getEdge(self):
-        return {"from": self.fromNode, "to": self.toNode, "label": str(self.distance), "distance": self.distance}
-
-
 def randomGraph(request: WSGIRequest, numberOfNodes=7):
     ret = Graph.generateRandomGraph(numberOfNodes).getJavaScriptData()
-    err = JsonResponse(json.loads(json.dumps(ret, default=customSerializer)))
+    err = JsonResponse(json.loads(json.dumps(ret, default=NodeEdgeSerializer)))
     err.status_code = 200
     return err
 
 
-def index(request: WSGIRequest, algorithm, source=None) -> HttpResponse:
+def getAlgorithm(request: WSGIRequest, algorithm, source=None) -> HttpResponse:
     ret = {"updates": []}
     net = request.GET.get('network')
     if net is None:
@@ -52,4 +45,52 @@ def index(request: WSGIRequest, algorithm, source=None) -> HttpResponse:
     elif algorithm == "floyd":
         ret = FloydWarshall(graph).ree
 
-    return JsonResponse(json.loads(json.dumps(ret, default=customSerializer)))
+    return JsonResponse(json.loads(json.dumps(ret, default=NodeEdgeSerializer)))
+
+
+def tutorials(request):
+    if request.user.is_authenticated:
+        score = 0
+        maxScore = 0
+        put = json.loads(request.body)
+        attemptedQs = []
+        userObj = CustomUser.objects.get(id=request.user.id)
+        quiz = Quiz.objects.get(id=put['quizId'])
+
+        for i in put['result']:
+            maxScore += 1
+            question = Questions.objects.get(id=i['qId'])
+            mark = 1 / len(question.answers)
+            attemptedQuestion = AttemptedQuestion.objects.create(user=userObj, question=question, attempted_answers=i['ans'])
+            attemptedQuestion.save()
+            attemptedQs.append(attemptedQuestion)
+            if len(i['ans']) > len(question.answers):
+                continue  # Give 0 marks if the choose more answers than possible
+            for answer in i['ans']:
+                convertedAns = answer
+                try:
+                    if answer != 'inf':
+                        convertedAns = float(answer)
+                except ValueError as e:
+                    pass
+
+                if convertedAns in question.answers:
+                    score += mark
+        percent = (score / maxScore) * 100
+        try:
+            qzScore = QuizScores.objects.create(user=userObj, quiz=quiz, score=score, max_score=maxScore)
+            for i in attemptedQs:
+                qzScore.attempted_answers.add(i)
+            qzScore.save()
+        except SQLDecodeError as e:
+            response = JsonResponse({"errmsg": "Quiz Already Completed cannot submit score again"})
+            response.status_code = 400
+            return response
+
+        print("{}%".format(percent), userObj, quiz)
+        response = JsonResponse({"msg": "Score saved"})
+        response.status_code = 200
+    else:
+        response = JsonResponse({"msg": "User not authenticated"})
+        response.status_code = 401
+    return response

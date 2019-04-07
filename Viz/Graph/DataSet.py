@@ -83,7 +83,7 @@ class Edge:
         return item in self
 
     def getJson(self):
-        """ Only used for to send edge data to creat random graph """
+        """ Only used for to send edge data to create random graph """
         return {"id": self.id, "from": self.fromNode, "to": self.toNode, "label": str(self.distance), "distance": self.distance}
 
     def __repr__(self):

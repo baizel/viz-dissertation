@@ -9,7 +9,7 @@ CURRENT_NODE_COLOR_HTML = "yellow lighten-1"
 NEIGHBOUR_NODE_COLOR_HTML = "purple lighten-3"
 
 
-def customSerializer(obj):
+def NodeEdgeSerializer(obj):
     if isinstance(obj, Node):
         return obj.getJson()
     if isinstance(obj, Edge):

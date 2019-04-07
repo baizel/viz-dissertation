@@ -28,8 +28,9 @@ urlpatterns = [
     path('tutorial/', tutorial.view),
     path('about/', homeView.HomePageView.as_view()),
     path('algorithm/<str:algorithm>/', algorithms.AlgorithmView.as_view()),
-    path('api/<str:algorithm>/', api.index),
-    path('api/<str:algorithm>/<int:source>', api.index),
+    path('api/tutorial/', api.tutorials),
+    path('api/<str:algorithm>/', api.getAlgorithm),
+    path('api/<str:algorithm>/<int:source>', api.getAlgorithm),
     path('api/graph/random', api.randomGraph),
     path('api/graph/random/<int:numberOfNodes>', api.randomGraph),
     path('users/', include('users.urls')),  # new

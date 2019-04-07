@@ -14,7 +14,11 @@ class Graph:
         """
         :param data: Dictionary containing the representation of the node. Uses same structure as http://visjs.org/docs/data/dataset.html
         """
+        self.__rawData = rawData
         self.edges, self.nodes = Node.fromRaw(rawData)
+
+    def getRawData(self):
+        return self.__rawData
 
     def getNode(self, nodeId):
         rt = [i for i in self.nodes if str(i.id) == str(nodeId)]
@@ -28,9 +32,9 @@ class Graph:
         return {"nodes": self.nodes, "edges": self.edges}
 
     @classmethod
-    def generateRandomGraph(cls, numberOfNodes, numberOfEdges = None):
+    def generateRandomGraph(cls, numberOfNodes, numberOfEdges=None):
         if numberOfEdges is None:
-            numberOfEdges = numberOfNodes * 2 # Just try to add much edges as it can for now, maybe add an api end point?
+            numberOfEdges = numberOfNodes * 2  # Just try to add much edges as it can for now, maybe add an api end point?
         nodes = {}
         edges = {}
         for i in range(1, numberOfNodes + 1):

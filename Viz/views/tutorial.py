@@ -10,7 +10,8 @@ from django.shortcuts import render
 from Viz.Graph.Graph import Graph
 from Viz.algorithms.Dijkstra import Dijkstra
 from Viz.algorithms.DijkstraPseudoMapping import DijkstraPseudoMapping
-from Viz.utils.context import customSerializer, NEIGHBOUR_NODE_COLOR
+from Viz.models import Questions, Quiz
+from Viz.utils.context import NodeEdgeSerializer, NEIGHBOUR_NODE_COLOR
 
 
 # (https://stackoverflow.com/questions/9647202/ordinal-numbers-replacement)
@@ -23,10 +24,10 @@ def view(request):
     quiz = QuizEngine()
     graph = quiz.graph
     algo = quiz.getPesudoJSONAlgorithm()
-    questions = quiz.generateQuestions(6)
+    quiz = quiz.generateQuiz(3)  # TODO: Add LOD (level of difficulty)
     return render(request, "tutorial.html",
-                  context={"test": json.dumps(graph.getJavaScriptData(), default=customSerializer),
-                           "jsonAlgo": json.dumps(algo), "preface": quiz.preface, "questionsjs": json.dumps(questions), "questions": questions})
+                  context={"test": json.dumps(graph.getJavaScriptData(), default=NodeEdgeSerializer),
+                           "jsonAlgo": json.dumps(algo), "preface": quiz.preface, "questionsjs": json.dumps(quiz.getContext()), "quiz": quiz.getContext()})
 
 
 class QuizEngine:
@@ -43,21 +44,21 @@ class QuizEngine:
         self.__distanceState = {}
         self.__populateStates()
         self.preface = '''
-                       Given the graph below & source node to be {}, answer the questions below<br>
-                       Note: when choosing the node with the smallest distance on line 15, 
-                       if the nodes in Q have the same distances then choose the node that comes next in order i.e (1,2,3...)
+                       Given the graph below & <b>source node to be {},</b> answer the quiz below<br>
+                       <b>Note: when choosing the node with the smallest distance on line 15,
+                       if the nodes in Q have the same distances then choose the node that comes next in order i.e (1,2,3...).</b> 
                        '''.format(self.sourceNode)
 
         self.__questionGenerators = [self.generateDistanceOfRandomNodeQuestion, self.generateCurrentNodeQuestion, self.generateNeighbourQuestions]
 
-    def generateQuestions(self, numberOfQs):
-        questions = []
+    def generateQuiz(self, numberOfQs):
+        quiz = Quiz.objects.create(graph=self.graph, sourceNode=self.sourceNode, preface=self.preface)
         for i in range(numberOfQs):
-            qsGen = secrets.choice(self.__questionGenerators)
-            qs = qsGen()
-            questions.append(qs)
-            print("reeeee", qs, i)
-        return questions
+            qzGen = secrets.choice(self.__questionGenerators)
+            quiz.questions.add(qzGen())
+        quiz.questions.all()
+        quiz.save()
+        return quiz
 
     def __populateStates(self):
         frame = self.__animationEngine.getFrames()
@@ -80,7 +81,10 @@ class QuizEngine:
         ansIndex = iteration * 2
         ans = list(self.__nodeStateOrder[ansIndex].values())[0][0]['id']
         options = [i for i in range(1, self.__maxNodes + 1)]
-        return {"qs": baseQuestion, "ans": [ans], "choices": options, "isMultipleChoice": False}
+
+        question = Questions.objects.create(question=baseQuestion, answers=[ans], choices=options, isMultipleChoice=False)
+        question.save()
+        return question
 
     def generateNeighbourQuestions(self):
         iteration = random.randint(0, self.__maxNodes - 1)
@@ -95,7 +99,10 @@ class QuizEngine:
 
         options = [str(i) for i in range(1, self.__maxNodes + 1)]
         options.append(self.NO_NEIGHBOUR_OPTION)
-        return {"qs": baseQuestion, "ans": ans, "choices": options, "isMultipleChoice": True}
+
+        question = Questions.objects.create(question=baseQuestion, answers=ans, choices=options, isMultipleChoice=True)
+        question.save()
+        return question
 
     def generateDistanceOfRandomNodeQuestion(self):
         iteration = random.randint(1, self.__maxNodes - 1)
@@ -107,7 +114,10 @@ class QuizEngine:
         if str(ans) != self.INF_OPTIONS:
             options.append(self.INF_OPTIONS)
         random.shuffle(options)
-        return {"qs": question, "ans": [ans], "choices": options, "isMultipleChoice": False}
+
+        question = Questions.objects.create(question=question, answers=[ans], choices=options, isMultipleChoice=False)
+        question.save()
+        return question
 
     def getPesudoJSONAlgorithm(self):
         return self.__animationEngine.pesudoAlgorithm.getJsonAlgo()

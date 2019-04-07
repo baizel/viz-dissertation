@@ -6,7 +6,7 @@
             xmlns="http://www.w3.org/1999/html"></script>
     <script>
         var algo = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
-        var questions = JSON.parse('{{ questionsjs|safe|escapejs  }}');
+        var quiz = JSON.parse('{{ questionsjs|safe|escapejs  }}');
         var data = {{ test|safe }};
     </script>
     <script src="{% static 'js/QuizClient.js' %}"></script>
@@ -47,14 +47,15 @@
                 <h2>Questions</h2>
                 <p id="preface">{{ preface|safe }}</p>
                 <div id="questions">
-                    <form class="col s12" onsubmit="onSubmit()">
-                        {% for i in questions %}
+                    <form class="col s12" id="quizForm">
+                    <p>{{  quiz }}</p>
+                        {% for i in quiz.questions %}
                             <div class="input-field col s12">
                                 <p>{{ forloop.counter }}) {{ i.qs }}</p>
                                 {% for j in i.choices %}
                                     <p>
                                         <label>
-                                            <input value="{{ j }}" name="group{{ forloop.parentloop.counter }}" type="{{ i.isMultipleChoice|yesno:"checkbox,radio" }}"/>
+                                            <input value="{{ j }}" name="{{ i.id }}" type="{{ i.isMultipleChoice|yesno:"checkbox,radio" }}"/>
                                             <span>{{ j }}</span>
                                         </label>
                                     </p>
