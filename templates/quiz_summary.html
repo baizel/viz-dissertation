@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block js %}
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js
+            xmlns="http://www.w3.org/1999/html">
+    </script>
+    <script src=https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js
+            xmlns="http://www.w3.org/1999/html">
+    </script>
+    <script>
+        Chart.defaults.global.animation.duration = 2000;
+        Chart.defaults.global.legend.position = 'bottom';
+
+        function initGraph(dataset) {
+            var NODE_COLOUR = "#64b5f6";
+            var NODE_SHAPE = "circle";
+
+            var EDGE_COLOUR = "#2196f3";
+            var EDGE_TYPE = "arrow";
+
+            // create a network
+            var container = document.getElementById('network');
+            // http://visjs.org/docs/network/#options
+            var options = {
+                physics: {
+                    enabled: true
+                },
+                height: '100%',
+                width: '100%',
+                nodes: {
+                    shape: NODE_SHAPE,
+                    color: NODE_COLOUR
+
+                },
+                edges: {
+                    arrows: {
+                        to: {enabled: true, scaleFactor: 1, type: EDGE_TYPE},
+                        middle: {enabled: false, scaleFactor: 1, type: EDGE_TYPE},
+                        from: {enabled: false, scaleFactor: 1, type: EDGE_TYPE}
+                    },
+                    color: {
+                        color: EDGE_COLOUR,
+                        inherit: false,
+                        opacity: 0.8
+                    }
+                },
+                interaction: {hover: true, dragView: false, zoomView: false},
+            };
+
+            network = new vis.Network(container, dataset, options);
+        }
+
+        function graphDraw() {
+            $.ajax({
+                url: "/api/graph/{{ quizID }}",
+                type: "get", //send it through get method
+                success: function (response) {
+                    data = {
+                        nodes: new vis.DataSet(response.nodes),
+                        edges: new vis.DataSet(response.edges)
+                    };
+                    nodes = data.nodes;
+                    edges = data.edges;
+                    initGraph(data);
+                },
+                error: function (xhr) {
+                    alert("Cant get graph")
+                }
+            });
+        }
+
+        function drawChart() {
+            //Destroy the dougnut chart here, not sure how it's accessible, but it won't work through window.onload
+            var data = {
+                labels: ['Right Answers', 'Wrong Answers'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [{{ right }}, {{ wrong }}],
+                    backgroundColor: [
+                        '#69f0ae',
+                        '#ff1744',
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            var ctx = document.getElementById("myChart").getContext("2d");
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+            });
+        }
+
+        $(document).ready(function () {
+            drawChart();
+            graphDraw();
+        });
+
+    </script>
+
+{% endblock %}
+
+
+{% block css %}
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"/>
+    <style type="text/css">
+        #network {
+            width: 100%;
+            height: 693px;
+            border: 0px solid lightgray;
+        }
+
+        .anim {
+            height: 100vh;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="center header">Summary</h1>
+        <div class="row">
+            <div class="col s6">
+                <div class="row">
+                    <div class="col s12">
+                        <h4 class="center">All Time Score</h4>
+                    </div>
+                    <div class="col s12">
+                        <canvas id="myChart" width="200" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col s6">
+                <h4 class="center">All time Stats</h4>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Stats</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for i in stats %}
+                        {% for key,val in i.items %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ val }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col s6">
+
+            <h5 class="center"> Recent Quiz Answers</h5>
+            {% if quiz is not None and quiz|length > 0 %}
+                {% for i in quiz %}
+                    <div class="input-field col s12">
+                        <p>{{ preface|safe }}</p>
+                        <p>{{ forloop.counter }}) {{ i.question.qs }}</p>
+                        {% for choice in i.question.choices %}
+                            <p class="{% if choice in i.question.answers %} green lighten-4 {% elif choice in i.attemptedAns and choice not in i.question.answers %}red lighten-4{% endif %}">
+                                <label>
+                                    <input value="{{ choice }}" name="{{ i.question.id }}"
+                                           type="{{ i.question.isMultipleChoice|yesno:"checkbox,radio" }}"
+                                           onclick="this.checked = false;"
+                                            {% if choice in i.attemptedAns %}
+                                           checked
+                                            {% endif %}
+                                    />
+                                    <span class="black-text">{{ choice }}</span>
+                                </label>
+                            </p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No Quiz Completed</p>
+            {% endif %}
+        </div>
+        <div class="col s6">
+            <div id="network"></div>
+            <diV class="center"><a href="/algorithm/dijkstra/?graphId={{ quizID }}"> See tutorial for this graph</a></diV>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

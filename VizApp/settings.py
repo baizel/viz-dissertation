@@ -25,7 +25,7 @@ SECRET_KEY = 'mvc#+uu8c-bj5=y3g8x=6p7h)1l6w0#jd$&2mknq*sbjd811ga'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['viz.baizel.dev','viz-learn.herokuapp.com', 'vizapp.baizelmathew.com','viz.baizelmathew.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['viz.baizel.dev', 'viz-learn.herokuapp.com', 'vizapp.baizelmathew.com', 'viz.baizelmathew.com', '127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -37,9 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Viz.apps.VizConfig',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'Viz',
+    'users',
 ]
-
+AUTH_USER_MODEL = 'users.CustomUser'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -52,7 +58,7 @@ MIDDLEWARE = [
 if os.environ.get("RELEASE",False):
     INSTALLED_APPS.append('scout_apm.django')
 
-#scout stuff
+# scout stuff
 SCOUT_NAME = "VizAppScout"
 
 ROOT_URLCONF = 'VizApp.urls'
@@ -76,7 +82,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'VizApp.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -91,13 +96,11 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'VizApp',
-        'HOST': 'mongodb+srv://vizapp:XypWofo1JMJo0kVo@vizcluster-svfta.mongodb.net/test?retryWrites=true'.format(
-            (os.environ['dbpasswd']))
+        'NAME': '{}'.format(os.environ['dbname']),
+        'HOST': '{}'.format((os.environ['dbhost']))
     }
 
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -133,3 +136,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+SITE_ID = 1
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_LOGOUT_ON_GET = True

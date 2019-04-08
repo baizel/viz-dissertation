@@ -1,34 +1,55 @@
 import json
-
-from django.core.handlers.wsgi import WSGIRequest
-from django.shortcuts import render_to_response
-from django.http import HttpResponse
-
 from Viz.algorithms.pesudo_algorithms.algorithmExporter import PesudoAlgorithm
+from Viz.models import Quiz, QuizScores
 from Viz.utils.context import Context
 
-context: dict = dict()
+from django.views.generic import TemplateView
+
+DIJKSTRA = "dijkstra"
+FORD = "ford"
+FLOYD = "floyd"
+ALGORITHMS = [FORD, FLOYD, DIJKSTRA]
 
 
-def index(request: WSGIRequest, algorithm) -> HttpResponse:
-    cntx = Context()
-    res = cntx.getContext()
-    algo = None
-    if algorithm == "dijkstra":
-        algo = PesudoAlgorithm("Dijkstra.txt")
-        res["jsonAlgo"] = json.dumps(algo.getJsonAlgo())
-        res["pageTitle"] = "Dijkstra Algorithm"
-        res["apiAlgo"] = "'dijkstra'"
-    elif algorithm == "floyd":
-        algo = PesudoAlgorithm("FloydWarshall.txt")
-        res["pageTitle"] = "Floyd-Warshall Algorithm"
-        res["apiAlgo"] = "'floyd'"
-    elif algorithm == "ford":
-        algo = PesudoAlgorithm("BellmanFord.txt")
-        res["pageTitle"] = "Bellman Ford Algorithm"
-        res["apiAlgo"] = "'ford'"
-    else:
-        return render_to_response("algorithm_not_supported.html")
+class AlgorithmView(TemplateView):
+    template_name = "algorithm_base.html"
+    quizIds = []
 
-    res["jsonAlgo"] = json.dumps(algo.getJsonAlgo())
-    return render_to_response("algorithm_base.html", res)
+    def dispatch(self, request, *args, **kwargs):
+        algorithm = kwargs.get("algorithm", "")
+        if request.user.is_authenticated:
+            try:
+                self.quizIds = list(QuizScores.objects.values("quiz_id").filter(user_id=request.user.id))
+            except Quiz.DoesNotExist:
+                pass
+
+        if algorithm not in ALGORITHMS:
+            self.template_name = "algorithm_not_supported.html"
+        if algorithm == DIJKSTRA:
+            self.template_name = 'dijkstra.html'
+        return super(AlgorithmView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        algorithm = kwargs.get("algorithm")
+        if algorithm not in ALGORITHMS:
+            return
+        res = Context().getContext()
+        res["quizIds"] = self.quizIds
+        pesudoAlgo = None
+        if algorithm == DIJKSTRA:
+            pesudoAlgo = PesudoAlgorithm("Dijkstra.txt")
+            res["jsonAlgo"] = json.dumps(pesudoAlgo.getJsonAlgo())
+            res["pageTitle"] = "Dijkstra Algorithm"
+            res["apiAlgo"] = "'dijkstra'"
+        elif algorithm == FLOYD:
+            pesudoAlgo = PesudoAlgorithm("FloydWarshall.txt")
+            res["pageTitle"] = "Floyd-Warshall Algorithm"
+            res["apiAlgo"] = "'floyd'"
+            res["isSourceNeeded"] = False
+        elif algorithm == FORD:
+            pesudoAlgo = PesudoAlgorithm("BellmanFord.txt")
+            res["pageTitle"] = "Bellman Ford Algorithm"
+            res["apiAlgo"] = "'ford'"
+
+        res["jsonAlgo"] = json.dumps(pesudoAlgo.getJsonAlgo())
+        return res

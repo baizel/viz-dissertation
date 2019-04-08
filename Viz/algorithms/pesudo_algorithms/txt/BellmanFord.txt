@@ -1,22 +1,28 @@
- function BellmanFord(list vertices, list edges, vertex source)
-   ::distance[],predecessor[]
-
-   for each vertex v in vertices:    // Step 1: initialize graph
-       distance[v] := inf             // Initialize the distance to all vertices to infinity
-       predecessor[v] := null         // And having a null predecessor
-
-   distance[source] := 0              // The distance from the source to itself is, of course, zero
-
-
-   for i from 0 to size(vertices)-1: //Step 2: relax edges repeatedly
-       for each edge (u, v) with weight w in edges:
-           if distance[u] + w < distance[v]:
-               distance[v] := distance[u] + w
-               predecessor[v] := u
-
-
-   for each edge (u, v) with weight w in edges: // Step 3: check for negative-weight cycles
-       if distance[u] + w < distance[v]:
-           error "Graph contains a negative-weight cycle" // The algorithm has found a negative weight cycle (total distance of the cycle is negative) This is an illegal state
-
-   return distance[], predecessor[]
+ <b>Algorithm:</b> Bellman-Ford
+ <b>Inputs:</b> Graph(V,E), Source
+ <b>Variables:</b> distance: list where the index represents the node
+            previous: list where the index represents the node
+ <b>Return:</b> list of distances & list of previous
+ <b>Begin</b>
+      <b>for each</b> vertex v <b>in</b> Graph <b>do:</b>        //Initialize graph
+        distance[v] = infinity                                 //Initialize the distance to all vertices to infinity
+        previous[v] = undefined                                //And set Undefined for previous
+      <b>done</b>
+     distance[source] = 0                                       //The distance from the source to itself is zero
+     <b>for</b> i <b>from</b> 0 <b>to sizeof(V)</b> - 1:        //Run the loop for al vertices
+         <b>for each</b> edge(u,v) <b>of</b> E <b>do:</b>       //Run for all edges in the set of edges E
+             alternative = distance[u] + distanceBetween(u,v)   //Work out the distance
+             <b>if</b> alternative < distance[v]:               //Update distance if new value is less
+                 distance[v] = alternative                      //Update new distance
+                 previous[v] = u                                //Set new previous node
+             <b>fi</b>
+         <b>done</b>
+     <b>done</b>
+     <b>for each</b> edge(u,v) <b>of</b> E <b>do:</b>           //Check if there is any negative weight cycle
+         alternative = distance[u] + distanceBetween(u,v)       //Calculate distance
+         <b>if</b> alternative < distance[v]:
+             error “Graph Contains Negative-weight Cycle”       //The algorithm has found a negative weight cycle (total distance of the cycle is negative) This is an illegal state
+         <b>fi</b>
+     <b>done</b>
+     <b>return</b> distance[] previous[]
+ <b>End</b>

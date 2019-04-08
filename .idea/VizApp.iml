@@ -14,10 +14,11 @@
   </component>
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/anotherone" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/vizappenv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.7 (dissertation)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6 (dissertation) (2)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="materialize" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
@@ -26,6 +27,7 @@
     <orderEntry type="library" name="cytoscape" level="application" />
     <orderEntry type="library" name="vis" level="application" />
     <orderEntry type="library" name="nouislider" level="application" />
+    <orderEntry type="library" name="Chart" level="application" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="requirementsPath" value="$MODULE_DIR$/requirements.txt" />

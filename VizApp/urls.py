@@ -15,20 +15,28 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import include, path, re_path
 from django.views.generic import RedirectView
 
-from Viz.views import homeView, algorithms, api
+from Viz.views import homeView, algorithms, api, tutorial
 
 favicon_view = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
 
 urlpatterns = [
     re_path(r'^favicon\.ico$', favicon_view),
-    path('', homeView.index, name='index'),
-    path('tutorial/', homeView.index, name='index'),
-    path('about/', homeView.index, name='index'),
-    path('algorithm/<str:algorithm>/', algorithms.index, name='index'),
-    path('api/<str:algorithm>', api.index, name='api'),
-    path('api/<str:algorithm>/<int:source>', api.index, name='api'),
+    path('', homeView.HomePageView.as_view(), name="home"),
+    path('summary/', tutorial.summary),
+    path('tutorial/', tutorial.view),
+    path('about/', homeView.HomePageView.as_view()),
+    path('algorithm/<str:algorithm>/', algorithms.AlgorithmView.as_view()),
+    path('api/tutorial/', api.tutorials),
+    path('api/graph/random', api.randomGraph),
+    path('api/graph/<int:id>', api.graphFromQuiz),
+    path('api/graph/random/<int:numberOfNodes>', api.randomGraph),
+    path('api/<str:algorithm>/', api.getAlgorithm),
+    path('api/<str:algorithm>/<int:source>', api.getAlgorithm),
+    path('users/', include('users.urls')),  # new
+    path('users/', include('django.contrib.auth.urls')),  # new
+    path('accounts/', include('allauth.urls')),  # new
     path('admin/', admin.site.urls),
 ]

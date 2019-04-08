@@ -4,6 +4,20 @@
 
 {% block head %}
     <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137796439-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+
+            gtag('config', 'UA-137796439-1');
+        </script>
+
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
         <title>{{ pageTitle|title }}</title>
@@ -15,6 +29,13 @@
         {% endblock %}
 
         {% block css %}
+            <style>
+                .sidenav-footer {
+                    margin-bottom: 0px;
+                    padding: 0;
+                }
+
+            </style>
         {% endblock %}
 
         <!--Import Google Icon Font-->
@@ -30,21 +51,15 @@
     </head>
 {% endblock %}
 
-<body class="{{ bgColour }}">
+<body>
 <main>
     {% block fixed_nav_bar_html %}
-        <ul class="sidenav {{ primaryColour }} white-text sidenav-fixed" id="mobile-nav">
+        <ul class="sidenav  sidenav-fixed" id="mobile-nav">
 
             {% include 'nav_content.html' %}
-            <div class = "mid {{ primaryText }}">
-                <li><a class="waves-effect center" href="https://www.github.com/baizel/dissertation"><i class="center-align small material-icons">all_inclusive</i></a></li>
-            </div>
-
-
         </ul>
 
     {% endblock %}
-
 
     {% block content %}
         <div class="section no-pad-bot" id="index-banner">
@@ -69,7 +84,7 @@
                 <div class="col l6 s12">
                     <h5 class="white-text">Viz</h5>
                     <p class="grey-text text-lighten-4">A Dissertation project made by Baizel Mathew to help others learn
-                        more abut algorithms.
+                        more about algorithms.
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@
             xmlns="http://www.w3.org/1999/html"></script>
     <script>
         // Pesudo code from python render
+        var isSourceNeeded = {{ isSourceNeeded|yesno:"true,false" }};
         var algo = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
         $(document).ready(function () {
 
@@ -13,7 +14,8 @@
     </script>
     <script src="{% static 'js/ClientAnimation.js' %}"></script>
     <script src="{% static 'js/Utils.js' %}"></script>
-
+    {% block moreJS %}
+    {% endblock %}
 
 {% endblock %}
 
@@ -68,19 +70,17 @@
                 <div id="network"></div>
                 <div class="row">
                     <div class="col s3">
-                        <label>
-                            <input type="checkbox" checked="checked"/>
-                            <span>Random Edge Distances</span>
-                        </label>
+                        {% block graphOptions %}
+                        {% endblock %}
                     </div>
-                    <div class = "col s3 valign-wrapper"><span class="dot" style="background-color: {{ selectedNodeColor }} !important;"></span><label class="keys"> Source Node</label></div>
-                    <div class = "col s3 valign-wrapper"><span class="dot" style="background-color: {{ currentNodeColor }} !important;"></span><label class="keys"> Current Node</label></div>
-                    <div class = "col s3 valign-wrapper"><span class="dot" style="background-color: {{ neighbourNodeColor }} !important;"></span><label class="keys"> Neighbour Node</label></div>
+                    <div class="col s3 valign-wrapper"><span class="dot" style="background-color: {{ selectedNodeColor }} !important;"></span><label class="keys"> Source Node</label></div>
+                    <div class="col s3 valign-wrapper"><span class="dot" style="background-color: {{ currentNodeColor }} !important;"></span><label class="keys"> Current Node</label></div>
+                    <div class="col s3 valign-wrapper"><span class="dot" style="background-color: {{ neighbourNodeColor }} !important;"></span><label class="keys"> Neighbour Node</label></div>
                 </div>
             </div>
             <div class="col l6 m6 s6">
                 <h4>Current Values</h4>
-                <p>The table of value will b populated here as you step through the algorithm</p>
+                <p>The table of value will be populated here as you step through the algorithm</p>
                 <table id="tableValues">
                     <tr>
                         <th>Name</th>
@@ -92,9 +92,9 @@
             </div>
             <div class="col l6 m6 s6">
                 <h4>Explanation </h4>
-                <h5 id="exp">
+                <p id="exp">
                     A brief explanation will be shown here when stepping through the algorithm
-                </h5>
+                </p>
             </div>
         </div>
         <div class="col l1 m1 s2 pushpin {{ secondaryColour }}" style="right: 0;">
@@ -129,7 +129,7 @@
                                     <p>Delay between frames</p>
                                     <label class="black-text">3000ms</label>
                                     <input type="range" orient="vertical" class="animation-controls" id="animationSpeed" min="10" max="3000" value="1000"
-                                           onchange="updateAnimationTime(this.value)" oninput="updateAnimationTime(this.value)"/>
+                                           onchange="updateAnimationTime(this.value,{{ apiAlgo }})" oninput="updateAnimationTime(this.value,{{ apiAlgo }})"/>
                                     <label class="black-text">10ms</label>
 
                                 </div>
