@@ -1,6 +1,7 @@
 import json
 
 from django.db import models
+from django.utils import timezone
 
 from Viz.Graph.Graph import Graph
 from Viz.utils.context import NodeEdgeSerializer
@@ -18,6 +19,7 @@ class QuizManager(models.Manager):
 class QuizScoreManager(models.Manager):
     def create(self, *args, **kwargs):
         kwargs["_percent"] = kwargs['score'] / kwargs['max_score'] * 100
+        kwargs["date"] = timezone.now()
         return super(QuizScoreManager, self).create(*args, **kwargs)
 
 
@@ -34,7 +36,7 @@ class Questions(models.Model):
 
     @property
     def answers(self):
-        return json.loads(self._answers)
+        return [str(i) for i in json.loads(self._answers)]
 
     @answers.setter
     def answers(self, x):
@@ -44,11 +46,14 @@ class Questions(models.Model):
 
     @property
     def choices(self):
-        return json.loads(self._choices)
+        return [str(i) for i in json.loads(self._choices)]
 
     @choices.setter
     def choices(self, x):
         self._choices = json.dumps(x)
+
+    def getSummaryContext(self):
+        return {"id": self.id, "qs": self.question, "answers": self.answers, "choices": self.choices, "isMultipleChoice": self.isMultipleChoice}
 
     def getJsonForFrontEnd(self):
         # Dont include answers when using it for front end
@@ -70,7 +75,13 @@ class Quiz(models.Model):
     def graph(self, x):
         self._graph = json.dumps(x, default=NodeEdgeSerializer)
 
-    def getContext(self):
+    def getJsonSummaryContext(self):
+        qs = []
+        for i in self.questions.all():
+            qs.append(i.getSummaryContext())
+        return {"id": self.id, "questions": qs}
+
+    def getJsonFrontEndContext(self):
         qs = []
         for i in self.questions.all():
             qs.append(i.getJsonForFrontEnd())
@@ -91,7 +102,7 @@ class AttemptedQuestion(models.Model):
 
     @property
     def attempted_answers(self):
-        return json.loads(self._attempted_answers)
+        return [str(i) for i in json.loads(self._attempted_answers)]
 
     @attempted_answers.setter
     def attempted_answers(self, x):
@@ -115,7 +126,7 @@ class QuizScores(models.Model):
     score = models.DecimalField(max_digits=10, decimal_places=4)
     max_score = models.DecimalField(max_digits=10, decimal_places=4)
     _percent = models.DecimalField(max_digits=5, decimal_places=2)
-    date = models.DateField(models.DateTimeField(auto_now_add=True))
+    date = models.DateTimeField(editable=False)
     objects = QuizScoreManager()
 
     class Meta:

@@ -48,7 +48,6 @@
                 <p id="preface">{{ preface|safe }}</p>
                 <div id="questions">
                     <form class="col s12" id="quizForm">
-                    <p>{{  quiz }}</p>
                         {% for i in quiz.questions %}
                             <div class="input-field col s12">
                                 <p>{{ forloop.counter }}) {{ i.qs }}</p>

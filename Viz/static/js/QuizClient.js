@@ -24,6 +24,7 @@ $(function () {
             success: function (response) {
                 console.log(response)
                 //TODO: make and go to summary page
+                window.location="/summary"
             },
             error: function (xhr) {
                 alert("Could not save scores " + xhr.statusText)

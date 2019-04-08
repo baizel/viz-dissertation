@@ -4,9 +4,9 @@
     <div class="user-view center">
         {% if user.is_authenticated %}
             {% if not user.socialaccount_set.all.0.get_avatar_url %}
-                <a href="#user"><img class="circle" src="{% static 'images/default_profile.jpeg' %}" style="display: block;margin-left: auto;margin-right: auto;"></a>
+                <a href="#"><img class="circle" src="{% static 'images/default_profile.jpeg' %}" style="display: block;margin-left: auto;margin-right: auto;"></a>
             {% else %}
-                <a href="#user"><img class="circle" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="display: block;margin-left: auto;margin-right: auto;"></a>
+                <a href="/summary"><img class="circle" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="display: block;margin-left: auto;margin-right: auto;"></a>
 
             {% endif %}
             <a href="#name"><span class="black-text name">{{ user.first_name|title }}</span></a>
@@ -42,9 +42,9 @@
 {% if user.is_authenticated %}
     <li><a href="{% url 'account_logout' %}">Log out</a>
         {% else %}
-{#        Dissable this for now as custom ui needs to be updated #}
-{#    <li><a class="waves-effect" href="{% url 'account_login' %}">Log In </a></li>#}
-{#    <li><a href="{% url 'account_signup' %}">Sign Up</a></li>#}
+        {#        Dissable this for now as custom ui needs to be updated #}
+        {#    <li><a class="waves-effect" href="{% url 'account_login' %}">Log In </a></li>#}
+        {#    <li><a href="{% url 'account_signup' %}">Sign Up</a></li>#}
     <li>
         <a href="{% provider_login_url 'google' %}">
             <img class="icon" src="https://img.icons8.com/color/24/000000/google-logo.png" style="vertical-align: middle;">
