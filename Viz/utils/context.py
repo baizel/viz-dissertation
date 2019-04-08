@@ -36,11 +36,11 @@ class Context(metaclass=Singleton):
 
     def __init__(self):
         self.__context: dict = dict()
-        self.__context["bgColour"] = "grey lighten-1"
-        self.__context["primaryColour"] = "grey darken-1"
-        self.__context["secondaryColour"] = "grey lighten-1"
+        self.__context["bgColour"] = ""
+        self.__context["primaryColour"] = ""
+        self.__context["secondaryColour"] = ""
         self.__context["buttonColour"] = "purple lighten-1"
-        self.__context["primaryText"] = "white-text"
+        self.__context["primaryText"] = "black-text"
         self.__context["pageTitle"] = "A Title"
         self.__context["selectedNodeColor"] = SELECTED_NODE_COLOR
         self.__context["currentNodeColor"] = CURRENT_NODE_COLOR

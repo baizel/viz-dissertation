@@ -3,7 +3,7 @@ $(document).ready(function () {
     $('.modal').modal();
     $('.pushpin').pushpin();
     $('select').formSelect();
-
+    $('.tabs').tabs();
 });
 
 function pushPinInit() {
