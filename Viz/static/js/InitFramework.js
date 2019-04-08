@@ -2,6 +2,7 @@ $(document).ready(function () {
     $('.sidenav').sidenav();
     $('.modal').modal();
     $('.pushpin').pushpin();
+    $('select').formSelect();
 
 });
 
@@ -14,4 +15,4 @@ function pushPinInit() {
 
 $(window).resize(function () {
     pushPinInit()
-})
+});

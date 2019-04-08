@@ -30,10 +30,11 @@ urlpatterns = [
     path('about/', homeView.HomePageView.as_view()),
     path('algorithm/<str:algorithm>/', algorithms.AlgorithmView.as_view()),
     path('api/tutorial/', api.tutorials),
+    path('api/graph/random', api.randomGraph),
+    path('api/graph/<int:id>', api.graphFromQuiz),
+    path('api/graph/random/<int:numberOfNodes>', api.randomGraph),
     path('api/<str:algorithm>/', api.getAlgorithm),
     path('api/<str:algorithm>/<int:source>', api.getAlgorithm),
-    path('api/graph/random', api.randomGraph),
-    path('api/graph/random/<int:numberOfNodes>', api.randomGraph),
     path('users/', include('users.urls')),  # new
     path('users/', include('django.contrib.auth.urls')),  # new
     path('accounts/', include('allauth.urls')),  # new

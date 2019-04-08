@@ -1,5 +1,6 @@
 import json
 from Viz.algorithms.pesudo_algorithms.algorithmExporter import PesudoAlgorithm
+from Viz.models import Quiz, QuizScores
 from Viz.utils.context import Context
 
 from django.views.generic import TemplateView
@@ -12,11 +13,20 @@ ALGORITHMS = [FORD, FLOYD, DIJKSTRA]
 
 class AlgorithmView(TemplateView):
     template_name = "algorithm_base.html"
+    quizIds = []
 
     def dispatch(self, request, *args, **kwargs):
         algorithm = kwargs.get("algorithm", "")
+        if request.user.is_authenticated:
+            try:
+                self.quizIds = list(QuizScores.objects.values("quiz_id").filter(user_id=request.user.id))
+            except Quiz.DoesNotExist:
+                pass
+
         if algorithm not in ALGORITHMS:
             self.template_name = "algorithm_not_supported.html"
+        if algorithm == DIJKSTRA:
+            self.template_name = 'dijkstra.html'
         return super(AlgorithmView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -24,6 +34,7 @@ class AlgorithmView(TemplateView):
         if algorithm not in ALGORITHMS:
             return
         res = Context().getContext()
+        res["quizIds"] = self.quizIds
         pesudoAlgo = None
         if algorithm == DIJKSTRA:
             pesudoAlgo = PesudoAlgorithm("Dijkstra.txt")

@@ -14,7 +14,8 @@
     </script>
     <script src="{% static 'js/ClientAnimation.js' %}"></script>
     <script src="{% static 'js/Utils.js' %}"></script>
-
+    {% block moreJS %}
+    {% endblock %}
 
 {% endblock %}
 
@@ -69,10 +70,8 @@
                 <div id="network"></div>
                 <div class="row">
                     <div class="col s3">
-                        <label>
-                            <input type="checkbox" checked="checked"/>
-                            <span>Random Edge Distances</span>
-                        </label>
+                        {% block graphOptions %}
+                        {% endblock %}
                     </div>
                     <div class="col s3 valign-wrapper"><span class="dot" style="background-color: {{ selectedNodeColor }} !important;"></span><label class="keys"> Source Node</label></div>
                     <div class="col s3 valign-wrapper"><span class="dot" style="background-color: {{ currentNodeColor }} !important;"></span><label class="keys"> Current Node</label></div>

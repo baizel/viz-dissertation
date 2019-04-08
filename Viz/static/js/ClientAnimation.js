@@ -335,11 +335,9 @@ function addToTable(dataClass, value, displayName) {
     }
 }
 
-
-////////////////////////////////////////////////////// Init ////////////////////////////////////////////////////
-$(document).ready(function () {
+function graphApiCall(url) {
     $.ajax({
-        url: "/api/graph/random",
+        url: url,
         type: "get", //send it through get method
         success: function (response) {
             data = {
@@ -358,6 +356,11 @@ $(document).ready(function () {
             initGraph(data);
         }
     });
+}
+
+////////////////////////////////////////////////////// Init ////////////////////////////////////////////////////
+$(document).ready(function () {
+   graphApiCall("/api/graph/random");
     $("#pause-btn").hide();
 
     for (i = 0; i < algo["lines"].length; i++) {

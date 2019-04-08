@@ -15,6 +15,19 @@ from users.models import CustomUser
 context: dict = dict()
 
 
+def graphFromQuiz(request: WSGIRequest, id):
+    try:
+        q = Quiz.objects.get(id=id)
+    except Quiz.DoesNotExist:
+        err = JsonResponse({"errmsg": "Invalid Quiz Id"})
+        err.status_code = 404
+        return err
+    ret = q.graph.getJavaScriptData()
+    err = JsonResponse(json.loads(json.dumps(ret, default=NodeEdgeSerializer)))
+    err.status_code = 200
+    return err
+
+
 def randomGraph(request: WSGIRequest, numberOfNodes=7):
     ret = Graph.generateRandomGraph(numberOfNodes).getJavaScriptData()
     err = JsonResponse(json.loads(json.dumps(ret, default=NodeEdgeSerializer)))
@@ -67,13 +80,7 @@ def tutorials(request):
             if len(i['ans']) > len(question.answers):
                 continue  # Give 0 marks if the choose more answers than possible
             for answer in i['ans']:
-                convertedAns = answer
-                try:
-                    if answer != 'inf':
-                        convertedAns = float(answer)
-                except ValueError as e:
-                    pass
-
+                convertedAns = str(answer)
                 if convertedAns in question.answers:
                     score += mark
         percent = (score / maxScore) * 100

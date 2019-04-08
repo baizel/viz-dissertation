@@ -73,7 +73,7 @@ class Quiz(models.Model):
 
     @graph.setter
     def graph(self, x):
-        self._graph = json.dumps(x, default=NodeEdgeSerializer)
+        self._graph = json.dumps(x.getRawData(), default=NodeEdgeSerializer)
 
     def getJsonSummaryContext(self):
         qs = []
