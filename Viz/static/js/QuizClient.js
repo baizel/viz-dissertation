@@ -60,9 +60,13 @@ $.ajaxSetup({
         }
     }
 });
-
+var dataSet = {
+    nodes: new vis.DataSet(data.nodes),
+    edges: new vis.DataSet(data.edges)
+};
 $(document).ready(function () {
     let NODE_COLOUR = "#64b5f6";
+    var NODE_SELECTED_COLOUR = "#f44336";
     let NODE_SHAPE = "circle";
 
     let EDGE_COLOUR = "#2196f3";
@@ -99,8 +103,8 @@ $(document).ready(function () {
             enabled: false,
         }
     };
-
-    network = new vis.Network(container, data, options);
+    dataSet.nodes.update({id: sourceNode, color: NODE_SELECTED_COLOUR});
+    network = new vis.Network(container, dataSet, options);
 
 
     for (let i = 0; i < algo["lines"].length; i++) {

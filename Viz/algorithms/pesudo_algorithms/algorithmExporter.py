@@ -9,7 +9,7 @@ class PesudoAlgorithm:
 
     def __read(self, fileName) -> dict:
         """
-        Function to split pesudo algorthim from txt file to a json object
+        Function to split Pseudo algorthim from txt file to a json object
         """
 
         d = {"lines": []}

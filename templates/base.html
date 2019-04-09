@@ -54,8 +54,12 @@
 <body>
 <main>
     {% block fixed_nav_bar_html %}
+        <nav class="hide-on-med-and-up">
+            <div class="nav-wrapper">
+                <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons hide-on-med-and">menu</i></a>
+            </div>
+        </nav>
         <ul class="sidenav  sidenav-fixed" id="mobile-nav">
-
             {% include 'nav_content.html' %}
         </ul>
 

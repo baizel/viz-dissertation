@@ -5,7 +5,7 @@
     <script src=https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js
             xmlns="http://www.w3.org/1999/html"></script>
     <script>
-        // Pesudo code from python render
+        // Pseudo code from python render
         var isSourceNeeded = {{ isSourceNeeded|yesno:"true,false" }};
         var algo = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
         $(document).ready(function () {
@@ -93,7 +93,7 @@
                 <li class="tab col s3"><a href="#algos">Algorithm</a></li>
             </ul>
             <div id="algos" class="col l6 m12 s12 codeGen">
-                <!-- Pesudo Code injected by JS -->
+                <!-- Pseudo Code injected by JS -->
                 <pre>
 <code id="generatedCode">
 </code>

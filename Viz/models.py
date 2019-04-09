@@ -110,6 +110,9 @@ class AttemptedQuestion(models.Model):
             raise ValueError("Expected type list but got {}".format(type(x)))
         self._attempted_answers = json.dumps(x)
 
+    class Meta:
+        unique_together = (("user", "question"),)
+
 
 class QuizScores(models.Model):
     user = models.ForeignKey(

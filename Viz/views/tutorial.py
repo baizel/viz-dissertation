@@ -60,7 +60,7 @@ def summary(request):
             except AttemptedQuestion.DoesNotExist:
                 pass
     preface = quiz.preface if quiz is not None else ""
-    data = {"wrong": totalPossibleScore - totalScoreAchieved, "right": totalScoreAchieved, "stats": stats, "quiz": recentAtemptedAns, "quizID": quiz.id, "preface": preface}
+    data = {"wrong": totalPossibleScore - totalScoreAchieved, "right": totalScoreAchieved, "stats": stats, "quiz": recentAtemptedAns, "quizID": quiz.id, "preface": preface, "sourceNode": quiz.sourceNode}
     return render(request, "quiz_summary.html", context=data)
 
 
@@ -72,7 +72,7 @@ def view(request):
     quiz = quiz.generateQuiz(3)  # TODO: Add LOD (level of difficulty)
     return render(request, "tutorial.html",
                   context={"test": json.dumps(graph.getJavaScriptData(), default=NodeEdgeSerializer),
-                           "jsonAlgo": json.dumps(algo), "preface": quiz.preface, "questionsjs": json.dumps(quiz.getJsonFrontEndContext()), "quiz": quiz.getJsonFrontEndContext()})
+                           "jsonAlgo": json.dumps(algo), "preface": quiz.preface, "questionsjs": json.dumps(quiz.getJsonFrontEndContext()), "quiz": quiz.getJsonFrontEndContext(), "sourceNode": quiz.sourceNode})
 
 
 class QuizEngine:
@@ -122,7 +122,7 @@ class QuizEngine:
 
     def generateCurrentNodeQuestion(self):
         iteration = random.randint(0, self.__maxNodes - 1)
-        baseQuestion = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24), what is the current node (variable 'u' on Line 15)?".format(ordinal(iteration+1))
+        baseQuestion = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24), what is the current node (variable 'u' on Line 15)?".format(ordinal(iteration + 1))
         ansIndex = iteration * 2
         ans = list(self.__nodeStateOrder[ansIndex].values())[0][0]['id']
         options = [i for i in range(1, self.__maxNodes + 1)]
@@ -133,7 +133,7 @@ class QuizEngine:
 
     def generateNeighbourQuestions(self):
         iteration = random.randint(0, self.__maxNodes - 1)
-        baseQuestion = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24), what are the neighbours node(s) of the current node?".format(ordinal(iteration+1))
+        baseQuestion = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24), what are the neighbours node(s) of the current node?".format(ordinal(iteration + 1))
         ansIndex = (iteration * 2) + 1
         ans = []
         for i in list(self.__nodeStateOrder[ansIndex].values())[0]:
