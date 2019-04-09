@@ -1,35 +1,37 @@
 {% extends 'algorithm_base.html' %}
 
 {% block graphOptions %}
-    {% if user.is_authenticated %}
-        <div class="input-field col s12">
-            <select id="select">
-                <option value="random" selected>Random Graph</option>
-                {% for i in quizIds %}
-                    <option value="{{ i.quiz_id }}">Ouiz ID: {{ i.quiz_id }} </option>
-                {% endfor %}
-            </select>
-            <label>Load Graphs</label>
-        </div>
-    {% else %}
-        <p> Please Login to choose a graph</p>
-    {% endif %}
+    <div class="col s4">
+        {% if user.is_authenticated %}
+            <div class="input-field col s12">
+                <select id="select">
+                    <option value="random" selected>Random Graph</option>
+                    {% for i in quizIds %}
+                        <option value="{{ i.quiz_id }}">Ouiz ID: {{ i.quiz_id }} </option>
+                    {% endfor %}
+                </select>
+                <label>Load Graphs</label>
+            </div>
+        {% else %}
+            <p> Please Login to choose a graph</p>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block moreJS %}
     <script>
         $('#select').on('change', function () {
             let id = $(this).val();
-            if( id === "random"){
+            if (id === "random") {
                 graphApiCall("/api/graph/random");
-            }else {
+            } else {
                 graphApiCall('/api/graph/' + id);
             }
         });
         var url_string = window.location.href;
         var url = new URL(url_string);
         var graphID = url.searchParams.get("graphId");
-        if (graphID !== null){
+        if (graphID !== null) {
             graphApiCall('/api/graph/' + graphID);
             $('#select').val(graphID);
         }

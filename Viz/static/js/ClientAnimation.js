@@ -157,6 +157,9 @@ function animate(updates, lineNumber) {
 
     if (selectedNode !== null && nodes.get(selectedNode.id).color === NODE_COLOUR) {
         nodes.update({id: selectedNode.id, color: NODE_SELECTED_COLOUR});
+    } else if (selectedNode === null) {
+        M.toast({html: 'Selected a Node First!'});
+        return
     }
     edges.remove(previousAddedEdges);
     previousAddedEdges = $.extend(true, [], updates[lineNumber].edges);
@@ -223,11 +226,15 @@ function animate(updates, lineNumber) {
 var animationInterval = null;
 
 function playAnimation(algo) {
-    $("#play-btn").hide();
-    $("#pause-btn").show();
-    animationInterval = setInterval(function () {
-        nextFrame(algo)
-    }, animationSpeed);
+    if (selectedNode !== null) {
+        $(".play-btn").hide();
+        $(".pause-btn").show();
+        animationInterval = setInterval(function () {
+            nextFrame(algo)
+        }, animationSpeed);
+    } else {
+        M.toast({html: "Select A Node First"})
+    }
 }
 
 function nextFrame(algo) {
@@ -252,8 +259,8 @@ function previousFrame(algo) {
 }
 
 function pauseAnimation() {
-    $("#play-btn").show();
-    $("#pause-btn").hide();
+    $(".play-btn").show();
+    $(".pause-btn").hide();
     clearInterval(animationInterval)
 }
 
@@ -287,6 +294,10 @@ function getUpdateFrames(callback, algo) {
     let nodeid = "";
     if (selectedNode !== null) {
         nodeid = selectedNode.id
+    } else {
+        M.toast({html: 'Selected a Node First!'});
+        return
+
     }
     if (responseFrames == null || dataChanged) {
         $.ajax({
@@ -317,16 +328,16 @@ function updateAnimationTime(val, algo) {
 }
 
 function updateAnimationControls() {
-    if (selectedNode == null && isSourceNeeded) {
-        $("a.animation-controls").attr("disabled", true);
-        document.getElementById("animationSpeed").disabled = true;
-        $("#animation-msg").attr("hidden", false);
-    } else {
-        $("a.animation-controls").attr("disabled", false);
-        document.getElementById("animationSpeed").disabled = false;
-        $("#animation-msg").attr("hidden", true);
-
-    }
+    // if (selectedNode == null && isSourceNeeded) {
+    //     $("a.animation-controls").attr("disabled", true);
+    //     document.getElementById("animationSpeed").disabled = true;
+    //     $("#animation-msg").attr("hidden", false);
+    // } else {
+    //     $("a.animation-controls").attr("disabled", false);
+    //     document.getElementById("animationSpeed").disabled = false;
+    //     $("#animation-msg").attr("hidden", true);
+    //
+    // }
 }
 
 function addToTable(dataClass, value, displayName) {
@@ -360,15 +371,15 @@ function graphApiCall(url) {
 
 ////////////////////////////////////////////////////// Init ////////////////////////////////////////////////////
 $(document).ready(function () {
-   graphApiCall("/api/graph/random");
-    $("#pause-btn").hide();
+    graphApiCall("/api/graph/random");
+    $(".pause-btn").hide();
 
     for (i = 0; i < algo["lines"].length; i++) {
         $("#generatedCode").append("<code id=codeline-" + i + ">" + i + algo["lines"][i]["line"] + "</code>")
     }
 
     updateAnimationControls();
-    let minHeight = 750;
+    let minHeight = 770;
     if ($(".codeGen").height() > minHeight) {
         minHeight = $(".codeGen").height()
     }
