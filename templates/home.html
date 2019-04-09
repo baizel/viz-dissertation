@@ -1,12 +1,21 @@
 {% extends "base.html" %}
-
+{% load static %}
+{% block css %}
+    <style>
+        body {
+            width: 100%;
+            background-image: url("{% static 'images/bakckground.svg' %}");
+            background-size: contain;
+        }
+    </style>
+{% endblock %}
 {% block content %}
     <br><br>
     <h1 class="header center {{ primaryText }}">Viz</h1>
-    <div class="row center">
-        <h5 class="header col s12 light">An App to help learn more about Graph Algorithms</h5>
+    <div class="row {{ primaryText }} center">
+        <h5 class="header col s12">An App to help learn more about Graph Algorithms</h5>
     </div>
-    <div class="row center">
+    <div class="row center {{ primaryText }}">
         <p>Some writing about graph theory and algorithms</p>
     </div>
     <br><br>

@@ -120,7 +120,12 @@
     <div class="container">
         <h1 class="center header">Summary</h1>
         <div class="row">
-            <div class="col s6">
+            <ul class="tabs hide-on-med-and-up">
+                <li class="tab col s4"><a class="active" href="#total">Graph</a></li>
+                <li class="tab col s4"><a href="#stats">Stats</a></li>
+                <li class="tab col s4"><a href="#lastQuiz">Last Quiz</a></li>
+            </ul>
+            <div id="total" class="show-on-medium-and-up col l6 m6 s12">
                 <div class="row">
                     <div class="col s12">
                         <h4 class="center">All Time Score</h4>
@@ -130,7 +135,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col s6">
+            <div id="stats" class="show-on-medium-and-up col l6 m6 s12">
                 <h4 class="center">All time Stats</h4>
                 <table>
                     <thead>
@@ -155,8 +160,8 @@
         </div>
 
     </div>
-    <div class="row">
-        <div class="col s6">
+    <div class="row show-on-medium-and-up" id="lastQuiz">
+        <div class="col m6 s12">
 
             <h5 class="center"> Recent Quiz Answers</h5>
             {% if quiz is not None and quiz|length > 0 %}
@@ -184,11 +189,12 @@
                 <p>No Quiz Completed</p>
             {% endif %}
         </div>
-        <div class="col s6">
+        <div class="col m6 s12">
             <div id="network"></div>
             <diV class="center"><a href="/algorithm/dijkstra/?graphId={{ quizID }}"> See tutorial for this graph</a></diV>
         </div>
     </div>
+
 {% endblock %}
 
 {% block footer %}

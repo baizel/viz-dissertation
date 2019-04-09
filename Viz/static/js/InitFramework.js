@@ -3,8 +3,15 @@ $(document).ready(function () {
     $('.modal').modal();
     $('.pushpin').pushpin();
     $('select').formSelect();
-
+    $('.tabs').tabs();
+    destroyTabs();
 });
+
+function destroyTabs() {
+    if ($(window).width() >= 800) {
+        M.Tabs.getInstance($("#algo-tabs")).destroy();
+    }
+}
 
 function pushPinInit() {
     // $('.pushpin').pushpin({
@@ -14,5 +21,6 @@ function pushPinInit() {
 }
 
 $(window).resize(function () {
-    pushPinInit()
+    pushPinInit();
+    destroyTabs();
 });

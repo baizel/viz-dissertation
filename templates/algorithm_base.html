@@ -48,14 +48,47 @@
         </div>
     </div>
     <div class="row {{ primaryColour }}">
-
         <div class="row" style=" margin-bottom: 0">
             <div class="col l12 center">
                 <h4>{{ pageTitle }}</h4>
             </div>
         </div>
-        <div class="col l11">
-            <div class="col  l6 codeGen">
+        <div class="purple lighten-5 show-on-medium-and-down hide-on-med-and-up  col s12">
+            <div class="valign-wrapper ">
+                <div class="col s1 center ">
+                    <a class="animation-controls waves-effect waves-light btn-floating btn-small  {{ buttonColour }}" onclick="previousFrame({{ apiAlgo }})">
+                        <i class="small material-icons"> navigate_before</i></a>
+                </div>
+                <div class="col s1 center ">
+                    <a class="animation-controls waves-effect waves-light btn-floating btn-small  {{ buttonColour }} play-btn" onclick="playAnimation({{ apiAlgo }})">
+                        <i class="small material-icons">play_arrow</i></a>
+                    <a class="animation-controls waves-effect waves-light btn-floating btn-small {{ buttonColour }} pause-btn" onclick="pauseAnimation()">
+                        <i class="small material-icons">pause</i></a>
+                </div>
+                <div class="col s1 center ">
+                    <a class="animation-controls waves-effect waves-light btn-floating btn-small  {{ buttonColour }}" onclick="nextFrame({{ apiAlgo }})">
+                        <i class="small material-icons">navigate_next</i></a>
+                </div>
+                <div class="col s1 center ">
+                    <a class="animation-controls waves-effect waves-light btn-floating btn-small  {{ buttonColour }}" onclick="resetLines()">
+                        <i class="small material-icons">replay</i></a>
+                </div>
+                <div class="col s7 center">
+                    <form action="#">
+                        <p class="range-field">
+                            <input type="range" class="animation-controls" id="animationSpeed" min="10" max="3000" value="1000"
+                                   onchange="updateAnimationTime(this.value,{{ apiAlgo }})" oninput="updateAnimationTime(this.value,{{ apiAlgo }})"/>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col l11 m11 s12">
+            <ul class="tabs hide-on-large-only" id="algo-tabs">
+                <li class="tab col s3"><a class="active" href="#net">Network</a></li>
+                <li class="tab col s3"><a href="#algos">Algorithm</a></li>
+            </ul>
+            <div id="algos" class="col l6 m12 s12 codeGen">
                 <!-- Pesudo Code injected by JS -->
                 <pre>
 <code id="generatedCode">
@@ -66,20 +99,16 @@
                     <span>Allow Overflow</span>
                 </label>
             </div>
-            <div class="col  l6 minHeight">
-                <div id="network"></div>
-                <div class="row">
-                    <div class="col s3">
-                        {% block graphOptions %}
-                        {% endblock %}
-                    </div>
-                    <div class="col s3 valign-wrapper"><span class="dot" style="background-color: {{ selectedNodeColor }} !important;"></span><label class="keys"> Source Node</label></div>
-                    <div class="col s3 valign-wrapper"><span class="dot" style="background-color: {{ currentNodeColor }} !important;"></span><label class="keys"> Current Node</label></div>
-                    <div class="col s3 valign-wrapper"><span class="dot" style="background-color: {{ neighbourNodeColor }} !important;"></span><label class="keys"> Neighbour Node</label></div>
-                </div>
-            </div>
+            <div id="net" class="col l6 m12 s12 minHeight">
+                <div class="col s12" id="network"></div>
 
-            <div class="col  l6">
+                {% block graphOptions %}
+                {% endblock %}
+                <div class="col s4 valign-wrapper"><span class="dot" style="background-color: {{ selectedNodeColor }} !important;"></span><label class="keys"> Source Node</label></div>
+                <div class="col s4 valign-wrapper"><span class="dot" style="background-color: {{ currentNodeColor }} !important;"></span><label class="keys"> Current Node</label></div>
+                <div class="col s4 valign-wrapper"><span class="dot" style="background-color: {{ neighbourNodeColor }} !important;"></span><label class="keys"> Neighbour Node</label></div>
+            </div>
+            <div class="col l6 m6 s12">
                 <h4>Current Values</h4>
                 <p>The table of value will be populated here as you step through the algorithm</p>
                 <table id="tableValues">
@@ -91,30 +120,29 @@
                     </tr>
                 </table>
             </div>
-            <div class="col  l6">
+            <div class="col l6 m6 s12">
                 <h4>Explanation </h4>
                 <p id="exp">
                     A brief explanation will be shown here when stepping through the algorithm
                 </p>
             </div>
         </div>
-        <div class="col l1 pushpin {{ secondaryColour }}" style="right: 0;">
-            <div class="col  l12 anim">
+        <div class="col l1 m1 hide-on-med-and-down {{ secondaryColour }}" style="right: 0;">
+            <div class="col s12 anim">
                 <div class="valign-wrapper anim ">
                     <div class="container ">
                         <div class="row">
-                            <div class="col l12 center" id="animation-msg"><p>Select a source node to start an animation
-                                <p></div>
+                            <div class="col l12 center" id="animation-msg"><p>Select a source node to start an animation </p></div>
                             <div class="col l12 center ">
                                 <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="previousFrame({{ apiAlgo }})">
                                     <i class="small material-icons"> navigate_before</i></a>
                             </div>
                             <div class="col l12 center ">
-                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="playAnimation({{ apiAlgo }})" id="play-btn">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }} play-btn" onclick="playAnimation({{ apiAlgo }})">
                                     <i class="small material-icons">play_arrow</i></a>
                             </div>
                             <div class="col l12 center ">
-                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }} hidden" onclick="pauseAnimation()" id="pause-btn">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }} hidden pause-btn" onclick="pauseAnimation() ">
                                     <i class="small material-icons">pause</i></a>
                             </div>
                             <div class="col l12 center ">
@@ -132,7 +160,6 @@
                                     <input type="range" orient="vertical" class="animation-controls" id="animationSpeed" min="10" max="3000" value="1000"
                                            onchange="updateAnimationTime(this.value,{{ apiAlgo }})" oninput="updateAnimationTime(this.value,{{ apiAlgo }})"/>
                                     <label class="black-text">10ms</label>
-
                                 </div>
                             </div>
                         </div>
@@ -140,6 +167,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
 
