@@ -27,14 +27,14 @@
 <li>
     <div class="divider"></div>
 </li>
-<li><a class="subheader">All Pairs Shortest Path</a></li>
-<li><a class="waves-effect" href="{% url 'algorithm' algorithm=floydREST %}">Floyd Warshall</a></li>
+<li><a class="subheader">All Pairs Shortest Path {{ floydREST }}</a></li>
+<li><a class="waves-effect" href="{% url 'algorithm' algorithm=floydREST%}">Floyd Warshall</a></li>
 <li>
     <div class="divider"></div>
 </li>
 <li><a class="subheader">From source</a></li>
-<li><a class="waves-effect" href="{% url 'algorithm' algorithm=dijkstraREST %}">Dijkstra</a></li>
-<li><a class="waves-effect" href="{% url 'algorithm' algorithm=fordREST %}">Bellman Ford</a></li>
+<li><a class="waves-effect" href="{% url 'algorithm' algorithm=dijkstraREST%}">Dijkstra</a></li>
+<li><a class="waves-effect" href="{% url 'algorithm' algorithm=fordREST%}">Bellman Ford</a></li>
 <li>
     <div class="divider"></div>
 </li>

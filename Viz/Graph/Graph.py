@@ -32,7 +32,8 @@ class Graph:
         return {"nodes": self.nodes, "edges": self.edges}
 
     @classmethod
-    def generateRandomGraph(cls, numberOfNodes, numberOfEdges=None):
+    def generateRandomGraph(cls, numberOfNodes, numberOfEdges=None, isNegativeEdges=False):
+        lowerBound = (int(isNegativeEdges) * -50)  # Will be 1 or -50
         if numberOfEdges is None:
             numberOfEdges = numberOfNodes * 2  # Just try to add much edges as it can for now, maybe add an api end point?
         nodes = {}
@@ -41,7 +42,7 @@ class Graph:
             n = {"id": i, "label": str(i)}
             nodes[str(i)] = n
         for i in range(1, numberOfEdges):
-            dist = random.randrange(1, 50)
+            dist = random.randrange(lowerBound, 50) + 1  # +1 to prevent 0 as distance for positive edges
             fromNode = random.randrange(1, numberOfNodes + 1)
             toNode = random.randrange(1, numberOfNodes + 1)
             e = Edge(i, fromNode, toNode, dist, str(dist))

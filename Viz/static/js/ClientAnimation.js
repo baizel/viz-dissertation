@@ -226,7 +226,7 @@ function animate(updates, lineNumber) {
 var animationInterval = null;
 
 function playAnimation(algo) {
-    if (selectedNode !== null) {
+    if (selectedNode !== null || !isSourceNeeded) {
         $(".play-btn").hide();
         $(".pause-btn").show();
         animationInterval = setInterval(function () {
@@ -294,10 +294,6 @@ function getUpdateFrames(callback, algo) {
     let nodeid = "";
     if (selectedNode !== null) {
         nodeid = selectedNode.id
-    } else {
-        M.toast({html: 'Selected a Node First!'});
-        return
-
     }
     if (responseFrames == null || dataChanged) {
         $.ajax({
@@ -350,6 +346,9 @@ function graphApiCall(url) {
     $.ajax({
         url: url,
         type: "get", //send it through get method
+        data: {
+            "isNegativeEdges": isNegativeEdges
+        },
         success: function (response) {
             data = {
                 nodes: new vis.DataSet(response.nodes),

@@ -33,7 +33,6 @@ urlpatterns = [
     path('api/tutorial/', api.tutorials),
     path('api/graph/random', api.randomGraph),
     path('api/graph/<int:id>', api.graphFromQuiz),
-    path('api/graph/random/<int:numberOfNodes>', api.randomGraph),
     path('api/<str:algorithm>/', api.getAlgorithm),
     path('api/<str:algorithm>/<int:source>', api.getAlgorithm),
     path('users/', include('users.urls')),  # new

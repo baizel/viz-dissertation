@@ -58,6 +58,7 @@ class AboutPageView(TemplateView):
 
 
 class LogInView(LoginView):
+    @add_default_context("Login")
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
@@ -102,7 +103,8 @@ class AlgorithmView(TemplateView):
         elif algorithm == FORD:
             pesudoAlgo = PesudoAlgorithm("BellmanFord.txt")
             res["pageTitle"] = "Bellman Ford Algorithm"
-            res["apiAlgo"] = FLOYD
+            res["isNegativeEdges"] = True
+            res["apiAlgo"] = FORD
 
         res["jsonAlgo"] = json.dumps(pesudoAlgo.getJsonAlgo())
         return res

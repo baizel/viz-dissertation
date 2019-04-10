@@ -6,11 +6,11 @@
             xmlns="http://www.w3.org/1999/html"></script>
     <script>
         // Pseudo code from python render
+        var isNegativeEdges ={{ isNegativeEdges|yesno:"true,false" }};
+        {{ isNegativeEdges|yesno:"true,false" }}
         var isSourceNeeded = {{ isSourceNeeded|yesno:"true,false" }};
         var algo = JSON.parse('{{ jsonAlgo|safe|escapejs }}');
-        $(document).ready(function () {
-
-        });
+        var AlgoApi = "{{ apiAlgo }}";
     </script>
     <script src="{% static 'js/ClientAnimation.js' %}"></script>
     <script src="{% static 'js/Utils.js' %}"></script>
@@ -60,17 +60,17 @@
         <div class="purple lighten-5 show-on-medium-and-down hide-on-med-and-up  col s12">
             <div class="valign-wrapper ">
                 <div class="col s1 center ">
-                    <a class="animation-controls waves-effect waves-light btn-floating btn-small  {{ buttonColour }}" onclick="previousFrame({{ apiAlgo }})">
+                    <a class="animation-controls waves-effect waves-light btn-floating btn-small  {{ buttonColour }}" onclick="previousFrame(AlgoApi)">
                         <i class="small material-icons"> navigate_before</i></a>
                 </div>
                 <div class="col s1 center ">
-                    <a class="animation-controls waves-effect waves-light btn-floating btn-small  {{ buttonColour }} play-btn" onclick="playAnimation({{ apiAlgo }})">
+                    <a class="animation-controls waves-effect waves-light btn-floating btn-small  {{ buttonColour }} play-btn" onclick="playAnimation(AlgoApi)">
                         <i class="small material-icons">play_arrow</i></a>
                     <a class="animation-controls waves-effect waves-light btn-floating btn-small {{ buttonColour }} pause-btn" onclick="pauseAnimation()">
                         <i class="small material-icons">pause</i></a>
                 </div>
                 <div class="col s1 center ">
-                    <a class="animation-controls waves-effect waves-light btn-floating btn-small  {{ buttonColour }}" onclick="nextFrame({{ apiAlgo }})">
+                    <a class="animation-controls waves-effect waves-light btn-floating btn-small  {{ buttonColour }}" onclick="nextFrame(AlgoApi)">
                         <i class="small material-icons">navigate_next</i></a>
                 </div>
                 <div class="col s1 center ">
@@ -81,7 +81,7 @@
                     <form action="#">
                         <p class="range-field">
                             <input type="range" class="animation-controls" id="animationSpeed" min="10" max="3000" value="1000"
-                                   onchange="updateAnimationTime(this.value,{{ apiAlgo }})" oninput="updateAnimationTime(this.value,{{ apiAlgo }})"/>
+                                   onchange="updateAnimationTime(this.value,AlgoApi)" oninput="updateAnimationTime(this.value,AlgoApi)"/>
                         </p>
                     </form>
                 </div>
@@ -138,11 +138,11 @@
                         <div class="row">
                             <div class="col l12 center" id="animation-msg"><p>Select a source node to start an animation </p></div>
                             <div class="col l12 center ">
-                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="previousFrame({{ apiAlgo }})">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="previousFrame(AlgoApi)">
                                     <i class="small material-icons"> navigate_before</i></a>
                             </div>
                             <div class="col l12 center ">
-                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }} play-btn" onclick="playAnimation({{ apiAlgo }})">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }} play-btn" onclick="playAnimation(AlgoApi)">
                                     <i class="small material-icons">play_arrow</i></a>
                             </div>
                             <div class="col l12 center ">
@@ -150,7 +150,7 @@
                                     <i class="small material-icons">pause</i></a>
                             </div>
                             <div class="col l12 center ">
-                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="nextFrame({{ apiAlgo }})">
+                                <a class="animation-controls waves-effect waves-light btn-floating scrollspy {{ buttonColour }}" onclick="nextFrame(AlgoApi)">
                                     <i class="small material-icons">navigate_next</i></a>
                             </div>
                             <div class="col l12 center ">
@@ -162,7 +162,7 @@
                                     <p>Delay between frames</p>
                                     <label class="black-text">3000ms</label>
                                     <input type="range" orient="vertical" class="animation-controls" id="animationSpeed" min="10" max="3000" value="1000"
-                                           onchange="updateAnimationTime(this.value,{{ apiAlgo }})" oninput="updateAnimationTime(this.value,{{ apiAlgo }})"/>
+                                           onchange="updateAnimationTime(this.value,AlgoApi)" oninput="updateAnimationTime(this.value,AlgoApi)"/>
                                     <label class="black-text">10ms</label>
                                 </div>
                             </div>

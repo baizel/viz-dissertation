@@ -30,8 +30,10 @@ def graphFromQuiz(request: WSGIRequest, id):
     return err
 
 
-def randomGraph(request: WSGIRequest, numberOfNodes=7):
-    ret = Graph.generateRandomGraph(numberOfNodes).getJavaScriptData()
+def randomGraph(request: WSGIRequest):
+    numberOfNodes = request.GET.get("numberOfNodes", 7)
+    isNegativeEdges = True if request.GET.get("isNegativeEdges", 'false') == 'true' else False
+    ret = Graph.generateRandomGraph(numberOfNodes, isNegativeEdges=isNegativeEdges).getJavaScriptData()
     err = JsonResponse(json.loads(json.dumps(ret, default=NodeEdgeSerializer)))
     err.status_code = 200
     return err

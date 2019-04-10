@@ -34,7 +34,7 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-class Context(metaclass=Singleton):
+class Context:
     """
     Singleton class to represent the context that can be passed to the Django templating language
     """
