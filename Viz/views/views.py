@@ -16,32 +16,50 @@ from Viz.utils.context import NodeEdgeSerializer, Context
 from Viz.utils.QuizEngine import QuizEngine
 from users.models import CustomUser
 
-context = Context().getContext()
+
+def add_default_context(pageTitle=None):
+    def decorator(function):
+        def wrapper(*args, **kwargs):
+            if function.__name__ == "get_context_data":
+                ret = function(*args, **kwargs)
+                title = pageTitle
+                if pageTitle is None:
+                    try:
+                        title = ret["pageTitle"]
+                        ret.pop("pageTitle")
+                    except KeyError:
+                        raise KeyError("No PageTitle provided from parameter and key 'pageTitle' not found in the returned object from function {}".format(function.__name__))
+                isSourceNeeded = True
+                if "isSourceNeeded" in ret:
+                    isSourceNeeded = ret["isSourceNeeded"]
+                    ret.pop("isSourceNeeded")
+                return dict(**ret, **Context(title, isSourceNeeded).getContext())
+            return function(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
 
 
 class HomePageView(TemplateView):
     template_name = "home.html"
 
+    @add_default_context("Home")
     def get_context_data(self, **kwargs):
-        cnt = Context().getContext()
-        cnt["pageTitle"] = "Home"
-        return cnt
+        return super().get_context_data(**kwargs)
 
 
 class AboutPageView(TemplateView):
     template_name = "about.html"
 
+    @add_default_context("About")
     def get_context_data(self, **kwargs):
-        cnt = Context().getContext()
-        cnt["pageTitle"] = "About"
-        return cnt
+        return super().get_context_data(**kwargs)
 
 
 class LogInView(LoginView):
     def get_context_data(self, **kwargs):
-        context = super(LogInView, self).get_context_data(**kwargs)
-        ret = dict(**context, **Context().getContext())
-        return ret
+        return super().get_context_data(**kwargs)
 
 
 class AlgorithmView(TemplateView):
@@ -62,11 +80,13 @@ class AlgorithmView(TemplateView):
             self.template_name = 'dijkstra.html'
         return super().dispatch(request, *args, **kwargs)
 
+    @add_default_context()
     def get_context_data(self, **kwargs):
+        res = super().get_context_data(**kwargs)
         algorithm = kwargs.get("algorithm")
         if algorithm not in ALGORITHMS:
             return
-        res = Context().getContext()
+
         res["quizIds"] = self.quizIds
         pesudoAlgo = None
         if algorithm == DIJKSTRA:
@@ -97,7 +117,9 @@ class SummaryView(TemplateView):
         self.user = request.user
         return super().dispatch(request, *args, **kwargs)
 
+    @add_default_context("Summary")
     def get_context_data(self, **kwargs):
+        res = super().get_context_data(**kwargs)
         user = CustomUser.objects.get(id=self.user.id)
         allScores = QuizScores.objects.filter(user=user)
         totalScoreAchieved = 0
@@ -135,7 +157,7 @@ class SummaryView(TemplateView):
                 except AttemptedQuestion.DoesNotExist:
                     pass
         data = {"wrong": totalPossibleScore - totalScoreAchieved, "right": totalScoreAchieved, "stats": stats, "quiz": recentAtemptedAns}
-        data = dict(**data, **exData, **context)
+        data = dict(**data, **exData, **res)
         return data
 
 
@@ -146,7 +168,9 @@ class TutorialView(TemplateView):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
+    @add_default_context("Tutorial")
     def get_context_data(self, **kwargs):
+        res = super().get_context_data(**kwargs)
         quiz = QuizEngine()
         graph = quiz.graph
         algo = quiz.getPesudoJSONAlgorithm()
@@ -155,5 +179,4 @@ class TutorialView(TemplateView):
                 "jsonAlgo": json.dumps(algo), "preface": quiz.preface, "questionsjs": json.dumps(quiz.getJsonFrontEndContext()),
                 "quiz": quiz.getJsonFrontEndContext(), "sourceNode": quiz.sourceNode}
 
-        cntx = dict(**context, **data)
-        return cntx
+        return dict(**data, **res)

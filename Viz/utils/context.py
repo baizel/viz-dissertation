@@ -39,18 +39,18 @@ class Context(metaclass=Singleton):
     Singleton class to represent the context that can be passed to the Django templating language
     """
 
-    def __init__(self):
+    def __init__(self, pageTitle, isSourceNeeded):
         self.__context: dict = dict()
         self.__context["bgColour"] = ""
         self.__context["primaryColour"] = ""
         self.__context["secondaryColour"] = ""
         self.__context["buttonColour"] = "purple lighten-1"
         self.__context["primaryText"] = "black-text"
-        self.__context["pageTitle"] = "A Title"
+        self.__context["pageTitle"] = pageTitle
         self.__context["selectedNodeColor"] = SELECTED_NODE_COLOR
         self.__context["currentNodeColor"] = CURRENT_NODE_COLOR
         self.__context["neighbourNodeColor"] = NEIGHBOUR_NODE_COLOR
-        self.__context["isSourceNeeded"] = True
+        self.__context["isSourceNeeded"] = isSourceNeeded
         self.__context["dijkstraREST"] = DIJKSTRA
         self.__context["floydREST"] = FLOYD
         self.__context["fordREST"] = FORD

@@ -16,8 +16,6 @@ from Viz.utils.context import NodeEdgeSerializer, NEIGHBOUR_NODE_COLOR, Context
 # (https://stackoverflow.com/questions/9647202/ordinal-numbers-replacement)
 from users.models import CustomUser
 
-context = Context().getContext()
-
 
 def ordinal(n):
     return "%d%s" % (n, "tsnrhtdd"[(math.floor(n / 10) % 10 != 1) * (n % 10 < 4) * n % 10::4])
