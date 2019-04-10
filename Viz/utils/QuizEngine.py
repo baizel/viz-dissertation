@@ -6,73 +6,21 @@ from ast import literal_eval
 import math
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.template.defaulttags import register
 
 from Viz.Graph.Graph import Graph
 from Viz.algorithms.Dijkstra import Dijkstra
 from Viz.algorithms.DijkstraPseudoMapping import DijkstraPseudoMapping
 from Viz.models import Questions, Quiz, QuizScores, AttemptedQuestion
-from Viz.utils.context import NodeEdgeSerializer, NEIGHBOUR_NODE_COLOR
+from Viz.utils.context import NodeEdgeSerializer, NEIGHBOUR_NODE_COLOR, Context
 
 # (https://stackoverflow.com/questions/9647202/ordinal-numbers-replacement)
 from users.models import CustomUser
 
+context = Context().getContext()
+
 
 def ordinal(n):
     return "%d%s" % (n, "tsnrhtdd"[(math.floor(n / 10) % 10 != 1) * (n % 10 < 4) * n % 10::4])
-
-
-@login_required
-def summary(request):
-    user = CustomUser.objects.get(id=request.user.id)
-    allScores = QuizScores.objects.filter(user=user)
-    totalScoreAchieved = 0
-    totalPossibleScore = 0
-    totalPercent = 0
-    recentQuiz = allScores[0] if len(allScores) != 0 else None
-    recentAtemptedAns = []
-
-    for i in allScores:
-        if i.date > recentQuiz.date:
-            recentQuiz = i
-        totalScoreAchieved += float(i.score)
-        totalPossibleScore += float(i.max_score)
-        totalPercent += float(i._percent)
-    percentage = (totalScoreAchieved / totalPossibleScore) * 100 if totalPossibleScore != 0 else 0
-    averagePerQuiz = totalPercent / len(allScores) if len(allScores) != 0 else 0
-    stats = [
-        {"Current score": "{}/{} ({:5.2f}%)".format(totalScoreAchieved, totalPossibleScore, percentage)},
-        {"Number of Quiz's Completed": len(allScores)},
-        {"Average Score  per quiz": "{:5.2f}%".format(averagePerQuiz)},
-    ]
-    quiz = None
-    if recentQuiz is not None:
-        print(recentQuiz.id)
-        quiz = Quiz.objects.get(id=recentQuiz.quiz.id)
-        stats.append({"Recent Quiz Score": "{:5.2f}%".format((float(recentQuiz.score) / float(recentQuiz.max_score)) * 100)})
-
-    if quiz is not None:
-        print(recentQuiz.date)
-        for i in quiz.questions.all():
-            try:
-                a = AttemptedQuestion.objects.get(user_id=user.id, question_id=i.id)
-                recentAtemptedAns.append({"attemptedAns": a.attempted_answers, "question": i.getSummaryContext()})
-            except AttemptedQuestion.DoesNotExist:
-                pass
-    preface = quiz.preface if quiz is not None else ""
-    data = {"wrong": totalPossibleScore - totalScoreAchieved, "right": totalScoreAchieved, "stats": stats, "quiz": recentAtemptedAns, "quizID": quiz.id, "preface": preface, "sourceNode": quiz.sourceNode}
-    return render(request, "quiz_summary.html", context=data)
-
-
-@login_required
-def view(request):
-    quiz = QuizEngine()
-    graph = quiz.graph
-    algo = quiz.getPesudoJSONAlgorithm()
-    quiz = quiz.generateQuiz(3)  # TODO: Add LOD (level of difficulty)
-    return render(request, "tutorial.html",
-                  context={"test": json.dumps(graph.getJavaScriptData(), default=NodeEdgeSerializer),
-                           "jsonAlgo": json.dumps(algo), "preface": quiz.preface, "questionsjs": json.dumps(quiz.getJsonFrontEndContext()), "quiz": quiz.getJsonFrontEndContext(), "sourceNode": quiz.sourceNode})
 
 
 class QuizEngine:

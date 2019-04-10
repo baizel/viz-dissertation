@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block css %}
+    <style>
+    p {
+      font-size: 21px;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <h1 class="header center"> About </h1>
+            </div>
+            <div class="col s12">
+                <p>
+                    This tool is to help you improve your understanding of the shortest path problems.
+                    This site will introduce you to 3 algorithms that are commonly used to solve the shortest path problem: Dijkstra, Bellman-Ford & Floyd-Warshall.
+                    You will be able to step through pseudo code for each algorithm and watch how the algorithms interacts with the graph and data.
+                </p>
+                <br>
+                <p>
+                    After you have grasped the basic understanding of an algorithm you can test you knowledge by using the <a href="{% url 'tutorial' %}">tutorials page.</a>
+                    Currently, there is only support to test your knowledge for Dijkstra's algorithm, however, some more may be added in the future.
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -8,6 +8,11 @@ SELECTED_NODE_COLOR_HTML = "red lighten-2"
 CURRENT_NODE_COLOR_HTML = "yellow lighten-1"
 NEIGHBOUR_NODE_COLOR_HTML = "purple lighten-3"
 
+DIJKSTRA = "dijkstra"
+FORD = "ford"
+FLOYD = "floyd"
+ALGORITHMS = [FORD, FLOYD, DIJKSTRA]
+
 
 def NodeEdgeSerializer(obj):
     if isinstance(obj, Node):
@@ -46,6 +51,9 @@ class Context(metaclass=Singleton):
         self.__context["currentNodeColor"] = CURRENT_NODE_COLOR
         self.__context["neighbourNodeColor"] = NEIGHBOUR_NODE_COLOR
         self.__context["isSourceNeeded"] = True
+        self.__context["dijkstraREST"] = DIJKSTRA
+        self.__context["floydREST"] = FLOYD
+        self.__context["fordREST"] = FORD
 
     def getContext(self) -> dict:
         """

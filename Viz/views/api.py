@@ -1,7 +1,7 @@
 import json
 
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpResponse, JsonResponse, QueryDict
+from django.http import HttpResponse, JsonResponse
 from djongo.sql2mongo import SQLDecodeError
 
 from Viz.algorithms.Dijkstra import Dijkstra
@@ -13,7 +13,9 @@ from Viz.utils.context import NodeEdgeSerializer
 from users.models import CustomUser
 
 context: dict = dict()
-
+"""
+This really should be in a seprate app 
+"""
 
 def graphFromQuiz(request: WSGIRequest, id):
     try:

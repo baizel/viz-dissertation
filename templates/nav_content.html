@@ -6,7 +6,7 @@
             {% if not user.socialaccount_set.all.0.get_avatar_url %}
                 <a href="#"><img class="circle" src="{% static 'images/default_profile.jpeg' %}" style="display: block;margin-left: auto;margin-right: auto;"></a>
             {% else %}
-                <a href="/summary"><img class="circle" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="display: block;margin-left: auto;margin-right: auto;"></a>
+                <a href="{% url 'summary' %}"><img class="circle" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="display: block;margin-left: auto;margin-right: auto;"></a>
 
             {% endif %}
             <a href="#name"><span class="black-text name">{{ user.first_name|title }}</span></a>
@@ -20,27 +20,27 @@
 <li>
     <div class="divider"></div>
 </li>
-<li><a href="/">Home</a></li>
-<li><a href="/about">About</a></li>
-<li><a href="/tutorial">Tutorial</a></li>
+<li><a href="{% url 'home' %}">Home</a></li>
+<li><a href="{% url 'about' %}">About</a></li>
+<li><a href="{% url 'tutorial' %}">Tutorial</a></li>
 
 <li>
     <div class="divider"></div>
 </li>
 <li><a class="subheader">All Pairs Shortest Path</a></li>
-<li><a class="waves-effect" href="/algorithm/floyd">Floyd Warshall</a></li>
+<li><a class="waves-effect" href="{% url 'algorithm' algorithm=floydREST %}">Floyd Warshall</a></li>
 <li>
     <div class="divider"></div>
 </li>
 <li><a class="subheader">From source</a></li>
-<li><a class="waves-effect" href="/algorithm/dijkstra">Dijkstra</a></li>
-<li><a class="waves-effect" href="/algorithm/ford">Bellman Ford</a></li>
+<li><a class="waves-effect" href="{% url 'algorithm' algorithm=dijkstraREST %}">Dijkstra</a></li>
+<li><a class="waves-effect" href="{% url 'algorithm' algorithm=fordREST %}">Bellman Ford</a></li>
 <li>
     <div class="divider"></div>
 </li>
 <li><a class="subheader">User</a></li>
 {% if user.is_authenticated %}
-    <li><a href="/summary">My Profile</a>
+    <li><a href="{% url 'summary' %}">My Profile</a>
     <li><a href="{% url 'account_logout' %}">Log out</a>
         {% else %}
         {#        Dissable this for now as custom ui needs to be updated #}

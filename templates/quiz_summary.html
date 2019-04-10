@@ -11,6 +11,7 @@
     <script>
         Chart.defaults.global.animation.duration = 2000;
         Chart.defaults.global.legend.position = 'bottom';
+        var DATA = null;
 
         function initGraph(dataset) {
             var NODE_COLOUR = "#64b5f6";
@@ -53,23 +54,27 @@
         }
 
         function graphDraw() {
-            $.ajax({
-                url: "/api/graph/{{ quizID }}",
-                type: "get", //send it through get method
-                success: function (response) {
-                    data = {
-                        nodes: new vis.DataSet(response.nodes),
-                        edges: new vis.DataSet(response.edges)
-                    };
-                    nodes = data.nodes;
-                    edges = data.edges;
-
-                    initGraph(data);
-                },
-                error: function (xhr) {
-                    alert("Cant get graph")
-                }
-            });
+            if (DATA === null) {
+                $.ajax({
+                    url: "/api/graph/{{ quizID }}",
+                    type: "get", //send it through get method
+                    success: function (response) {
+                        data = {
+                            nodes: new vis.DataSet(response.nodes),
+                            edges: new vis.DataSet(response.edges)
+                        };
+                        nodes = data.nodes;
+                        edges = data.edges;
+                        DATA = data;
+                        initGraph(data);
+                    },
+                    error: function (xhr) {
+                        alert("Cant get graph")
+                    }
+                });
+            } else {
+                initGraph(DATA);
+            }
         }
 
         function drawChart() {
@@ -93,9 +98,12 @@
             });
         }
 
-        $(document).ready(function () {
+        $(window).on('load', function () {
             drawChart();
-            graphDraw();
+            setTimeout(function () {
+                graphDraw();
+            }, 1000); //Delay for 1sec or it does not load properly on mobile, no idea why
+
         });
 
     </script>
@@ -163,9 +171,11 @@
 
     </div>
     <div class="row show-on-medium-and-up" id="lastQuiz">
-        <div class="col m6 s12">
+        <div class="col s12 header">
+            <h5 class="center"> Recent Quiz Question and Answers</h5>
 
-            <h5 class="center"> Recent Quiz Answers</h5>
+        </div>
+        <div class="col m6 s12">
             {% if quiz is not None and quiz|length > 0 %}
                 {% for i in quiz %}
                     <div class="input-field col s12">
