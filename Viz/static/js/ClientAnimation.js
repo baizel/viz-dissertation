@@ -157,8 +157,8 @@ function animate(updates, lineNumber) {
 
     if (selectedNode !== null && nodes.get(selectedNode.id).color === NODE_COLOUR) {
         nodes.update({id: selectedNode.id, color: NODE_SELECTED_COLOUR});
-    } else if (selectedNode === null) {
-        M.toast({html: 'Selected a Node First!'});
+    } else if (selectedNode === null &&  isSourceNeeded) {
+        M.toast({html: 'Selected A Node First!'});
         return
     }
     edges.remove(previousAddedEdges);
