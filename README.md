@@ -5,6 +5,6 @@ The app is deployed on heroku
 can be accessed at 
 https://viz.baizel.dev 
 
-Need to have 'dbpasswd' set as an environment variable. 
+Need to have 'dbhost' & 'dbanme' set as an environment variable or configure the your own databse in settings.py 
 
 Dbase: https://cloud.mongodb.com
