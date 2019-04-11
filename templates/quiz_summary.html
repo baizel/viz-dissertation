@@ -103,7 +103,6 @@
             setTimeout(function () {
                 graphDraw();
             }, 1000); //Delay for 1sec or it does not load properly on mobile, no idea why
-
         });
 
     </script>
@@ -114,27 +113,25 @@
 {% block css %}
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"/>
     <style type="text/css">
-        #network {
-            width: 100%;
-            height: 693px;
-            border: 0px solid lightgray;
-        }
-
-        .anim {
-            height: 100vh;
+        html, body, .block {
+            height: 100%;
         }
     </style>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1 class="center header">Summary</h1>
+    <div class="tabpushpin">
         <div class="row">
             <ul class="tabs hide-on-med-and-up">
                 <li class="tab col s4"><a class="active" href="#total">Graph</a></li>
                 <li class="tab col s4"><a href="#stats">Stats</a></li>
                 <li class="tab col s4"><a href="#lastQuiz">Last Quiz</a></li>
             </ul>
+        </div>
+    </div>
+    <div class="container">
+        <h1 class="center header">Summary</h1>
+        <div class="row">
             <div id="total" class="show-on-medium-and-up col l6 m6 s12">
                 <div class="row">
                     <div class="col s12">
@@ -202,8 +199,13 @@
             {% endif %}
         </div>
         <div class="col m6 s12">
-            <div id="network"></div>
-            <diV class="center"><a href="/algorithm/dijkstra/?graphId={{ quizID }}"> See tutorial for this graph</a></diV>
+            <div class="container">
+                <div class="show-on-small-only">
+                    <p><b>Note: Use the white space to scroll up & down</b></p>
+                </div>
+                <div id="network"></div>
+                <diV class="center"><a href="/algorithm/dijkstra/?graphId={{ quizID }}"> See tutorial for this graph</a></diV>
+            </div>
         </div>
     </div>
 

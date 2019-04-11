@@ -38,12 +38,33 @@ input[type=range][orient=vertical] {
 }
 
 .dot {
-  height: 25px;
-  width: 25px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
+    height: 25px;
+    width: 25px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
 }
+
 .keys {
     padding-left: 10px;
+}
+
+.pin-top {
+    position: relative;
+    z-index: 10;
+}
+
+.pin-bottom {
+    position: relative;
+    z-index: 10;
+}
+
+.pinned {
+    width: 100%;
+    position: fixed !important;
+    z-index: 10;
+}
+
+.anim {
+    height: 100vh;
 }

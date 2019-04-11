@@ -5,6 +5,7 @@ $(document).ready(function () {
     $('select').formSelect();
     $('.tabs').tabs();
     destroyTabs();
+    pushPinInit();
 });
 
 function destroyTabs() {
@@ -14,10 +15,10 @@ function destroyTabs() {
 }
 
 function pushPinInit() {
-    // $('.pushpin').pushpin({
-    //     offset: $(this).height() - $(".pushpin").height()
-    // });
-    // $("main").css("padding-bottom", $(".pushpin").height());
+    let obj = $('.tabpushpin');
+    if (obj.length) {
+        obj.pushpin({top: obj.offset().top});
+    }
 }
 
 $(window).resize(function () {

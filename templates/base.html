@@ -23,19 +23,26 @@
         <title>{{ pageTitle|title }}</title>
 
         <!-- CSS  -->
+        <style>
+            #network {
+                width: 100%;
+                height: 693px;
+                border: 0px solid lightgray;
+                background-color: #fafafa;
+            }
+
+            .sidenav-footer {
+                margin-bottom: 0px;
+                padding: 0;
+            }
+
+        </style>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         {% block fixed_nav_bar_css %}
             <link href="{% static 'css/fixed-nav-bar.css' %}" rel="stylesheet"/>
         {% endblock %}
 
         {% block css %}
-            <style>
-                .sidenav-footer {
-                    margin-bottom: 0px;
-                    padding: 0;
-                }
-
-            </style>
         {% endblock %}
 
         <!--Import Google Icon Font-->

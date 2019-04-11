@@ -14,7 +14,7 @@ class PesudoAlgorithm:
 
         d = {"lines": []}
         baseDir = os.path.dirname(os.path.realpath(__file__))
-        o = open(os.path.join(baseDir + "/txt/", fileName))
+        o = open(os.path.join(baseDir + "/txt/", fileName), encoding="utf8")
         for line in o:
             res = line.split("//")
             data = {"line": self.remWhiteSpaceAtEnd(res[0].strip("\n")) + " <span class=data></span>" + "\n"}
@@ -26,11 +26,11 @@ class PesudoAlgorithm:
     def remWhiteSpaceAtEnd(self, txt):
         if len(txt) != 0:
             split = 0
-            for i in range(len(txt)-1,0,-1):
+            for i in range(len(txt) - 1, 0, -1):
                 split = i
                 if txt[i] != " ":
                     break
-            return txt[0:split+1]
+            return txt[0:split + 1]
         return txt
 
     def getJsonAlgo(self):
