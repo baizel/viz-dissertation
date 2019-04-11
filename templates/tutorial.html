@@ -19,15 +19,19 @@
 
 {% block content %}
     <div class="row">
-        <div class="col l12 center">
+        <div class="hide-on-med-and-down col l12 center">
             <h1>Tutorial</h1>
         </div>
-        <div class="tabpushpin hide-on-med-and-up">
-            <ul class="tabs">
-                <li class="tab col s4"><a href="#algorithm">Pseudo Code</a></li>
-                <li class="tab col s4"><a class="active" href="#graph">Network</a></li>
-                <li class="tab col s4"><a href="#questions">Questions</a></li>
-            </ul>
+        <div class="wrapper">
+            <div class="tabpushpin">
+                <div class="row">
+                    <ul class="tabs hide-on-med-and-up">
+                        <li class="tab col s4"><a href="#algorithm">Pseudo Code</a></li>
+                        <li class="tab col s4"><a class="active" href="#graph">Network</a></li>
+                        <li class="tab col s4"><a href="#questions">Questions</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
         <div id="questions" class="show-on-medium-and-up col l6 s12">
             <div class="container">
@@ -56,7 +60,7 @@
             </div>
         </div>
         <div class="col l6 s12">
-            <div class="tabpushpin hide-on-med-and-down">
+            <div class="hide-on-med-and-down">
                 <ul class="tabs">
                     <li class="tab col s6"><a href="#algorithm">Pseudo Code</a></li>
                     <li class="tab col s6"><a class="active" href="#graph">Network</a></li>

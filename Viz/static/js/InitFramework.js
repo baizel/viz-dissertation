@@ -15,6 +15,7 @@ function destroyTabs() {
 }
 
 function pushPinInit() {
+    $(".wrapper").height($('.tabpushpin').height())
     let obj = $('.tabpushpin');
     if (obj.length) {
         obj.pushpin({top: obj.offset().top});

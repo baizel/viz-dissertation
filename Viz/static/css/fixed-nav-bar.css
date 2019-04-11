@@ -68,3 +68,6 @@ input[type=range][orient=vertical] {
 .anim {
     height: 100vh;
 }
+nav .brand-logo {
+    font-size: 1.8rem !important;
+}
