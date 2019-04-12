@@ -63,11 +63,14 @@ input[type=range][orient=vertical] {
     width: 100%;
     position: fixed !important;
     z-index: 10;
+    bottom: 0;
+
 }
 
 .anim {
     height: 100vh;
 }
+
 nav .brand-logo {
     font-size: 1.8rem !important;
 }
