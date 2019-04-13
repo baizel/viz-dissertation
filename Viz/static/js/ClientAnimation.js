@@ -29,6 +29,19 @@ var edges = new vis.DataSet([
     {from: 6, to: 7, label: "12", distance: 12,}
 ]);
 var network = null;
+var isShowingToast = false;
+
+function toast() {
+    if (!isShowingToast) {
+        isShowingToast = true;
+        M.toast({
+            html: "Select A Node First", completeCallback: function () {
+                isShowingToast = false;
+            }
+        });
+    }
+
+}
 
 function initGraph(dataset) {
     // create a network
@@ -157,8 +170,8 @@ function animate(updates, lineNumber) {
 
     if (selectedNode !== null && nodes.get(selectedNode.id).color === NODE_COLOUR) {
         nodes.update({id: selectedNode.id, color: NODE_SELECTED_COLOUR});
-    } else if (selectedNode === null &&  isSourceNeeded) {
-        M.toast({html: 'Selected A Node First!'});
+    } else if (selectedNode === null && isSourceNeeded) {
+        toast();
         return
     }
     edges.remove(previousAddedEdges);
@@ -233,7 +246,7 @@ function playAnimation(algo) {
             nextFrame(algo)
         }, animationSpeed);
     } else {
-        M.toast({html: "Select A Node First"})
+        toast();
     }
 }
 
@@ -294,6 +307,9 @@ function getUpdateFrames(callback, algo) {
     let nodeid = "";
     if (selectedNode !== null) {
         nodeid = selectedNode.id
+    } else if (isSourceNeeded) {
+        toast();
+        return
     }
     if (responseFrames == null || dataChanged) {
         $.ajax({
