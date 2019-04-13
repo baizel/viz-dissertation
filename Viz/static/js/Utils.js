@@ -5,7 +5,7 @@ function toggleOverflow() {
 
 function mobileControls() {
     $(".perserveHeight").height($('.mobile-controls').height());
-    $('.mobile-controls').pushpin({offset: window.innerHeight - $('.mobile-controls').height()});
+    $('.mobile-controls').pushpin({offset: window.innerHeight - 63});
 }
 
 $(document).ready(function () {
