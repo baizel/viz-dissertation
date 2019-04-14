@@ -388,7 +388,12 @@ function graphApiCall(url) {
 
 ////////////////////////////////////////////////////// Init ////////////////////////////////////////////////////
 $(document).ready(function () {
-    graphApiCall("/api/graph/random");
+    const urlParams = new URLSearchParams(window.location.search);
+    const gId = urlParams.get('graphId');
+    if (gId === null)
+        graphApiCall("/api/graph/random");
+    else
+        graphApiCall("/api/graph/"+gId);
     $(".pause-btn").hide();
 
     for (i = 0; i < algo["lines"].length; i++) {

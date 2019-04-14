@@ -161,6 +161,8 @@ class SummaryView(TemplateView):
                     recentAtemptedAns.append({"attemptedAns": a.attempted_answers, "question": i.getSummaryContext()})
                 except AttemptedQuestion.DoesNotExist:
                     pass
+                except AttemptedQuestion.MultipleObjectsReturned:
+                    pass
         data = {"wrong": totalPossibleScore - totalScoreAchieved, "right": totalScoreAchieved, "stats": stats, "quiz": recentAtemptedAns, "timeChartData": timeChartData}
         data = dict(**data, **exData, **res)
         return data

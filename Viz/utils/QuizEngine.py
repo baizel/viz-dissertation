@@ -98,8 +98,9 @@ class QuizEngine:
     def generateDistanceOfRandomNodeQuestion(self):
         iteration = random.randint(1, self.__maxNodes - 1)
         randomNode = random.randint(1, self.__maxNodes)
-        question = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24), whats the distance for node {}?".format(ordinal(iteration), randomNode)
+        question = "On the {} iteration of the while Loop in the Dijkstra Algorithm @ Line 15, whats the distance for node {}?".format(ordinal(iteration), randomNode)
         ans = self.__getNodeDistanceAtState(self.__distanceState, iteration)[randomNode]
+        print(self.__distanceState)
         options = [str(random.randint(0, 50)) for _ in range(4)]
         options.append(str(ans))
         if str(ans) != self.INF_OPTIONS:
