@@ -8,6 +8,7 @@
     <script src=https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js
             xmlns="http://www.w3.org/1999/html">
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
     <script>
         Chart.defaults.global.animation.duration = 2000;
         Chart.defaults.global.legend.position = 'bottom';
@@ -78,6 +79,7 @@
         }
 
         function drawChart() {
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             //Destroy the dougnut chart here, not sure how it's accessible, but it won't work through window.onload
             var data = {
                 labels: ['Right Answers', 'Wrong Answers'],
@@ -92,10 +94,45 @@
                 }]
             };
             var ctx = document.getElementById("myChart").getContext("2d");
+            var ctxd = document.getElementById("dateChart").getContext("2d");
             new Chart(ctx, {
                 type: 'doughnut',
                 data: data,
+                options: {
+                    title: {
+                        display: true,
+                        text: 'All Time Score'
+                    }
+                }
             });
+
+
+            timeData = {
+                labels: [
+                    {% for i  in timeChartData %}
+                        days[new Date({{ i.date}}).getDay()],
+                    {% endfor %}
+                ],
+                datasets: [{
+                    data: [
+                        {% for i  in timeChartData %}
+                            {#label.push(new Date({{ i.date }}).toLocaleString());#}
+                            {"x": new Date({{ i.date}}), "y":{{ i.y }}},
+                        {% endfor %}
+                    ]
+                }]
+            };
+            new Chart(ctxd, {
+                type: 'line',
+                data: timeData,
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Score Over Time'
+                    }
+                }
+            });
+
         }
 
         $(window).on('load', function () {
@@ -137,10 +174,15 @@
             <div id="total" class="show-on-medium-and-up col l6 m6 s12">
                 <div class="row">
                     <div class="col s12">
-                        <h4 class="center">All Time Score</h4>
+                        <h4 class="center">Graphs</h4>
                     </div>
                     <div class="col s12">
-                        <canvas id="myChart" width="200" height="200"></canvas>
+                        <div class="col s12 m6">
+                            <canvas id="dateChart" width="150" height="150"></canvas>
+                        </div>
+                        <div class="col s12 m6">
+                            <canvas id="myChart" width="150" height="150"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -31,11 +31,11 @@ var edges = new vis.DataSet([
 var network = null;
 var isShowingToast = false;
 
-function toast() {
+function toast(msg) {
     if (!isShowingToast) {
         isShowingToast = true;
         M.toast({
-            html: "Select A Node First", completeCallback: function () {
+            html: msg, completeCallback: function () {
                 isShowingToast = false;
             }
         });
@@ -171,7 +171,7 @@ function animate(updates, lineNumber) {
     if (selectedNode !== null && nodes.get(selectedNode.id).color === NODE_COLOUR) {
         nodes.update({id: selectedNode.id, color: NODE_SELECTED_COLOUR});
     } else if (selectedNode === null && isSourceNeeded) {
-        toast();
+        toast("Select A Node First");
         return
     }
     edges.remove(previousAddedEdges);
@@ -246,7 +246,7 @@ function playAnimation(algo) {
             nextFrame(algo)
         }, animationSpeed);
     } else {
-        toast();
+        toast("Select A Node First");
     }
 }
 
@@ -308,7 +308,7 @@ function getUpdateFrames(callback, algo) {
     if (selectedNode !== null) {
         nodeid = selectedNode.id
     } else if (isSourceNeeded) {
-        toast();
+        toast("Select A Node First");
         return
     }
     if (responseFrames == null || dataChanged) {
@@ -324,6 +324,7 @@ function getUpdateFrames(callback, algo) {
                 dataChanged = false;
             },
             error: function (xhr) {
+                toast("Could not get animation updates");
                 //Do Something to handle error
             }
         });
@@ -375,6 +376,7 @@ function graphApiCall(url) {
             initGraph(data);
         },
         error: function (xhr) {
+            toast("Could not get Graph, please refresh");
             data = {
                 nodes: nodes,
                 edges: edges

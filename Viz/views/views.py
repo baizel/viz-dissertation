@@ -129,13 +129,16 @@ class SummaryView(TemplateView):
         totalPercent = 0
         recentQuiz = allScores[0] if len(allScores) != 0 else None
         recentAtemptedAns = []
-
+        i: QuizScores
+        timeChartData = []
         for i in allScores:
             if i.date > recentQuiz.date:
                 recentQuiz = i
             totalScoreAchieved += float(i.score)
             totalPossibleScore += float(i.max_score)
             totalPercent += float(i._percent)
+            timeChartData.append({"date": i.date.timestamp() * 1000, "y": i.score})
+            # print(i.date.timestamp() * 1000)
         percentage = (totalScoreAchieved / totalPossibleScore) * 100 if totalPossibleScore != 0 else 0
         averagePerQuiz = totalPercent / len(allScores) if len(allScores) != 0 else 0
         stats = [
@@ -158,7 +161,7 @@ class SummaryView(TemplateView):
                     recentAtemptedAns.append({"attemptedAns": a.attempted_answers, "question": i.getSummaryContext()})
                 except AttemptedQuestion.DoesNotExist:
                     pass
-        data = {"wrong": totalPossibleScore - totalScoreAchieved, "right": totalScoreAchieved, "stats": stats, "quiz": recentAtemptedAns}
+        data = {"wrong": totalPossibleScore - totalScoreAchieved, "right": totalScoreAchieved, "stats": stats, "quiz": recentAtemptedAns, "timeChartData": timeChartData}
         data = dict(**data, **exData, **res)
         return data
 
