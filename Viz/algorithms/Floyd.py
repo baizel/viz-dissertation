@@ -17,44 +17,44 @@ class Mapping:
         self.forLoopK = "kForLoopId"
 
     def setToInf(self, htmlTable):
-        self.animationEngine.addToUpdateQueue(5, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
+        self.animationEngine.addToFrames(5, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
 
     def setDistances(self, htmlTable):
-        self.animationEngine.addToUpdateQueue(7)
-        self.animationEngine.addToUpdateQueue(8, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
+        self.animationEngine.addToFrames(7)
+        self.animationEngine.addToFrames(8, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
 
     def setToZero(self, htmlTable):
-        self.animationEngine.addToUpdateQueue(10)
-        self.animationEngine.addToUpdateQueue(11, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
+        self.animationEngine.addToFrames(10)
+        self.animationEngine.addToFrames(11, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False))
 
     def iLoop(self, i):
         nodes = [{"id": i.id, "color": NEIGHBOUR_NODE_COLOR}]
-        self.animationEngine.addToUpdateQueue(13, data=ExtraData.addSingleTableDataAndGet(self.forLoopI, i, inlineExp="i ="), nodes=nodes)
+        self.animationEngine.addToFrames(13, data=ExtraData.addSingleTableDataAndGet(self.forLoopI, i, inlineExp="i ="), nodes=nodes)
 
     def jLoop(self, j):
         nodes = [{"id": j.id, "color": SELECTED_NODE_COLOR}]
-        self.animationEngine.addToUpdateQueue(14, data=ExtraData.addSingleTableDataAndGet(self.forLoopJ, j, inlineExp="j ="), nodes=nodes)
+        self.animationEngine.addToFrames(14, data=ExtraData.addSingleTableDataAndGet(self.forLoopJ, j, inlineExp="j ="), nodes=nodes)
 
     def kLoop(self, i, j, k, distance, htmlTable):
         nodes = [{"id": k.id, "color": CURRENT_NODE_COLOR}, {"id": j.id, "color": SELECTED_NODE_COLOR}, {"id": i.id, "color": NEIGHBOUR_NODE_COLOR}]
         data = ExtraData(self.forLoopK, k, inlineExp="k =", isShownOnScreen=True)
         data.addToTable(self.tableMatrixID, self.tableMatrixLabel, htmlTable)
         exp = self.__createExp(i, j, k, distance)
-        self.animationEngine.addToUpdateQueue(15, data=data, nodes=nodes, overrideExplanation=exp)
-        self.animationEngine.addToUpdateQueue(16, overrideExplanation=exp)
+        self.animationEngine.addToFrames(15, data=data, nodes=nodes, overrideExplanation=exp)
+        self.animationEngine.addToFrames(16, overrideExplanation=exp)
 
     def assignDistance(self, i, j, k, distance, htmlTable):
         exp = self.__createExp(i, j, k, distance)
-        self.animationEngine.addToUpdateQueue(17, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False),
-                                              overrideExplanation=exp)
-        self.animationEngine.addToUpdateQueue(18, overrideExplanation=exp)
+        self.animationEngine.addToFrames(17, data=ExtraData.addSingleTableDataAndGet(self.tableMatrixID, htmlTable, tableName=self.tableMatrixLabel, isShownOnScreen=False),
+                                         overrideExplanation=exp)
+        self.animationEngine.addToFrames(18, overrideExplanation=exp)
 
     def ret(self):
-        self.animationEngine.addToUpdateQueue(19)
-        self.animationEngine.addToUpdateQueue(20)
-        self.animationEngine.addToUpdateQueue(21)
-        self.animationEngine.addToUpdateQueue(22)
-        self.animationEngine.addToUpdateQueue(23)
+        self.animationEngine.addToFrames(19)
+        self.animationEngine.addToFrames(20)
+        self.animationEngine.addToFrames(21)
+        self.animationEngine.addToFrames(22)
+        self.animationEngine.addToFrames(23)
 
     def __createExp(self, i, j, k, distance):
         exp = "The distance from node {}<code>(j)</code> to node <code>{}(i)</code> is <code>{} <span class='{}'>(distance[j][i])</span></code></br>".format(j, i, distance[j][i], SELECTED_NODE_COLOR_HTML)

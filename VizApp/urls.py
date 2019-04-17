@@ -33,8 +33,8 @@ urlpatterns = [
     path('api/tutorial/', api.tutorials),
     path('api/graph/random', api.randomGraph),
     path('api/graph/<int:id>', api.graphFromQuiz),
-    path('api/<str:algorithm>/', api.getAlgorithm),
-    path('api/<str:algorithm>/<int:source>', api.getAlgorithm),
+    path('api/animation/<str:algorithm>/', api.getAlgorithm),
+    path('api/animation/<str:algorithm>/<int:source>', api.getAlgorithm),
     path('users/', include('users.urls')),  # new
     path('users/', include('django.contrib.auth.urls')),  # new
     url(r"^accounts/login/$", views.LogInView.as_view(), name="account_login"),

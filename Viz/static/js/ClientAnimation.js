@@ -313,7 +313,7 @@ function getUpdateFrames(callback, algo) {
     }
     if (responseFrames == null || dataChanged) {
         $.ajax({
-            url: "/api/" + algo + "/" + nodeid,
+            url: "/api/animation/" + algo + "/" + nodeid,
             type: "get", //send it through get method
             data: {
                 "network": JSON.stringify(data)
@@ -325,7 +325,6 @@ function getUpdateFrames(callback, algo) {
             },
             error: function (xhr) {
                 toast("Could not get animation updates");
-                //Do Something to handle error
             }
         });
     } else {

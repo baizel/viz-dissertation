@@ -109,12 +109,12 @@ class AnimationEngine:
         self.nodeOrder = []
         self.edgeOrder = []
 
-    def addToUpdateQueue(self, codeToLineNumber: int,
-                         options: dict = None,  # Same as vis.js options used for update
-                         edges: list = None,  # Same as vis.js edges used for update
-                         nodes: list = None,  # Same as vis.js nodes used for update
-                         data: ExtraData = None,
-                         overrideExplanation: string = None):
+    def addToFrames(self, codeToLineNumber: int,
+                    options: dict = None,  # Same as vis.js options used for update
+                    edges: list = None,  # Same as vis.js edges used for update
+                    nodes: list = None,  # Same as vis.js nodes used for update
+                    data: ExtraData = None,
+                    overrideExplanation: string = None):
         if nodes is not None and len(nodes) > 0:
             self.nodeOrder.append({codeToLineNumber: nodes})
         if edges is not None and len(edges) > 0:

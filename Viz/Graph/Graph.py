@@ -1,8 +1,5 @@
 import random
-from collections import namedtuple
-from typing import List
 
-# Edge = namedtuple('Edge', 'startNodeId, endNodeId, distance, edgeId')
 from Viz.Graph.DataSet import Edge, Node
 
 INF = float('inf')

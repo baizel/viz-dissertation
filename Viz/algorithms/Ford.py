@@ -31,14 +31,14 @@ class BellmanFordMapping:
         }
 
     def initDistAndPrev(self, dist, prev):
-        self.animationEngine.addToUpdateQueue(6)
-        self.animationEngine.addToUpdateQueue(7, data=ExtraData.addSingleTableDataAndGet(self.distanceId, dist, "Distance", self.displayNames[self.distanceId], "Distance"))
-        self.animationEngine.addToUpdateQueue(8, data=ExtraData.addSingleTableDataAndGet(self.prevId, prev, "Previous", self.displayNames[self.prevId], "Previous"))
+        self.animationEngine.addToFrames(6)
+        self.animationEngine.addToFrames(7, data=ExtraData.addSingleTableDataAndGet(self.distanceId, dist, "Distance", self.displayNames[self.distanceId], "Distance"))
+        self.animationEngine.addToFrames(8, data=ExtraData.addSingleTableDataAndGet(self.prevId, prev, "Previous", self.displayNames[self.prevId], "Previous"))
 
     def firstForLoop(self, dist):
-        self.animationEngine.addToUpdateQueue(9)
-        self.animationEngine.addToUpdateQueue(10, data=ExtraData.addSingleTableDataAndGet(self.distanceId, dist, "Distance", self.displayNames))
-        self.animationEngine.addToUpdateQueue(11)
+        self.animationEngine.addToFrames(9)
+        self.animationEngine.addToFrames(10, data=ExtraData.addSingleTableDataAndGet(self.distanceId, dist, "Distance", self.displayNames))
+        self.animationEngine.addToFrames(11)
 
     def innerLoop(self, u, v, w, distance, graph, sourceNode, previous):
         data = ExtraData(self.uID, "u = {}, v = {}, distanceBetween({},{}) = {}".format(u, v, u, v, w))
@@ -46,10 +46,10 @@ class BellmanFordMapping:
         data.addToTable(self.vID, self.displayNames[self.vID], v)
         data.addToTable(self.wID, self.displayNames[self.wID], w)
         nodes = [{"id": u.id, "color": CURRENT_NODE_COLOR}, {"id": v.id, "color": NEIGHBOUR_NODE_COLOR}]
-        self.animationEngine.addToUpdateQueue(12, data=data, nodes=nodes)
-        self.animationEngine.addToUpdateQueue(13, edges=self.edgeHighlighter.getEdges(distance, previous, u, v, w, sourceNode, graph), data=ExtraData.addSingleTableDataAndGet(
+        self.animationEngine.addToFrames(12, data=data, nodes=nodes)
+        self.animationEngine.addToFrames(13, edges=self.edgeHighlighter.getEdges(distance, previous, u, v, w, sourceNode, graph), data=ExtraData.addSingleTableDataAndGet(
             self.innerIfD, "{} + {} < {} = {}".format(distance[u], w, distance[v], distance[u] + w < distance[v])))
-        self.animationEngine.addToUpdateQueue(14, data=ExtraData.addSingleTableDataAndGet(self.innerIfDBool, str(distance[u] + w < distance[v])))
+        self.animationEngine.addToFrames(14, data=ExtraData.addSingleTableDataAndGet(self.innerIfDBool, str(distance[u] + w < distance[v])))
 
     def ifStatement(self, u, v, w, distances, previous):
         data13 = ExtraData(self.equalDistID, "distance[{}] = {} + {}".format(v, distances[u], w))
@@ -58,33 +58,33 @@ class BellmanFordMapping:
         data14 = ExtraData(self.equalPrevID, "previous[{}] = {}".format(v, u))
         data14.addToUpdateDataQueue(self.prevId, previous, isShownOnScreen=False, inlineExp="Previous")
 
-        self.animationEngine.addToUpdateQueue(15, data=data13)
-        self.animationEngine.addToUpdateQueue(16, data=data14)
+        self.animationEngine.addToFrames(15, data=data13)
+        self.animationEngine.addToFrames(16, data=data14)
 
     def secondForLoop(self):
-        self.animationEngine.addToUpdateQueue(17)
-        self.animationEngine.addToUpdateQueue(18)
-        self.animationEngine.addToUpdateQueue(19)
-        self.animationEngine.addToUpdateQueue(20)
+        self.animationEngine.addToFrames(17)
+        self.animationEngine.addToFrames(18)
+        self.animationEngine.addToFrames(19)
+        self.animationEngine.addToFrames(20)
 
     def innerIf(self, u, v, w, distance, previous, graph, source):
         data = ExtraData(self.errorUID, "u = {}, v = {}, distanceBetween({},{}) = {}".format(u, v, u, v, w))
-        self.animationEngine.addToUpdateQueue(20, data=data)
-        self.animationEngine.addToUpdateQueue(21, edges=self.edgeHighlighter.getEdges(distance, previous, u, v, w, source, graph), data=ExtraData.addSingleTableDataAndGet(
+        self.animationEngine.addToFrames(20, data=data)
+        self.animationEngine.addToFrames(21, edges=self.edgeHighlighter.getEdges(distance, previous, u, v, w, source, graph), data=ExtraData.addSingleTableDataAndGet(
             self.errCheckID, "{} + {} ({}) < {}".format(distance[u], w, distance[u] + w, distance[v])))
 
-        self.animationEngine.addToUpdateQueue(22, data=ExtraData.addSingleTableDataAndGet(self.outIfDBool, (str((distance[u] + w) < distance[v]))))
+        self.animationEngine.addToFrames(22, data=ExtraData.addSingleTableDataAndGet(self.outIfDBool, (str((distance[u] + w) < distance[v]))))
 
     def err(self):
-        self.animationEngine.addToUpdateQueue(23)
+        self.animationEngine.addToFrames(23)
 
     def ret(self, dist, prev):
-        self.animationEngine.addToUpdateQueue(24)
-        self.animationEngine.addToUpdateQueue(25)
+        self.animationEngine.addToFrames(24)
+        self.animationEngine.addToFrames(25)
         data = ExtraData(self.distanceId, dist, isShownOnScreen=False, inlineExp="Distance")
         data.addToUpdateDataQueue(self.prevId, prev, isShownOnScreen=False, inlineExp="Previous")
         data.addToUpdateDataQueue(self.retID, "Dist {}, Prev {}".format(dist, prev), isShownOnScreen=True)
-        self.animationEngine.addToUpdateQueue(26, data=data)
+        self.animationEngine.addToFrames(26, data=data)
 
     def getUpdates(self):
         return self.animationEngine.getFrames()
