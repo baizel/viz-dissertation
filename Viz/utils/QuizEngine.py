@@ -40,15 +40,14 @@ class QuizEngine:
                        if the nodes in Q have the same distances then choose the node that comes next in order i.e (1,2,3...).</b> 
                        '''.format(self.sourceNode)
 
-        self.__questionGenerators = [self.generateDistanceOfRandomNodeQuestion, self.generateCurrentNodeQuestion, self.generateNeighbourQuestions]
-
     def generateQuiz(self, numberOfQs):
+        questionGenerators = [self.generateDistanceOfRandomNodeQuestion, self.generateCurrentNodeQuestion, self.generateNeighbourQuestions]
         quiz = Quiz.objects.create(graph=self.graph, sourceNode=self.sourceNode, preface=self.preface)
         for i in range(numberOfQs):
-            qzGen = secrets.choice(self.__questionGenerators)
-            quiz.questions.add(qzGen())
+            qzGen = secrets.choice(questionGenerators)
+            quiz.questions.add(qzGen())  # Add generated questions to quiz
         quiz.questions.all()
-        quiz.save()
+        quiz.save()  # Save to database
         return quiz
 
     def __populateStates(self):
@@ -68,7 +67,8 @@ class QuizEngine:
 
     def generateCurrentNodeQuestion(self):
         iteration = random.randint(0, self.__maxNodes - 1)
-        baseQuestion = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24), what is the current node (variable 'u' on Line 15)?".format(ordinal(iteration + 1))
+        baseQuestion = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24), " \
+                       "what is the current node (variable 'u' on Line 15)?".format(ordinal(iteration + 1))
         ansIndex = iteration * 2
         ans = list(self.__nodeStateOrder[ansIndex].values())[0][0]['id']
         options = [i for i in range(1, self.__maxNodes + 1)]
@@ -79,17 +79,18 @@ class QuizEngine:
 
     def generateNeighbourQuestions(self):
         iteration = random.randint(0, self.__maxNodes - 1)
-        baseQuestion = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24), what are the neighbours node(s) of the current node?".format(ordinal(iteration + 1))
+        baseQuestion = "On the {} iteration of the while Loop in the Dijkstra Algorithm (Line 14-24), " \
+                       "what are the neighbours node(s) of the current node?".format(ordinal(iteration + 1))
         ansIndex = (iteration * 2) + 1
         ans = []
         for i in list(self.__nodeStateOrder[ansIndex].values())[0]:
             if i["color"] == NEIGHBOUR_NODE_COLOR:
                 ans.append(i['id'])
         if len(ans) <= 0:
-            ans.append(self.NO_NEIGHBOUR_OPTION)
+            ans.append(self.NO_NEIGHBOUR_OPTION)  # set answer to NO_NEIGHBOUR_OPTION
 
         options = [str(i) for i in range(1, self.__maxNodes + 1)]
-        options.append(self.NO_NEIGHBOUR_OPTION)
+        options.append(self.NO_NEIGHBOUR_OPTION)  # Always give user of NO_NEIGHBOUR_OPTION
 
         question = Questions.objects.create(question=baseQuestion, answers=ans, choices=options, isMultipleChoice=True)
         question.save()

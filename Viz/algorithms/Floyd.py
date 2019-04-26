@@ -7,7 +7,7 @@ from Viz.utils.AnimationEngine import AnimationEngine, ExtraData
 from Viz.utils.context import CURRENT_NODE_COLOR_HTML, SELECTED_NODE_COLOR_HTML, NEIGHBOUR_NODE_COLOR_HTML, CURRENT_NODE_COLOR, SELECTED_NODE_COLOR, NEIGHBOUR_NODE_COLOR
 
 
-class Mapping:
+class FloydPseudoMapping:
     def __init__(self):
         self.animationEngine = AnimationEngine("FloydWarshall.txt")
         self.tableMatrixID = "TableMatrixID"
@@ -86,7 +86,9 @@ class FloydWarshall:
         return columns
 
     def __init__(self, graph: Graph):
-        self.__mapping = Mapping()
+        self.__graph = graph
+        self.__mapping = FloydPseudoMapping()
+
         distance = self.__initDistances(graph.nodes)
         self.__mapping.setToInf(self.makeHTMLtable(distance))
 
@@ -112,11 +114,10 @@ class FloydWarshall:
                         distance[j][k] = alt
                         self.__mapping.assignDistance(i, j, k, distance, self.makeHTMLtable(distance, i, j, k))
         self.__mapping.ret()
-        self.ree = self.__mapping.getFrames()
+        self.animationUpdates = self.__mapping.getFrames()
 
     @staticmethod
     def makeHTMLtable(distance, i=None, j=None, k=None):
-        # TODO: turn this into a html string
         table = "<table class = 'striped centered'> " \
                 "<tr> " \
                 "<td> Nodes </td>" \

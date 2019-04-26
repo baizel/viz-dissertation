@@ -16,8 +16,8 @@ context: dict = dict()
 """
 This really should be in a seprate app 
 """
-
 def graphFromQuiz(request: WSGIRequest, id):
+    dataExport()
     try:
         q = Quiz.objects.get(id=id)
     except Quiz.DoesNotExist:
@@ -60,10 +60,19 @@ def getAlgorithm(request: WSGIRequest, algorithm, source=None) -> HttpResponse:
     elif algorithm == "ford":
         ret = BellmanFord(graph, source).animationUpdates
     elif algorithm == "floyd":
-        ret = FloydWarshall(graph).ree
-
+        ret = FloydWarshall(graph).animationUpdates
+    print(ret)
     return JsonResponse(json.loads(json.dumps(ret, default=NodeEdgeSerializer)))
 
+
+def dataExport():
+    userObjs = CustomUser.objects.all()
+    for i in userObjs:
+        quizs = QuizScores.objects.filter(user_id=i.id)
+        print(i.id)
+        for j in quizs:
+            print(j._percent)
+        print("---")
 
 def tutorials(request):
     if request.user.is_authenticated:

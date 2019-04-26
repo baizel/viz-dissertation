@@ -16,7 +16,8 @@ class Node:
         self.__options = options
 
     def getJson(self):
-        return {"id":self.__id,"label":self.__label}
+        return {"id": self.__id, "label": self.__label}
+
     @property
     def id(self):
         return self.__id
@@ -36,23 +37,6 @@ class Node:
     @property
     def options(self):
         return self.__options
-
-    @classmethod
-    def fromRaw(cls, data: dict) -> (List['Edge'], List['Node']):
-        edges = []
-        nodes = []
-        for n in data["nodes"]["_data"]:
-            nodeData = data["nodes"]["_data"][n]
-            node = Node(nodeData["id"], nodeData["label"], nodeData.get("color"))
-            nodes.append(node)
-
-        for e in data["edges"]["_data"]:
-            edgeData = data["edges"]["_data"][e]
-            edge = Edge(edgeData["id"], edgeData["from"], edgeData["to"], int(edgeData["distance"]), edgeData["label"])
-            edges.append(edge)
-            fromNode = [i for i in nodes if i.id == edge.fromNode][0]  # Edge must exist with a from node
-            fromNode.neighbourEdge.append(edge)
-        return edges, nodes
 
     def __str__(self):
         return str(self.id)

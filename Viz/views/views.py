@@ -3,7 +3,7 @@ import json
 
 from django.utils.decorators import method_decorator
 
-from Viz.algorithms.pesudo_algorithms.algorithmExporter import PesudoAlgorithm
+from Viz.algorithms.pesudo_algorithms.algorithmExporter import PseudoAlgorithm
 from Viz.utils.context import ALGORITHMS, DIJKSTRA, FLOYD, FORD
 
 from django.views.generic import TemplateView
@@ -91,17 +91,17 @@ class AlgorithmView(TemplateView):
         res["quizIds"] = self.quizIds
         pesudoAlgo = None
         if algorithm == DIJKSTRA:
-            pesudoAlgo = PesudoAlgorithm("Dijkstra.txt")
+            pesudoAlgo = PseudoAlgorithm("Dijkstra.txt")
             res["jsonAlgo"] = json.dumps(pesudoAlgo.getJsonAlgo())
             res["pageTitle"] = "Dijkstra Algorithm"
             res["apiAlgo"] = DIJKSTRA
         elif algorithm == FLOYD:
-            pesudoAlgo = PesudoAlgorithm("FloydWarshall.txt")
+            pesudoAlgo = PseudoAlgorithm("FloydWarshall.txt")
             res["pageTitle"] = "Floyd-Warshall Algorithm"
             res["apiAlgo"] = FLOYD
             res["isSourceNeeded"] = False
         elif algorithm == FORD:
-            pesudoAlgo = PesudoAlgorithm("BellmanFord.txt")
+            pesudoAlgo = PseudoAlgorithm("BellmanFord.txt")
             res["pageTitle"] = "Bellman Ford Algorithm"
             res["isNegativeEdges"] = True
             res["apiAlgo"] = FORD

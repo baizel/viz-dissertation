@@ -1,6 +1,6 @@
 from Viz.Graph.DataSet import Node, Edge
 from Viz.utils.AnimationEngine import AnimationEngine, ExtraData, HighlightEdges
-from Viz.utils.context import NEIGHBOUR_NODE_COLOR, SELECTED_NODE_COLOR, CURRENT_NODE_COLOR
+from Viz.utils.context import NEIGHBOUR_NODE_COLOR, CURRENT_NODE_COLOR
 
 
 class DijkstraPseudoMapping:
@@ -24,7 +24,7 @@ class DijkstraPseudoMapping:
         }
         self.edgeHighlighting = HighlightEdges()
 
-    def initDistAndPrev(self, dist:int, prev:int):
+    def initDistAndPrev(self, dist: dict, prev: dict):
         self.animationEngine.addToFrames(6)
         self.animationEngine.addToFrames(7, data=ExtraData.addSingleTableDataAndGet(self.distanceId, dist, "Distance", self.displayNames[self.distanceId]))
         self.animationEngine.addToFrames(8, data=ExtraData.addSingleTableDataAndGet(self.prevId, prev, "Previous", self.displayNames[self.prevId]))
@@ -37,7 +37,8 @@ class DijkstraPseudoMapping:
 
     def setMinU(self, minVertex):
         nodes = [{"id": minVertex.id, "color": CURRENT_NODE_COLOR, "label": str(minVertex.id)}]
-        self.animationEngine.addToFrames(15, data=ExtraData.addSingleTableDataAndGet(self.minUID, minVertex, "Smallest Node", self.displayNames[self.minUID]), nodes=nodes)
+        data = ExtraData.addSingleTableDataAndGet(self.minUID, minVertex, "Smallest Node", self.displayNames[self.minUID])
+        self.animationEngine.addToFrames(15, data=data, nodes=nodes)
 
     def removeU(self, q, source: Node):
         self.animationEngine.addToFrames(16, data=ExtraData.addSingleTableDataAndGet(self.QId, q, "Q", self.displayNames[self.QId]))
@@ -46,7 +47,13 @@ class DijkstraPseudoMapping:
         neighbour = [i.toNode for i in source.neighbourEdge]
         if len(neighbour) > 0:
             nodes += [{"id": i, "color": NEIGHBOUR_NODE_COLOR, "label": str(i)} for i in neighbour]
-        self.animationEngine.addToFrames(17, data=ExtraData.addSingleTableDataAndGet(self.neighbourID, neighbour, "Neighbour node(s)", self.displayNames[self.neighbourID]), nodes=nodes)
+        extraData = ExtraData.addSingleTableDataAndGet(
+            self.neighbourID,
+            neighbour,
+            "Neighbour node(s)",
+            self.displayNames[self.neighbourID]
+        )
+        self.animationEngine.addToFrames(17, data=extraData, nodes=nodes)
 
     def findAltAndCmp(self, distance, cost, u, v, previous, dijkSource, graph):
         edge = self.edgeHighlighting.getEdges(distance, previous, u, v, cost, dijkSource, graph)
@@ -63,5 +70,5 @@ class DijkstraPseudoMapping:
         self.animationEngine.addToFrames(24)
         self.animationEngine.addToFrames(25, data=ExtraData.addSingleTableDataAndGet(self.returnDataID, "Distance: {}, Previous: {}".format(dist, prev), ""))
 
-    def getUpdates(self):
+    def getFrames(self):
         return self.animationEngine.getFrames()

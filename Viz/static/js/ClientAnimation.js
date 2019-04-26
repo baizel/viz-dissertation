@@ -150,7 +150,7 @@ function initGraph(dataset) {
 }
 
 var data = null;
-var currentLine = -1; // -1 to offset the first increment
+var framePointer = -1; // -1 to offset the first increment
 var animationSpeed = 1000; //In ms
 var listOfDataClasses = [];
 var previousNodeId = null;
@@ -175,7 +175,7 @@ function animate(updates, lineNumber) {
         return
     }
     edges.remove(previousAddedEdges);
-    previousAddedEdges = $.extend(true, [], updates[lineNumber].edges);
+    previousAddedEdges = $.extend(true, [], updates[lineNumber].edges); //copy to new array
 
     edges.update(updates[lineNumber].edges);
     edges.update(previousColoredEdges);
@@ -217,13 +217,13 @@ function animate(updates, lineNumber) {
         updateDataFromEvent = updates[lineNumber].data;
         spanTag = codeLine.children("span");
         if (updateDataFromEvent.updateData.length > 0) {
-            for (let d of updateDataFromEvent.updateData) {
-                updateData(d.classID, d.rawData);
-                updateData(d.classID + "table", d.rawData); //update table data if it exists
-                if (d.isShownOnScreen) {
-                    spanTag.addClass(d.classID);
-                    let inlineExp = d.inlineExp != null ? d.inlineExp + ":" + d.rawData : d.rawData;
-                    updateData(d.classID, inlineExp);
+            for (let data of updateDataFromEvent.updateData) {
+                updateData(data.classID, data.rawData);
+                updateData(data.classID + "table", data.rawData); //update table data if it exists
+                if (data.isShownOnScreen) {
+                    spanTag.addClass(data.classID);
+                    let inlineExp = data.inlineExp != null ? data.inlineExp + ":" + data.rawData : data.rawData;
+                    updateData(data.classID, inlineExp);
                 }
             }
         }
@@ -250,25 +250,26 @@ function playAnimation(algo) {
     }
 }
 
-function nextFrame(algo) {
+function nextFrame(algorithm) {
     getUpdateFrames(function (updates) {
-        if (currentLine > updates.length - 2) {
+        if (framePointer > updates.length - 2) {
+            //stop animation as we are at the end
             pauseAnimation();
         } else {
-            currentLine++;
-            animate(updates, currentLine);
+            framePointer++;
+            animate(updates, framePointer);
         }
-    }, algo);
+    }, algorithm);
 }
 
-function previousFrame(algo) {
+function previousFrame(algorithm) {
     getUpdateFrames(function (updates) {
-        currentLine--;
-        if (currentLine < 0) {
-            currentLine = 0;
+        framePointer--;
+        if (framePointer < 0) {
+            framePointer = 0;
         }
-        animate(updates, currentLine);
-    }, algo);
+        animate(updates, framePointer);
+    }, algorithm);
 }
 
 function pauseAnimation() {
@@ -288,7 +289,7 @@ function resetLines() {
         n.push(v);
     });
     nodes.update(n);
-    currentLine = 0;
+    framePointer = 0;
     for (let i = 0; i < listOfDataClasses.length; i++) {
         let element = document.getElementsByClassName(listOfDataClasses[i]);
         for (let ele of element) {

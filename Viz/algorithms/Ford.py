@@ -5,7 +5,7 @@ from Viz.utils.AnimationEngine import AnimationEngine, ExtraData, HighlightEdges
 from Viz.utils.context import CURRENT_NODE_COLOR, SELECTED_NODE_COLOR, NEIGHBOUR_NODE_COLOR
 
 
-class BellmanFordMapping:
+class FordPseudoMapping:
     def __init__(self):
         self.animationEngine = AnimationEngine("BellmanFord.txt")
         self.distanceId = "distID"
@@ -83,18 +83,19 @@ class BellmanFordMapping:
         self.animationEngine.addToFrames(25)
         data = ExtraData(self.distanceId, dist, isShownOnScreen=False, inlineExp="Distance")
         data.addToUpdateDataQueue(self.prevId, prev, isShownOnScreen=False, inlineExp="Previous")
-        data.addToUpdateDataQueue(self.retID, "Dist {}, Prev {}".format(dist, prev), isShownOnScreen=True)
+        data.addToUpdateDataQueue(self.retID, "Dist {}, OI OI OI Prev {}".format(dist, prev), isShownOnScreen=False)
         self.animationEngine.addToFrames(26, data=data)
 
-    def getUpdates(self):
+    def getFrames(self):
         return self.animationEngine.getFrames()
 
 
 class BellmanFord:
     def __init__(self, graph: Graph, source: string):
+        self.__graph = Graph
         source = graph.getNode(source)
         assert source is not None, 'Such source node doesn\'t exist'
-        self.__mapping = BellmanFordMapping()
+        self.__mapping = FordPseudoMapping()
 
         distances = {}
         previousVertices = {}
@@ -106,14 +107,15 @@ class BellmanFord:
 
         distances[source] = 0
         self.__mapping.firstForLoop(distances)
-        for _ in range(len(graph.nodes.copy()) - 1):
+        for _ in range(len(graph.nodes) - 1):
             for edges in graph.edges.copy():
                 u = graph.getNode(edges.fromNode)
                 v = graph.getNode(edges.toNode)
                 w = edges.distance
                 self.__mapping.innerLoop(u, v, w, distances, graph, source, previousVertices)
-                if distances[u] + w < distances[v]:
-                    distances[v] = distances[u] + w
+                alternative = distances[u] + w
+                if alternative < distances[v]:
+                    distances[v] = alternative
                     previousVertices[v] = u
                     self.__mapping.ifStatement(u, v, w, distances, previousVertices)
 
@@ -127,11 +129,14 @@ class BellmanFord:
             if distances[u] + w < distances[v]:
                 print("Error negative weight cycles")
                 self.__mapping.err()
-                self.animationUpdates = self.__mapping.getUpdates()
+                self.animationUpdates = self.__mapping.getFrames()
                 return
 
+        self.distances = distances
+        self.previous = previousVertices
         self.__mapping.ret(distances, previousVertices)
-        self.animationUpdates = self.__mapping.getUpdates()
+
+        self.animationUpdates = self.__mapping.getFrames()
 
     def getAnimationEngine(self):
         return self.__mapping.animationEngine

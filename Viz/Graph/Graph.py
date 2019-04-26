@@ -1,4 +1,5 @@
 import random
+from typing import List
 
 from Viz.Graph.DataSet import Edge, Node
 
@@ -12,7 +13,26 @@ class Graph:
         :param data: Dictionary containing the representation of the node. Uses same structure as http://visjs.org/docs/data/dataset.html
         """
         self.__rawData = rawData
-        self.edges, self.nodes = Node.fromRaw(rawData)
+
+        self.edges: List[Edge]
+        self.nodes: List[Node]
+        self.edges, self.nodes = self.__fromRaw(rawData)
+
+    def __fromRaw(self, data) -> (List['Edge'], List['Node']):
+        edges = []
+        nodes = []
+        for n in data["nodes"]["_data"]:
+            nodeData = data["nodes"]["_data"][n]
+            node = Node(nodeData["id"], nodeData["label"], nodeData.get("color"))
+            nodes.append(node)
+
+        for e in data["edges"]["_data"]:
+            edgeData = data["edges"]["_data"][e]
+            edge = Edge(edgeData["id"], edgeData["from"], edgeData["to"], int(edgeData["distance"]), edgeData["label"])
+            edges.append(edge)
+            fromNode = [i for i in nodes if i.id == edge.fromNode][0]  # Edge must exist with a from node
+            fromNode.neighbourEdge.append(edge)
+        return edges, nodes
 
     def getRawData(self):
         return self.__rawData
