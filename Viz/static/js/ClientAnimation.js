@@ -165,7 +165,7 @@ function updateData(className, data) {
     $("." + className).html(data);
 }
 
-function animate(updates, lineNumber) {
+function animate(updates, framePointer) {
     network.unselectAll(); // To show edge colors instead of highlighted colors
 
     if (selectedNode !== null && nodes.get(selectedNode.id).color === NODE_COLOUR) {
@@ -175,46 +175,48 @@ function animate(updates, lineNumber) {
         return
     }
     edges.remove(previousAddedEdges);
-    previousAddedEdges = $.extend(true, [], updates[lineNumber].edges); //copy to new array
+    previousAddedEdges = $.extend(true, [], updates[framePointer].edges); //copy to new array
 
-    edges.update(updates[lineNumber].edges);
+    edges.update(updates[framePointer].edges);
     edges.update(previousColoredEdges);
     previousColoredEdges = [];
     for (let i of previousAddedEdges.slice()) {
         if (i.hasOwnProperty("isNew") && !i.isNew) {
+            //This colors the path of the instead of adding a new edge.
             previousAddedEdges.pop(i);
             i.color.color = EDGE_COLOUR;
             previousColoredEdges.push(i);
         }
     }
-    if (updates[lineNumber].nodes.length !== 0) {
 
+    if (updates[framePointer].nodes.length !== 0) {
         for (let n = 0; n < previousAnimatedNodes.length; n++) {
             previousAnimatedNodes[n].color = NODE_COLOUR
         }
         nodes.update(previousAnimatedNodes);
-        previousAnimatedNodes = $.extend(true, [], updates[lineNumber].nodes);
-        nodes.update(updates[lineNumber].nodes);
+        previousAnimatedNodes = $.extend(true, [], updates[framePointer].nodes);
+        nodes.update(updates[framePointer].nodes);
     }
 
-    line = updates[lineNumber].mapping;
-    if (lineNumber > 0) {
-        prevLine = updates[lineNumber - 1].mapping;
+    //Highlight pseudo code
+    line = updates[framePointer].mapping;
+    if (framePointer > 0) {
+        prevLine = updates[framePointer - 1].mapping;
         $("#codeline-" + prevLine).css('background-color', '');
     }
-    if (lineNumber < updates.length - 1) {
-        nextLine = updates[lineNumber + 1].mapping;
+    if (framePointer < updates.length - 1) {
+        nextLine = updates[framePointer + 1].mapping;
         $("#codeline-" + nextLine).css('background-color', '');
     }
 
     codeLine = $("#codeline-" + line);
     codeLine.css('background-color', '#FFFF00');
 
-    $("#exp").html(updates[lineNumber].explanation);
+    $("#exp").html(updates[framePointer].explanation);
 
     //update Data
-    if (updates[lineNumber].data != null) {
-        updateDataFromEvent = updates[lineNumber].data;
+    if (updates[framePointer].data != null) {
+        updateDataFromEvent = updates[framePointer].data;
         spanTag = codeLine.children("span");
         if (updateDataFromEvent.updateData.length > 0) {
             for (let data of updateDataFromEvent.updateData) {
@@ -393,7 +395,7 @@ $(document).ready(function () {
     if (gId === null)
         graphApiCall("/api/graph/random");
     else
-        graphApiCall("/api/graph/"+gId);
+        graphApiCall("/api/graph/" + gId);
     $(".pause-btn").hide();
 
     for (i = 0; i < algo["lines"].length; i++) {
