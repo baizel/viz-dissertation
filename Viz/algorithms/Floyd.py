@@ -114,6 +114,7 @@ class FloydWarshall:
                         distance[j][k] = alt
                         self.__mapping.assignDistance(i, j, k, distance, self.makeHTMLtable(distance, i, j, k))
         self.__mapping.ret()
+        self.distances = distance
         self.animationUpdates = self.__mapping.getFrames()
 
     @staticmethod
