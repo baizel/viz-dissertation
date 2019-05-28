@@ -1,6 +1,7 @@
 from allauth.account.views import LoginView
 import json
 
+from django.contrib.auth import login, authenticate
 from django.utils.decorators import method_decorator
 
 from Viz.algorithms.pesudo_algorithms.algorithmExporter import PseudoAlgorithm
@@ -61,6 +62,13 @@ class LogInView(LoginView):
     @add_default_context("Login")
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
+
+    def dispatch(self, request, *args, **kwargs):
+        if kwargs.get("isDemo") is not None and kwargs.get("isDemo") == "demo":
+            user = authenticate(request, username="demo", password="password")
+            if user is not None:
+                login(request, user)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class AlgorithmView(TemplateView):
@@ -138,7 +146,6 @@ class SummaryView(TemplateView):
             totalPossibleScore += float(i.max_score)
             totalPercent += float(i._percent)
             timeChartData.append({"date": i.date.timestamp() * 1000, "y": i.score})
-            # print(i.date.timestamp() * 1000)
         percentage = (totalScoreAchieved / totalPossibleScore) * 100 if totalPossibleScore != 0 else 0
         averagePerQuiz = totalPercent / len(allScores) if len(allScores) != 0 else 0
         stats = [
@@ -148,7 +155,6 @@ class SummaryView(TemplateView):
         ]
         quiz = None
         if recentQuiz is not None:
-            print(recentQuiz.id)
             quiz = Quiz.objects.get(id=recentQuiz.quiz.id)
             stats.append({"Recent Quiz Score": "{:5.2f}%".format((float(recentQuiz.score) / float(recentQuiz.max_score)) * 100)})
         exData = {}

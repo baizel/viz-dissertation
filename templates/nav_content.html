@@ -40,9 +40,9 @@
 </li>
 <li><a class="subheader">User</a></li>
 {% if user.is_authenticated %}
-    <li><a href="{% url 'summary' %}">My Profile</a>
-    <li><a href="{% url 'account_logout' %}">Log out</a>
-        {% else %}
+    <li><a href="{% url 'summary' %}">My Profile</a></li>
+    <li><a href="{% url 'account_logout' %}">Log out</a></li>
+{% else %}
         {#        Dissable this for now as custom ui needs to be updated #}
         {#    <li><a class="waves-effect" href="{% url 'account_login' %}">Log In </a></li>#}
         {#    <li><a href="{% url 'account_signup' %}">Sign Up</a></li>#}
@@ -52,6 +52,7 @@
             <span style="padding-left: 2px">Log In With Google</span>
         </a>
     </li>
+    <li><a href="{% url 'account_login' %}demo">Use A Demo Account</a></li>
 
 
 {% endif %}
