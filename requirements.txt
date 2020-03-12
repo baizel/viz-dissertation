@@ -10,7 +10,7 @@ dnspython==1.16.0
 dnspython3==1.15.0
 idna==2.8
 oauthlib==3.0.1
-psutil==5.6.1
+psutil==5.6.6
 pymongo==3.5.1
 python3-openid==3.1.0
 pytz==2018.9
