@@ -3,7 +3,7 @@ certifi==2019.3.9
 chardet==3.0.4
 dataclasses==0.6
 defusedxml==0.5.0
-Django==2.2.4
+Django==2.2.13
 django-allauth==0.39.1
 djongo==1.2.31
 dnspython==1.16.0
